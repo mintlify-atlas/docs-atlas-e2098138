@@ -1,0 +1,432 @@
+---
+title: Tooltip
+description: Display contextual information on hover or focus
+---
+
+<RequestExample>
+```jsx
+import { Tooltip, Button } from 'reshaped';
+
+function Example() {
+  return (
+    <Tooltip text="This is helpful information" position="top">
+      {(attributes) => (
+        <Button attributes={attributes}>Hover me</Button>
+      )}
+    </Tooltip>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Tooltips display brief, contextual information when users hover over or focus on an element. They automatically position themselves and disappear when the user moves away.
+
+## Props
+
+<ParamField path="text" type="React.ReactNode">
+  Content to display in the tooltip.
+  
+  ```jsx
+  <Tooltip text="Click to edit">
+  ```
+</ParamField>
+
+<ParamField path="children" type="(attributes: TriggerAttributes) => React.ReactNode" required>
+  Render function that provides attributes for the trigger element.
+  
+  ```jsx
+  <Tooltip text="Help">
+    {(attributes) => <Button attributes={attributes}>?</Button>}
+  </Tooltip>
+  ```
+</ParamField>
+
+<ParamField path="position" type="string">
+  Position relative to the trigger element.
+  
+  Options: `"bottom"`, `"bottom-start"`, `"bottom-end"`, `"top"`, `"top-start"`, `"top-end"`, `"start"`, `"start-top"`, `"start-bottom"`, `"end"`, `"end-top"`, `"end-bottom"`
+  
+  Default: `"top"`
+</ParamField>
+
+<ParamField path="color" type="string" default="inverted">
+  Color scheme for the tooltip.
+  
+  Options: `"inverted"`, `"dark"`
+</ParamField>
+
+<ParamField path="active" type="boolean">
+  Controlled state for tooltip visibility.
+  
+  ```jsx
+  <Tooltip text="Info" active={showTooltip}>
+  ```
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the tooltip.
+</ParamField>
+
+<ParamField path="contentGap" type="number">
+  Gap between trigger and tooltip in pixels.
+</ParamField>
+
+<ParamField path="contentShift" type="number">
+  Shift the tooltip on the secondary axis.
+</ParamField>
+
+<ParamField path="contentMaxWidth" type="string">
+  Maximum width for the tooltip content.
+  
+  ```jsx
+  <Tooltip contentMaxWidth="200px" text="Very long tooltip text...">
+  ```
+</ParamField>
+
+<ParamField path="contentZIndex" type="number">
+  Custom z-index for the tooltip.
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the tooltip opens.
+</ParamField>
+
+<ParamField path="onClose" type="() => void">
+  Callback when the tooltip closes.
+</ParamField>
+
+<ParamField path="disableContentHover" type="boolean">
+  Hide tooltip when hovering over it.
+</ParamField>
+
+<ParamField path="containerRef" type="React.RefObject<HTMLElement>">
+  Container element for positioning.
+</ParamField>
+
+<ParamField path="positionRef" type="React.RefObject<HTMLElement>">
+  Element to calculate position against.
+</ParamField>
+
+<ParamField path="originCoordinates" type="Coordinates">
+  Position coordinates when there's no trigger element.
+</ParamField>
+
+<ParamField path="contentClassName" type="string">
+  Additional CSS class for the tooltip content.
+</ParamField>
+
+<ParamField path="contentAttributes" type="Attributes<'div'>">
+  Additional HTML attributes for the tooltip content.
+</ParamField>
+
+<ParamField path="instanceRef" type="React.Ref<TooltipInstance>">
+  Ref to access tooltip methods.
+</ParamField>
+
+## Examples
+
+### Basic Tooltip
+
+```jsx
+<Tooltip text="Click to edit this item">
+  {(attributes) => (
+    <Button attributes={attributes} icon={IconEdit} variant="ghost" />
+  )}
+</Tooltip>
+```
+
+### Positions
+
+```jsx
+<View direction="row" gap={2}>
+  <Tooltip text="Top" position="top">
+    {(attributes) => <Button attributes={attributes}>Top</Button>}
+  </Tooltip>
+  
+  <Tooltip text="Bottom" position="bottom">
+    {(attributes) => <Button attributes={attributes}>Bottom</Button>}
+  </Tooltip>
+  
+  <Tooltip text="Start" position="start">
+    {(attributes) => <Button attributes={attributes}>Start</Button>}
+  </Tooltip>
+  
+  <Tooltip text="End" position="end">
+    {(attributes) => <Button attributes={attributes}>End</Button>}
+  </Tooltip>
+</View>
+```
+
+### Color Variants
+
+```jsx
+<View direction="row" gap={2}>
+  <Tooltip text="Inverted tooltip" color="inverted">
+    {(attributes) => <Button attributes={attributes}>Inverted</Button>}
+  </Tooltip>
+  
+  <Tooltip text="Dark tooltip" color="dark">
+    {(attributes) => <Button attributes={attributes}>Dark</Button>}
+  </Tooltip>
+</View>
+```
+
+### Icon Button with Tooltip
+
+```jsx
+import IconSave from 'reshaped/icons/Save';
+import IconUndo from 'reshaped/icons/Undo';
+import IconRedo from 'reshaped/icons/Redo';
+
+function Toolbar() {
+  return (
+    <View direction="row" gap={1}>
+      <Tooltip text="Save (⌘S)" position="bottom">
+        {(attributes) => (
+          <Button
+            attributes={attributes}
+            icon={IconSave}
+            variant="ghost"
+            onClick={handleSave}
+          />
+        )}
+      </Tooltip>
+      
+      <Tooltip text="Undo (⌘Z)" position="bottom">
+        {(attributes) => (
+          <Button
+            attributes={attributes}
+            icon={IconUndo}
+            variant="ghost"
+            onClick={handleUndo}
+          />
+        )}
+      </Tooltip>
+      
+      <Tooltip text="Redo (⌘⇧Z)" position="bottom">
+        {(attributes) => (
+          <Button
+            attributes={attributes}
+            icon={IconRedo}
+            variant="ghost"
+            onClick={handleRedo}
+          />
+        )}
+      </Tooltip>
+    </View>
+  );
+}
+```
+
+### Multiline Tooltip
+
+```jsx
+<Tooltip
+  text="This is a longer tooltip that will wrap to multiple lines when it exceeds the maximum width"
+  contentMaxWidth="200px"
+>
+  {(attributes) => (
+    <Button attributes={attributes}>Info</Button>
+  )}
+</Tooltip>
+```
+
+### Disabled Tooltip
+
+```jsx
+function ConditionalTooltip({ hasPermission }) {
+  return (
+    <Tooltip
+      text="You don't have permission to edit"
+      disabled={hasPermission}
+    >
+      {(attributes) => (
+        <Button
+          attributes={attributes}
+          disabled={!hasPermission}
+          onClick={handleEdit}
+        >
+          Edit
+        </Button>
+      )}
+    </Tooltip>
+  );
+}
+```
+
+### Help Icons
+
+```jsx
+import IconHelp from 'reshaped/icons/HelpCircle';
+
+function FormField() {
+  return (
+    <View gap={1}>
+      <View direction="row" gap={1} align="center">
+        <Text variant="body-3" weight="bold">API Key</Text>
+        <Tooltip text="Your API key can be found in Settings > Integrations">
+          {(attributes) => (
+            <Button
+              attributes={attributes}
+              icon={IconHelp}
+              variant="ghost"
+              size="small"
+            />
+          )}
+        </Tooltip>
+      </View>
+      <TextField name="apiKey" />
+    </View>
+  );
+}
+```
+
+### Truncated Text
+
+```jsx
+function TruncatedWithTooltip({ text }) {
+  const [isTruncated, setIsTruncated] = React.useState(false);
+  const textRef = React.useRef();
+
+  React.useEffect(() => {
+    const element = textRef.current;
+    setIsTruncated(element.scrollWidth > element.clientWidth);
+  }, [text]);
+
+  return (
+    <Tooltip text={text} disabled={!isTruncated}>
+      {(attributes) => (
+        <Text
+          attributes={{ ...attributes, ref: textRef }}
+          attributes={{ style: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }}
+        >
+          {text}
+        </Text>
+      )}
+    </Tooltip>
+  );
+}
+```
+
+### Status Indicators
+
+```jsx
+function StatusBadge({ status }) {
+  const statusConfig = {
+    active: { color: 'positive', text: 'Service is running normally' },
+    warning: { color: 'warning', text: 'Degraded performance detected' },
+    error: { color: 'critical', text: 'Service is currently down' },
+  };
+
+  const config = statusConfig[status];
+
+  return (
+    <Tooltip text={config.text}>
+      {(attributes) => (
+        <View
+          attributes={attributes}
+          width="12px"
+          height="12px"
+          borderRadius="full"
+          backgroundColor={config.color}
+        />
+      )}
+    </Tooltip>
+  );
+}
+```
+
+### Controlled Tooltip
+
+```jsx
+function ControlledTooltipExample() {
+  const [showTooltip, setShowTooltip] = React.useState(false);
+
+  return (
+    <View gap={3}>
+      <Tooltip
+        text="This tooltip is controlled"
+        active={showTooltip}
+      >
+        {(attributes) => (
+          <Button attributes={attributes}>Hover me</Button>
+        )}
+      </Tooltip>
+      
+      <Button onClick={() => setShowTooltip(!showTooltip)}>
+        Toggle Tooltip
+      </Button>
+    </View>
+  );
+}
+```
+
+### With Popover
+
+```jsx
+// Tooltip on the trigger, Popover for detailed content
+<Tooltip text="Click for more options" position="top">
+  {(tooltipAttributes) => (
+    <Popover position="bottom">
+      <Popover.Trigger>
+        {(popoverAttributes) => (
+          <Button attributes={{ ...tooltipAttributes, ...popoverAttributes }}>
+            Options
+          </Button>
+        )}
+      </Popover.Trigger>
+      <Popover.Content>
+        <View gap={2} padding={3}>
+          <Text>Detailed options here</Text>
+        </View>
+      </Popover.Content>
+    </Popover>
+  )}
+</Tooltip>
+```
+
+### Chart Data Points
+
+```jsx
+function DataPoint({ value, label }) {
+  return (
+    <Tooltip text={`${label}: ${value}`}>
+      {(attributes) => (
+        <View
+          attributes={attributes}
+          width="8px"
+          height="8px"
+          borderRadius="full"
+          backgroundColor="primary"
+          attributes={{
+            ...attributes,
+            style: { cursor: 'pointer' },
+          }}
+        />
+      )}
+    </Tooltip>
+  );
+}
+```
+
+## Best Practices
+
+- Keep tooltip text concise (1-2 short sentences)
+- Use tooltips for supplementary information, not critical content
+- Don't use tooltips on disabled elements that aren't focusable
+- Ensure trigger elements are keyboard accessible
+- Don't hide important actions behind tooltips
+- Use consistent positioning across your interface
+- Avoid nesting interactive elements inside tooltips
+
+## Accessibility
+
+- Tooltips appear on both hover and keyboard focus
+- Content is announced to screen readers via `aria-describedby`
+- Pressing Escape dismisses the tooltip
+- Tooltip doesn't trap focus or block interaction
+- Ensure tooltip trigger is keyboard accessible
+- Don't rely solely on tooltips for critical information
+- Adequate contrast between tooltip and background

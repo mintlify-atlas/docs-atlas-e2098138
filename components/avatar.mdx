@@ -1,0 +1,231 @@
+---
+title: Avatar
+description: Display user profile images, initials, or icons
+---
+
+The Avatar component is used to represent users or entities with images, initials, or icons.
+
+## Basic Usage
+
+```jsx
+import { Avatar } from 'reshaped';
+
+function App() {
+  return <Avatar src="https://i.pravatar.cc/300" alt="User avatar" />;
+}
+```
+
+## With Initials
+
+Display user initials when no image is available:
+
+```jsx
+<Avatar initials="JD" />
+<Avatar initials="AB" color="primary" />
+<Avatar initials="CD" color="positive" />
+```
+
+## With Icon
+
+Use icons for generic representations:
+
+```jsx
+import { Avatar } from 'reshaped';
+import IconUser from './icons/User';
+
+<Avatar icon={IconUser} />
+<Avatar icon={IconUser} color="primary" />
+```
+
+## Sizes
+
+Control avatar size using base unit multipliers:
+
+```jsx
+<Avatar src="/avatar.jpg" alt="User" size={8} />
+<Avatar src="/avatar.jpg" alt="User" size={12} />
+<Avatar src="/avatar.jpg" alt="User" size={16} />
+<Avatar src="/avatar.jpg" alt="User" size={24} />
+```
+
+Default size is `12` (48px with default base unit of 4px).
+
+## Colors
+
+Apply color schemes to non-image avatars:
+
+```jsx
+<Avatar initials="JD" color="neutral" />
+<Avatar initials="AB" color="primary" />
+<Avatar initials="CD" color="positive" />
+<Avatar initials="EF" color="warning" />
+<Avatar initials="GH" color="critical" />
+```
+
+## Variants
+
+Choose between solid and faded styles:
+
+```jsx
+<Avatar initials="JD" variant="solid" />
+<Avatar initials="JD" variant="faded" />
+```
+
+## Squared Shape
+
+Create rounded square avatars:
+
+```jsx
+<Avatar src="/logo.png" alt="Company" squared />
+<Avatar initials="CO" squared />
+```
+
+## Responsive Sizes
+
+Size can be responsive across breakpoints:
+
+```jsx
+<Avatar
+  src="/avatar.jpg"
+  alt="User"
+  size={{ s: 8, m: 12, l: 16 }}
+/>
+```
+
+## Custom Image Rendering
+
+Integrate with Next.js Image or other image components:
+
+```jsx
+import { Avatar } from 'reshaped';
+import Image from 'next/image';
+
+function App() {
+  return (
+    <Avatar
+      src="/avatar.jpg"
+      alt="User"
+      renderImage={(props) => (
+        <Image {...props} width={48} height={48} />
+      )}
+    />
+  );
+}
+```
+
+## Complete Example
+
+User profile with avatar:
+
+```jsx
+import { Avatar, View, Text } from 'reshaped';
+import IconUser from './icons/User';
+
+function UserProfile({ user }) {
+  return (
+    <View direction="row" gap={3} align="center">
+      <Avatar
+        src={user.avatar}
+        alt={user.name}
+        initials={user.initials}
+        icon={IconUser}
+        size={12}
+      />
+      <View>
+        <Text variant="body-2" weight="semibold">
+          {user.name}
+        </Text>
+        <Text variant="caption-1" color="neutral-faded">
+          {user.email}
+        </Text>
+      </View>
+    </View>
+  );
+}
+```
+
+## Avatar Group
+
+Display multiple avatars in a group:
+
+```jsx
+import { Avatar, View } from 'reshaped';
+
+function AvatarGroup({ users }) {
+  return (
+    <View direction="row" gap={-2}>
+      {users.slice(0, 3).map((user, index) => (
+        <Avatar
+          key={user.id}
+          src={user.avatar}
+          alt={user.name}
+          size={10}
+          attributes={{ style: { zIndex: users.length - index } }}
+        />
+      ))}
+      {users.length > 3 && (
+        <Avatar
+          initials={`+${users.length - 3}`}
+          size={10}
+          color="neutral"
+          variant="faded"
+        />
+      )}
+    </View>
+  );
+}
+```
+
+## Props
+
+<ParamField path="src" type="string" default="undefined">
+  Image URL for the avatar.
+</ParamField>
+
+<ParamField path="alt" type="string" default="undefined">
+  Image alt text for accessibility.
+</ParamField>
+
+<ParamField path="initials" type="string" default="undefined">
+  Initials to display if no image is provided.
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType" default="undefined">
+  SVG component for the icon, used when no image is provided.
+</ParamField>
+
+<ParamField path="size" type="number | responsive" default="12">
+  Size of the component, base unit token number multiplier. Can be responsive.
+</ParamField>
+
+<ParamField path="color" type="string" default="neutral">
+  Component color scheme.
+  
+  Options: `neutral`, `critical`, `warning`, `positive`, `primary`
+</ParamField>
+
+<ParamField path="variant" type="string" default="solid">
+  Component render variant.
+  
+  Options: `solid`, `faded`
+</ParamField>
+
+<ParamField path="squared" type="boolean" default="false">
+  Change the shape to rounded square.
+</ParamField>
+
+<ParamField path="renderImage" type="function" default="undefined">
+  Render prop for the image element, useful for integrating with Image components from third party frameworks like Next.js.
+</ParamField>
+
+<ParamField path="imageAttributes" type="object" default="undefined">
+  Additional attributes for the image element.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>

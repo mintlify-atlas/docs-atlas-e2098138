@@ -1,0 +1,223 @@
+---
+title: Progress
+description: Display progress bars with determinate or indeterminate states
+---
+
+<RequestExample>
+```jsx
+import { Progress } from 'reshaped';
+
+function Example() {
+  const [progress, setProgress] = React.useState(0);
+
+  return (
+    <Progress
+      value={progress}
+      max={100}
+      color="primary"
+      ariaLabel="Upload progress"
+    />
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+The Progress component displays a horizontal bar indicating task completion. It supports both determinate (with a value) and indeterminate (animated) states.
+
+## Props
+
+<ParamField path="value" type="number">
+  Current progress value. Omit this prop for an indeterminate (animated) progress bar.
+  
+  ```jsx
+  <Progress value={65} max={100} /> {/* 65% complete */}
+  <Progress /> {/* Indeterminate animation */}
+  ```
+</ParamField>
+
+<ParamField path="max" type="number">
+  Maximum value for the progress bar. Used with `value` to calculate percentage.
+  
+  ```jsx
+  <Progress value={3} max={10} /> {/* 30% complete */}
+  ```
+</ParamField>
+
+<ParamField path="min" type="number">
+  Minimum value boundary for the progress bar.
+</ParamField>
+
+<ParamField path="size" type="string">
+  Size of the progress bar.
+  
+  Options: `"small"`, `"medium"`
+</ParamField>
+
+<ParamField path="color" type="string">
+  Color scheme for the progress bar.
+  
+  Options: `"primary"`, `"critical"`, `"warning"`, `"positive"`, `"media"`
+</ParamField>
+
+<ParamField path="duration" type="number">
+  Duration of the progress bar animation in milliseconds. Used for smooth transitions.
+  
+  ```jsx
+  <Progress value={progress} duration={300} />
+  ```
+</ParamField>
+
+<ParamField path="ariaLabel" type="string">
+  Accessible label for screen readers.
+  
+  ```jsx
+  <Progress value={50} ariaLabel="File upload progress" />
+  ```
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the root element.
+</ParamField>
+
+## Examples
+
+### Determinate Progress
+
+```jsx
+function UploadProgress() {
+  const [progress, setProgress] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prev) => (prev >= 100 ? 0 : prev + 10));
+    }, 500);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <View gap={2}>
+      <Text variant="body-3">Uploading... {progress}%</Text>
+      <Progress
+        value={progress}
+        max={100}
+        color="primary"
+        ariaLabel="Upload progress"
+      />
+    </View>
+  );
+}
+```
+
+### Indeterminate Progress
+
+```jsx
+// No value prop = indeterminate animation
+<Progress color="primary" ariaLabel="Loading" />
+```
+
+### Sizes
+
+```jsx
+<View gap={3}>
+  <Progress size="small" value={60} ariaLabel="Small progress" />
+  <Progress size="medium" value={60} ariaLabel="Medium progress" />
+</View>
+```
+
+### Colors
+
+```jsx
+<View gap={3}>
+  <Progress color="primary" value={75} ariaLabel="Primary" />
+  <Progress color="positive" value={75} ariaLabel="Positive" />
+  <Progress color="warning" value={75} ariaLabel="Warning" />
+  <Progress color="critical" value={75} ariaLabel="Critical" />
+  <Progress color="media" value={75} ariaLabel="Media" />
+</View>
+```
+
+### Custom Range
+
+```jsx
+// Progress from 10 to 50
+<Progress
+  value={30}
+  min={10}
+  max={50}
+  color="primary"
+  ariaLabel="Task progress"
+/>
+```
+
+### Smooth Transitions
+
+```jsx
+function SmoothProgress() {
+  const [progress, setProgress] = React.useState(0);
+
+  return (
+    <Progress
+      value={progress}
+      max={100}
+      duration={300} // Smooth 300ms transition
+      color="primary"
+      ariaLabel="Progress"
+    />
+  );
+}
+```
+
+### Multi-step Progress
+
+```jsx
+function MultiStepProgress({ currentStep, totalSteps }) {
+  const progress = (currentStep / totalSteps) * 100;
+
+  return (
+    <View gap={2}>
+      <View direction="row" justify="space-between">
+        <Text variant="body-3">Step {currentStep} of {totalSteps}</Text>
+        <Text variant="body-3">{Math.round(progress)}%</Text>
+      </View>
+      <Progress
+        value={currentStep}
+        max={totalSteps}
+        color="primary"
+        ariaLabel={`Step ${currentStep} of ${totalSteps}`}
+      />
+    </View>
+  );
+}
+
+<MultiStepProgress currentStep={2} totalSteps={5} />
+```
+
+### Video Player Progress
+
+```jsx
+function VideoProgress({ currentTime, duration }) {
+  return (
+    <Progress
+      value={currentTime}
+      max={duration}
+      size="small"
+      color="media"
+      ariaLabel={`Video progress: ${formatTime(currentTime)} of ${formatTime(duration)}`}
+    />
+  );
+}
+```
+
+## Accessibility
+
+- Uses the native HTML5 `<progress>` element with proper ARIA attributes
+- Always provide an `ariaLabel` that describes what is progressing
+- For determinate progress, screen readers announce the percentage
+- For indeterminate progress, screen readers announce the loading state
+- Progress updates are automatically announced to screen readers

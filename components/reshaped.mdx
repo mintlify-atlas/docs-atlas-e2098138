@@ -1,0 +1,159 @@
+---
+title: Reshaped
+description: Root provider component that wraps your entire application with Reshaped theme and configuration
+---
+
+The `Reshaped` component is the root provider that should wrap your entire application. It initializes the theme system, color mode, toast notifications, and viewport configuration.
+
+## Basic Usage
+
+```jsx
+import { Reshaped } from 'reshaped';
+
+function App() {
+  return (
+    <Reshaped>
+      <YourApp />
+    </Reshaped>
+  );
+}
+```
+
+## With Theme Configuration
+
+```jsx
+import { Reshaped } from 'reshaped';
+
+function App() {
+  return (
+    <Reshaped 
+      theme="reshaped"
+      defaultColorMode="light"
+      defaultViewport="mobile"
+    >
+      <YourApp />
+    </Reshaped>
+  );
+}
+```
+
+## Scoped Provider
+
+Use `scoped` mode when Reshaped is not at the application root:
+
+```jsx
+import { Reshaped } from 'reshaped';
+
+function NestedComponent() {
+  return (
+    <Reshaped scoped defaultColorMode="dark">
+      <div>This section uses dark mode</div>
+    </Reshaped>
+  );
+}
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>
+
+<ParamField path="theme" type="string | string[]">
+  Theme of the application, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultTheme" type="string | string[]" default="reshaped">
+  Default theme of the application, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="colorMode" type="'light' | 'dark'">
+  Color mode of the application, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultColorMode" type="'light' | 'dark'">
+  Default color mode of the application, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="defaultViewport" type="'mobile' | 'tablet' | 'desktop'">
+  Default viewport size of the application
+</ParamField>
+
+<ParamField path="toastOptions" type="ToastProviderProps['options']">
+  Global options for the ToastProvider
+</ParamField>
+
+<ParamField path="scoped" type="boolean">
+  Enable scoped mode for applications not using Reshaped provider at the application root
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="HTMLAttributes<HTMLDivElement>">
+  Additional attributes for the root element
+</ParamField>
+
+## When to Use
+
+- **Application Root**: Place at the root of your React application to initialize Reshaped
+- **Theme Management**: Control theme and color mode for your entire application
+- **Toast Notifications**: Configure global toast notification settings
+- **Scoped Contexts**: Create isolated theme contexts within your application
+- **SSR Applications**: Works seamlessly with Next.js and other SSR frameworks
+
+## Composition Patterns
+
+### Controlled Theme Switching
+
+```jsx
+import { Reshaped } from 'reshaped';
+import { useState } from 'react';
+
+function App() {
+  const [colorMode, setColorMode] = useState('light');
+  
+  return (
+    <Reshaped colorMode={colorMode}>
+      <button onClick={() => setColorMode(mode => mode === 'light' ? 'dark' : 'light')}>
+        Toggle Theme
+      </button>
+      <YourApp />
+    </Reshaped>
+  );
+}
+```
+
+### Multiple Themes
+
+```jsx
+import { Reshaped } from 'reshaped';
+
+function App() {
+  return (
+    <Reshaped theme={['reshaped', 'custom-theme']}>
+      <YourApp />
+    </Reshaped>
+  );
+}
+```
+
+### Nested Scoped Providers
+
+```jsx
+import { Reshaped } from 'reshaped';
+
+function App() {
+  return (
+    <Reshaped defaultColorMode="light">
+      <MainContent />
+      
+      {/* Dark mode section */}
+      <Reshaped scoped defaultColorMode="dark">
+        <DarkSection />
+      </Reshaped>
+    </Reshaped>
+  );
+}
+```

@@ -1,0 +1,205 @@
+---
+title: Breadcrumbs
+description: Navigation component showing the current page's location within the site hierarchy
+---
+
+The Breadcrumbs component displays a navigational trail showing the user's location within the site hierarchy. It helps users understand where they are and provides quick navigation to parent pages.
+
+## Basic Usage
+
+```jsx
+import { Breadcrumbs } from 'reshaped';
+
+function App() {
+  return (
+    <Breadcrumbs>
+      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item href="/products">Products</Breadcrumbs.Item>
+      <Breadcrumbs.Item>Current Page</Breadcrumbs.Item>
+    </Breadcrumbs>
+  );
+}
+```
+
+## Colors
+
+Breadcrumbs supports two color schemes:
+
+```jsx
+<Breadcrumbs color="neutral">
+  <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+  <Breadcrumbs.Item>Page</Breadcrumbs.Item>
+</Breadcrumbs>
+
+<Breadcrumbs color="primary">
+  <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+  <Breadcrumbs.Item>Page</Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+## Custom Separator
+
+Use a custom separator between breadcrumb items:
+
+```jsx
+<Breadcrumbs separator="/">
+  <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+  <Breadcrumbs.Item href="/products">Products</Breadcrumbs.Item>
+  <Breadcrumbs.Item>Item</Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+## With Icons
+
+Add icons to breadcrumb items:
+
+```jsx
+import { Breadcrumbs } from 'reshaped';
+import IconHome from '@/icons/Home';
+import IconFolder from '@/icons/Folder';
+
+<Breadcrumbs>
+  <Breadcrumbs.Item href="/" icon={IconHome}>
+    Home
+  </Breadcrumbs.Item>
+  <Breadcrumbs.Item href="/documents" icon={IconFolder}>
+    Documents
+  </Breadcrumbs.Item>
+  <Breadcrumbs.Item>File.pdf</Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+## Collapsible Breadcrumbs
+
+Automatically collapse breadcrumbs when there are too many items:
+
+```jsx
+<Breadcrumbs
+  defaultVisibleItems={3}
+  expandAriaLabel="Show all breadcrumbs"
+>
+  <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+  <Breadcrumbs.Item href="/level1">Level 1</Breadcrumbs.Item>
+  <Breadcrumbs.Item href="/level2">Level 2</Breadcrumbs.Item>
+  <Breadcrumbs.Item href="/level3">Level 3</Breadcrumbs.Item>
+  <Breadcrumbs.Item href="/level4">Level 4</Breadcrumbs.Item>
+  <Breadcrumbs.Item>Current</Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+Disable expansion:
+
+```jsx
+<Breadcrumbs
+  defaultVisibleItems={3}
+  disableExpand
+>
+  {/* Items */}
+</Breadcrumbs>
+```
+
+## Navigation Patterns
+
+### Basic Navigation
+
+```jsx
+<Breadcrumbs ariaLabel="Breadcrumb navigation">
+  <Breadcrumbs.Item href="/">
+    Home
+  </Breadcrumbs.Item>
+  <Breadcrumbs.Item href="/category">
+    Category
+  </Breadcrumbs.Item>
+  <Breadcrumbs.Item>
+    Current Page
+  </Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+### With Click Handlers
+
+```jsx
+<Breadcrumbs>
+  <Breadcrumbs.Item onClick={() => navigate('/')}>
+    Home
+  </Breadcrumbs.Item>
+  <Breadcrumbs.Item onClick={() => navigate('/products')}>
+    Products
+  </Breadcrumbs.Item>
+  <Breadcrumbs.Item>
+    Current Item
+  </Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+### Disabled Items
+
+```jsx
+<Breadcrumbs>
+  <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+  <Breadcrumbs.Item disabled>Unavailable</Breadcrumbs.Item>
+  <Breadcrumbs.Item>Current</Breadcrumbs.Item>
+</Breadcrumbs>
+```
+
+## Props
+
+### Breadcrumbs
+
+<ParamField path="color" type="'neutral' | 'primary'" default="neutral">
+  Component color scheme
+</ParamField>
+
+<ParamField path="separator" type="React.ReactNode">
+  Node for defining custom separator between items (default is chevron icon)
+</ParamField>
+
+<ParamField path="defaultVisibleItems" type="number">
+  Number of items to show by default, others will be hidden and can be expanded
+</ParamField>
+
+<ParamField path="expandAriaLabel" type="string">
+  Aria label for the expand button
+</ParamField>
+
+<ParamField path="disableExpand" type="boolean" default="false">
+  Turn expand button into static text and disable the expand functionality
+</ParamField>
+
+<ParamField path="ariaLabel" type="string">
+  aria-label attribute for the component
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>
+
+<ParamField path="children" type="React.ReactElement | React.ReactElement[]" required>
+  Breadcrumb items
+</ParamField>
+
+### Breadcrumbs.Item
+
+<ParamField path="href" type="string">
+  URL to navigate to when clicked
+</ParamField>
+
+<ParamField path="onClick" type="(event: React.MouseEvent) => void">
+  Callback when the item is clicked
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  SVG component for the icon
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disable user interaction
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Item content
+</ParamField>

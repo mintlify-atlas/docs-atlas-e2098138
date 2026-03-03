@@ -1,0 +1,281 @@
+---
+title: useToast
+description: Display toast notifications to users
+---
+
+The `useToast` hook provides methods to show and hide toast notifications. Use it to display temporary messages, alerts, or confirmations to users.
+
+## Import
+
+```tsx
+import { useToast, ToastProvider } from 'reshaped';
+```
+
+## Setup
+
+Wrap your application with `ToastProvider` to use the toast system:
+
+```tsx
+import { ToastProvider } from 'reshaped';
+
+function App() {
+  return (
+    <ToastProvider>
+      {/* Your app components */}
+    </ToastProvider>
+  );
+}
+```
+
+## Usage
+
+```tsx
+import { useToast, Button } from 'reshaped';
+
+function SaveButton() {
+  const toast = useToast();
+
+  const handleSave = () => {
+    // Perform save operation
+    toast.show({
+      title: 'Success',
+      text: 'Your changes have been saved',
+      color: 'positive',
+    });
+  };
+
+  return <Button onClick={handleSave}>Save</Button>;
+}
+```
+
+## Return Value
+
+The hook returns an object with the following methods:
+
+<ResponseField name="show" type="(props: ToastShowProps) => string">
+  Displays a toast notification and returns a unique toast ID. The ID can be used to hide the toast programmatically.
+</ResponseField>
+
+<ResponseField name="hide" type="(id: string) => void">
+  Hides a specific toast by its ID.
+</ResponseField>
+
+<ResponseField name="id" type="string">
+  The ID of the most recently shown toast.
+</ResponseField>
+
+## Toast Properties
+
+When calling `show()`, you can pass the following properties:
+
+<ParamField path="title" type="ReactNode">
+  Title text for the toast notification.
+</ParamField>
+
+<ParamField path="text" type="ReactNode">
+  Body text content for the toast.
+</ParamField>
+
+<ParamField path="color" type="'neutral' | 'primary' | 'critical' | 'positive' | 'warning' | 'inverted'" default="'inverted'">
+  Color scheme of the toast.
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  Icon component to display at the start of the toast.
+</ParamField>
+
+<ParamField path="startSlot" type="ReactNode">
+  Custom content to display at the inline start position.
+</ParamField>
+
+<ParamField path="actionsSlot" type="ReactNode">
+  Custom action buttons or content to display after the text.
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large'" default="'small'">
+  Size of the toast notification.
+</ParamField>
+
+<ParamField path="timeout" type="'short' | 'long' | number">
+  Duration before the toast automatically hides. Use `'short'`, `'long'`, or a custom number in milliseconds.
+</ParamField>
+
+<ParamField path="position" type="'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end'">
+  Position where the toast appears on the screen.
+</ParamField>
+
+## Examples
+
+### Basic Success Toast
+
+```tsx
+import { useToast, Button } from 'reshaped';
+
+function SuccessExample() {
+  const toast = useToast();
+
+  return (
+    <Button
+      onClick={() => {
+        toast.show({
+          title: 'Success',
+          text: 'Operation completed successfully',
+          color: 'positive',
+        });
+      }}
+    >
+      Show Success
+    </Button>
+  );
+}
+```
+
+### Error Toast with Custom Timeout
+
+```tsx
+import { useToast, Button } from 'reshaped';
+
+function ErrorExample() {
+  const toast = useToast();
+
+  return (
+    <Button
+      onClick={() => {
+        toast.show({
+          title: 'Error',
+          text: 'Something went wrong',
+          color: 'critical',
+          timeout: 5000, // 5 seconds
+        });
+      }}
+    >
+      Show Error
+    </Button>
+  );
+}
+```
+
+### Toast with Custom Actions
+
+```tsx
+import { useToast, Button } from 'reshaped';
+
+function ActionExample() {
+  const toast = useToast();
+
+  return (
+    <Button
+      onClick={() => {
+        const id = toast.show({
+          title: 'Confirm Action',
+          text: 'Do you want to proceed?',
+          actionsSlot: (
+            <Button
+              variant="ghost"
+              color="primary"
+              onClick={() => {
+                // Perform action
+                toast.hide(id);
+              }}
+            >
+              Confirm
+            </Button>
+          ),
+        });
+      }}
+    >
+      Show Confirmation
+    </Button>
+  );
+}
+```
+
+### Positioned Toast
+
+```tsx
+import { useToast, Button } from 'reshaped';
+
+function PositionExample() {
+  const toast = useToast();
+
+  return (
+    <Button
+      onClick={() => {
+        toast.show({
+          title: 'Bottom Toast',
+          text: 'This appears at the bottom',
+          position: 'bottom',
+        });
+      }}
+    >
+      Show Bottom Toast
+    </Button>
+  );
+}
+```
+
+### Programmatically Hide Toast
+
+```tsx
+import { useToast, Button, View } from 'reshaped';
+
+function HideExample() {
+  const toast = useToast();
+  const [toastId, setToastId] = useState<string | null>(null);
+
+  return (
+    <View gap={2}>
+      <Button
+        onClick={() => {
+          const id = toast.show({
+            title: 'Persistent Toast',
+            text: 'This will not auto-hide',
+            timeout: 'long',
+          });
+          setToastId(id);
+        }}
+      >
+        Show Toast
+      </Button>
+      <Button
+        onClick={() => {
+          if (toastId) toast.hide(toastId);
+        }}
+      >
+        Hide Toast
+      </Button>
+    </View>
+  );
+}
+```
+
+## TypeScript
+
+```tsx
+type ToastShowProps = {
+  title?: React.ReactNode;
+  text?: React.ReactNode;
+  color?: 'neutral' | 'primary' | 'critical' | 'positive' | 'warning' | 'inverted';
+  icon?: React.ComponentType;
+  startSlot?: React.ReactNode;
+  actionsSlot?: React.ReactNode;
+  size?: 'small' | 'medium' | 'large';
+  timeout?: 'short' | 'long' | number;
+  position?: 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end';
+};
+
+type UseToastReturn = {
+  show: (props: ToastShowProps) => string;
+  hide: (id: string) => void;
+  id: string;
+};
+
+function useToast(): UseToastReturn;
+```
+
+## Notes
+
+- This hook must be used within a `ToastProvider`
+- Toasts automatically stack when multiple are shown
+- The returned ID from `show()` can be stored to hide the toast later
+- Use appropriate colors to match the message type (positive for success, critical for errors, etc.)

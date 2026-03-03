@@ -1,0 +1,242 @@
+---
+title: useRTL
+description: Access and control right-to-left (RTL) text direction
+---
+
+The `useRTL` hook provides access to the current text direction state and a function to toggle between LTR (left-to-right) and RTL (right-to-left) modes. Use it to build interfaces that support bidirectional text.
+
+## Import
+
+```tsx
+import { useRTL } from 'reshaped';
+```
+
+## Usage
+
+```tsx
+import { useRTL, Button } from 'reshaped';
+
+function DirectionToggle() {
+  const [isRTL, setRTL] = useRTL();
+
+  return (
+    <Button onClick={() => setRTL(!isRTL)}>
+      Switch to {isRTL ? 'LTR' : 'RTL'}
+    </Button>
+  );
+}
+```
+
+## Return Value
+
+The hook returns a tuple similar to `useState`:
+
+<ResponseField name="[0]" type="boolean">
+  Current RTL state. `true` when in RTL mode, `false` when in LTR mode.
+</ResponseField>
+
+<ResponseField name="[1]" type="(rtl: boolean) => void">
+  Function to set the RTL state. Pass `true` to enable RTL, `false` to enable LTR.
+</ResponseField>
+
+## How It Works
+
+The hook automatically:
+- Sets the `dir` attribute on the document element (`<html dir="rtl">` or `<html dir="ltr">`)
+- Monitors direct changes to the `dir` attribute and syncs the state
+- Applies the direction globally to the entire application
+
+## Examples
+
+### Basic Direction Toggle
+
+```tsx
+import { useRTL, Button, Text } from 'reshaped';
+
+function LanguageToggle() {
+  const [isRTL, setRTL] = useRTL();
+
+  return (
+    <div>
+      <Text>Current direction: {isRTL ? 'RTL' : 'LTR'}</Text>
+      <Button onClick={() => setRTL(!isRTL)}>Toggle Direction</Button>
+    </div>
+  );
+}
+```
+
+### Language Selector
+
+```tsx
+import { useRTL, Select } from 'reshaped';
+
+function LanguageSelector() {
+  const [isRTL, setRTL] = useRTL();
+
+  const handleLanguageChange = (language: string) => {
+    const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
+    setRTL(rtlLanguages.includes(language));
+  };
+
+  return (
+    <Select
+      name="language"
+      onChange={({ value }) => handleLanguageChange(value)}
+      options={[
+        { value: 'en', label: 'English' },
+        { value: 'ar', label: 'العربية' },
+        { value: 'he', label: 'עברית' },
+        { value: 'es', label: 'Español' },
+      ]}
+    />
+  );
+}
+```
+
+### Conditional Layout Based on Direction
+
+```tsx
+import { useRTL, View } from 'reshaped';
+
+function AdaptiveLayout({ sidebar, content }) {
+  const [isRTL] = useRTL();
+
+  return (
+    <View direction="row">
+      {isRTL ? (
+        <>
+          {content}
+          {sidebar}
+        </>
+      ) : (
+        <>
+          {sidebar}
+          {content}
+        </>
+      )}
+    </View>
+  );
+}
+```
+
+### Custom RTL-Aware Component
+
+```tsx
+import { useRTL } from 'reshaped';
+
+function CustomArrow() {
+  const [isRTL] = useRTL();
+
+  return (
+    <span style={{ transform: isRTL ? 'scaleX(-1)' : 'none' }}>
+      →
+    </span>
+  );
+}
+```
+
+### Persistent Direction Setting
+
+```tsx
+import { useRTL, Button } from 'reshaped';
+import { useEffect } from 'react';
+
+function PersistentDirection() {
+  const [isRTL, setRTL] = useRTL();
+
+  // Load saved direction on mount
+  useEffect(() => {
+    const savedDirection = localStorage.getItem('textDirection');
+    if (savedDirection === 'rtl') {
+      setRTL(true);
+    }
+  }, [setRTL]);
+
+  // Save direction when it changes
+  const toggleDirection = () => {
+    const newDirection = !isRTL;
+    setRTL(newDirection);
+    localStorage.setItem('textDirection', newDirection ? 'rtl' : 'ltr');
+  };
+
+  return <Button onClick={toggleDirection}>Toggle Direction</Button>;
+}
+```
+
+### Dynamic Icon Direction
+
+```tsx
+import { useRTL, Button } from 'reshaped';
+
+function NavigationButton({ direction, children }) {
+  const [isRTL] = useRTL();
+
+  const getIconRotation = () => {
+    if (direction === 'forward') {
+      return isRTL ? 180 : 0;
+    }
+    return isRTL ? 0 : 180;
+  };
+
+  return (
+    <Button
+      startIcon={
+        <span style={{ transform: `rotate(${getIconRotation()}deg)` }}>→</span>
+      }
+    >
+      {children}
+    </Button>
+  );
+}
+```
+
+### Multi-Language Form
+
+```tsx
+import { useRTL, TextField, Button, View } from 'reshaped';
+import { useState } from 'react';
+
+function MultiLanguageForm() {
+  const [isRTL, setRTL] = useRTL();
+  const [language, setLanguage] = useState('en');
+
+  const labels = {
+    en: { name: 'Name', email: 'Email', submit: 'Submit' },
+    ar: { name: 'الاسم', email: 'البريد الإلكتروني', submit: 'إرسال' },
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
+    setRTL(lang === 'ar');
+  };
+
+  return (
+    <View gap={4}>
+      <Button onClick={() => handleLanguageChange(isRTL ? 'en' : 'ar')}>
+        Switch to {isRTL ? 'English' : 'العربية'}
+      </Button>
+      <TextField name="name" placeholder={labels[language].name} />
+      <TextField name="email" placeholder={labels[language].email} />
+      <Button>{labels[language].submit}</Button>
+    </View>
+  );
+}
+```
+
+## TypeScript
+
+```tsx
+type UseRTLReturn = [boolean, (rtl: boolean) => void];
+
+function useRTL(defaultRTL?: boolean): UseRTLReturn;
+```
+
+## Notes
+
+- The hook must be used within a Reshaped provider
+- Changes to the direction are global and affect the entire application
+- The hook automatically monitors direct changes to the `dir` attribute on the `<html>` element
+- RTL mode affects all Reshaped components automatically
+- For custom components, you may need to manually handle RTL styling
+- Common RTL languages include Arabic (ar), Hebrew (he), Persian (fa), and Urdu (ur)
+- The direction persists across re-renders but not across page reloads unless you implement your own persistence

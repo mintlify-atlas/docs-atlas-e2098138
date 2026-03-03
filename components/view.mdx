@@ -1,0 +1,336 @@
+---
+title: View
+description: A flexible layout component for building layouts with flexbox properties
+---
+
+View is a versatile layout component that provides a comprehensive set of flexbox properties and styling options. It serves as the foundation for building complex layouts with support for responsive design.
+
+## Import
+
+```tsx
+import { View } from 'reshaped';
+```
+
+## Basic Usage
+
+```tsx
+<View gap={4} direction="column">
+  <View padding={4} backgroundColor="neutral-faded">
+    Item 1
+  </View>
+  <View padding={4} backgroundColor="neutral-faded">
+    Item 2
+  </View>
+</View>
+```
+
+## Layout Properties
+
+### Direction and Alignment
+
+```tsx
+<View direction="row" align="center" justify="space-between" gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Left</View>
+  <View padding={4} backgroundColor="neutral-faded">Right</View>
+</View>
+```
+
+### Responsive Layout
+
+```tsx
+<View 
+  direction={{ s: "column", m: "row" }}
+  gap={{ s: 2, m: 4 }}
+>
+  <View.Item columns={{ s: 12, m: 6 }}>
+    <View padding={4} backgroundColor="neutral-faded">Column 1</View>
+  </View.Item>
+  <View.Item columns={{ s: 12, m: 6 }}>
+    <View padding={4} backgroundColor="neutral-faded">Column 2</View>
+  </View.Item>
+</View>
+```
+
+## View.Item Component
+
+View.Item provides additional layout control for individual children within a View.
+
+```tsx
+<View direction="row" gap={4}>
+  <View.Item columns={3}>
+    <View padding={4} backgroundColor="neutral-faded">Sidebar</View>
+  </View.Item>
+  <View.Item columns={9} grow>
+    <View padding={4} backgroundColor="neutral-faded">Main Content</View>
+  </View.Item>
+</View>
+```
+
+### Gap Control
+
+```tsx
+<View direction="row" gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Item 1</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 2</View>
+  <View.Item gapBefore={10}>
+    <View padding={4} backgroundColor="neutral-faded">Item 3 with larger gap</View>
+  </View.Item>
+</View>
+```
+
+### Auto Margin
+
+```tsx
+<View direction="row" gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Left</View>
+  <View.Item gapBefore="auto">
+    <View padding={4} backgroundColor="neutral-faded">Pushed to right</View>
+  </View.Item>
+</View>
+```
+
+## Props
+
+### View Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting the content
+</ParamField>
+
+<ParamField path="as" type="keyof React.JSX.IntrinsicElements">
+  Render as a different element
+</ParamField>
+
+<ParamField path="direction" type="Responsive<'row' | 'column' | 'row-reverse' | 'column-reverse'>">
+  Flex direction for the content
+</ParamField>
+
+<ParamField path="gap" type="Responsive<number>">
+  Gap between children, base unit token number multiplier
+</ParamField>
+
+<ParamField path="wrap" type="Responsive<boolean>">
+  Flex wrap for the content
+</ParamField>
+
+<ParamField path="align" type="Responsive<'start' | 'center' | 'end' | 'stretch' | 'baseline'>">
+  Flex align-items for the content
+</ParamField>
+
+<ParamField path="justify" type="Responsive<'start' | 'center' | 'end' | 'space-between' | 'space-around'>">
+  Flex justify-content for the content
+</ParamField>
+
+<ParamField path="divided" type="boolean">
+  Render a divider between each child
+</ParamField>
+
+<ParamField path="height" type="Responsive<string | number>">
+  Height style, literal string value or a base unit token number multiplier
+</ParamField>
+
+<ParamField path="width" type="Responsive<string | number>">
+  Width style, literal string value or a base unit token number multiplier
+</ParamField>
+
+<ParamField path="aspectRatio" type="Responsive<number>">
+  Aspect ratio style, represented as width / height
+</ParamField>
+
+<ParamField path="maxHeight" type="Responsive<string | number>">
+  Maximum height style, literal string value or a base unit token number multiplier
+</ParamField>
+
+<ParamField path="maxWidth" type="Responsive<string | number>">
+  Maximum width style, literal string value or a base unit token number multiplier
+</ParamField>
+
+<ParamField path="minHeight" type="Responsive<string | number>">
+  Minimum height style, literal string value or a base unit token number multiplier
+</ParamField>
+
+<ParamField path="minWidth" type="Responsive<string | number>">
+  Minimum width style, literal string value or a base unit token number multiplier
+</ParamField>
+
+<ParamField path="padding" type="Responsive<number>">
+  Padding style for all sides, base unit token number multiplier
+</ParamField>
+
+<ParamField path="paddingTop" type="Responsive<number>">
+  Padding top, base unit token number multiplier
+</ParamField>
+
+<ParamField path="paddingBottom" type="Responsive<number>">
+  Padding bottom, base unit token number multiplier
+</ParamField>
+
+<ParamField path="paddingStart" type="Responsive<number>">
+  Padding inline start, base unit token number multiplier
+</ParamField>
+
+<ParamField path="paddingEnd" type="Responsive<number>">
+  Padding inline end, base unit token number multiplier
+</ParamField>
+
+<ParamField path="paddingInline" type="Responsive<number>">
+  Padding inline, base unit token number multiplier
+</ParamField>
+
+<ParamField path="paddingBlock" type="Responsive<number>">
+  Padding block, base unit token number multiplier
+</ParamField>
+
+<ParamField path="bleed" type="Responsive<number>">
+  Apply negative margin and remove side borders, base unit token number multiplier
+</ParamField>
+
+<ParamField path="textAlign" type="Responsive<'start' | 'center' | 'end'>">
+  Text align for the content
+</ParamField>
+
+<ParamField path="backgroundColor" type="'neutral' | 'neutral-faded' | 'critical' | 'critical-faded' | 'positive' | 'warning' | 'warning-faded' | 'positive-faded' | 'primary' | 'primary-faded' | 'elevation-base' | 'elevation-raised' | 'elevation-overlay' | 'page' | 'page-faded' | 'disabled' | 'disabled-faded' | 'brand' | 'white' | 'black'">
+  Background color, based on the color tokens
+</ParamField>
+
+<ParamField path="borderColor" type="Responsive<'neutral' | 'neutral-faded' | 'primary' | 'primary-faded' | 'critical' | 'critical-faded' | 'warning' | 'warning-faded' | 'positive' | 'positive-faded' | 'transparent'>">
+  Border color, based on the color tokens
+</ParamField>
+
+<ParamField path="border" type="Responsive<boolean>">
+  Add border to all sides
+</ParamField>
+
+<ParamField path="borderTop" type="Responsive<boolean>">
+  Add border to the top side
+</ParamField>
+
+<ParamField path="borderBottom" type="Responsive<boolean>">
+  Add border to the bottom side
+</ParamField>
+
+<ParamField path="borderStart" type="Responsive<boolean>">
+  Add border to the inline start side
+</ParamField>
+
+<ParamField path="borderEnd" type="Responsive<boolean>">
+  Add border to the inline end side
+</ParamField>
+
+<ParamField path="borderInline" type="Responsive<boolean>">
+  Add border to the inline direction
+</ParamField>
+
+<ParamField path="borderBlock" type="Responsive<boolean>">
+  Add border to the block direction
+</ParamField>
+
+<ParamField path="borderRadius" type="Responsive<'small' | 'medium' | 'large' | 'circular'>">
+  Border radius, based on the radius tokens
+</ParamField>
+
+<ParamField path="position" type="Responsive<'relative' | 'absolute' | 'fixed' | 'sticky'>">
+  Position style
+</ParamField>
+
+<ParamField path="inset" type="Responsive<number | 'auto'>">
+  Inset style, base unit token number multiplier when used as a number
+</ParamField>
+
+<ParamField path="insetStart" type="Responsive<number | 'auto'>">
+  Inset start, base unit token number multiplier when used as a number
+</ParamField>
+
+<ParamField path="insetEnd" type="Responsive<number | 'auto'>">
+  Inset end, base unit token number multiplier when used as a number
+</ParamField>
+
+<ParamField path="insetTop" type="Responsive<number | 'auto'>">
+  Inset top, base unit token number multiplier when used as a number
+</ParamField>
+
+<ParamField path="insetBottom" type="Responsive<number | 'auto'>">
+  Inset bottom, base unit token number multiplier when used as a number
+</ParamField>
+
+<ParamField path="zIndex" type="number">
+  z-index style
+</ParamField>
+
+<ParamField path="shadow" type="'raised' | 'overlay'">
+  Shadow style, based on the shadow tokens
+</ParamField>
+
+<ParamField path="overflow" type="'hidden' | 'auto'">
+  Overflow style
+</ParamField>
+
+<ParamField path="animated" type="boolean">
+  Add transition for the properties
+</ParamField>
+
+<ParamField path="grow" type="Responsive<boolean>">
+  Apply flex-grow (can also be used on View when using it as a View.Item)
+</ParamField>
+
+<ParamField path="shrink" type="boolean">
+  Apply flex-shrink
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes">
+  Additional attributes for the root element
+</ParamField>
+
+### View.Item Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting the item content
+</ParamField>
+
+<ParamField path="as" type="keyof React.JSX.IntrinsicElements">
+  Render as a different element
+</ParamField>
+
+<ParamField path="columns" type="Responsive<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 'auto'>">
+  Number of columns the item should span in the parent, View uses 12 columns
+</ParamField>
+
+<ParamField path="order" type="Responsive<number>">
+  Flex order of the item inside the parent
+</ParamField>
+
+<ParamField path="grow" type="Responsive<boolean>">
+  Apply flex-grow, using it on View.Item applies additional styles on the parent View
+</ParamField>
+
+<ParamField path="shrink" type="boolean">
+  Apply flex-shrink
+</ParamField>
+
+<ParamField path="gapBefore" type="Responsive<number> | 'auto'">
+  Individual gap before the item, overrides the parent View gap. Use 'auto' for auto margin
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes">
+  Additional attributes for the root element
+</ParamField>
+
+<Note>
+  View automatically becomes a flexbox container when using layout properties like `direction`, `align`, `justify`, or `gap`.
+</Note>
+
+<Note>
+  The `columns` prop uses a 12-column grid system. For example, `columns={6}` spans half the width.
+</Note>
+
+<Note>
+  Responsive props accept an object with viewport keys: `{ s: value, m: value, l: value }`
+</Note>

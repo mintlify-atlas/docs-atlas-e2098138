@@ -1,0 +1,168 @@
+---
+title: ScrollArea
+description: A custom scrollable container with styled scrollbars
+---
+
+ScrollArea provides a customizable scrollable container with styled scrollbars that can be shown on hover, always visible, or hidden. It supports both horizontal and vertical scrolling.
+
+## Import
+
+```tsx
+import { ScrollArea } from 'reshaped';
+```
+
+## Basic Usage
+
+```tsx
+<ScrollArea height="300px">
+  <View padding={4} gap={4}>
+    {Array.from({ length: 20 }).map((_, i) => (
+      <View key={i} padding={4} backgroundColor="neutral-faded">
+        Item {i + 1}
+      </View>
+    ))}
+  </View>
+</ScrollArea>
+```
+
+## Scrollbar Display Modes
+
+### Visible on Hover (Default)
+
+```tsx
+<ScrollArea height="300px" scrollbarDisplay="hover">
+  <View padding={4}>
+    <Text>Scrollbars appear on hover</Text>
+    {/* Long content */}
+  </View>
+</ScrollArea>
+```
+
+### Always Visible
+
+```tsx
+<ScrollArea height="300px" scrollbarDisplay="visible">
+  <View padding={4}>
+    <Text>Scrollbars always visible</Text>
+    {/* Long content */}
+  </View>
+</ScrollArea>
+```
+
+### Hidden
+
+```tsx
+<ScrollArea height="300px" scrollbarDisplay="hidden">
+  <View padding={4}>
+    <Text>Scrollbars hidden but still scrollable</Text>
+    {/* Long content */}
+  </View>
+</ScrollArea>
+```
+
+## With Max Height
+
+```tsx
+<ScrollArea maxHeight="400px">
+  <View padding={4} gap={4}>
+    {Array.from({ length: 30 }).map((_, i) => (
+      <View key={i} padding={4} backgroundColor="neutral-faded">
+        Item {i + 1}
+      </View>
+    ))}
+  </View>
+</ScrollArea>
+```
+
+## Handling Scroll Events
+
+```tsx
+<ScrollArea 
+  height="300px"
+  onScroll={(position) => {
+    console.log('Scroll position:', position);
+    // position: { x: number, y: number } - values from 0 to 1
+  }}
+>
+  <View padding={4}>
+    {/* Content */}
+  </View>
+</ScrollArea>
+```
+
+## Horizontal Scrolling
+
+```tsx
+<ScrollArea height="200px">
+  <View direction="row" gap={4} padding={4}>
+    {Array.from({ length: 20 }).map((_, i) => (
+      <View key={i} padding={4} backgroundColor="neutral-faded" minWidth="200px">
+        Item {i + 1}
+      </View>
+    ))}
+  </View>
+</ScrollArea>
+```
+
+## Responsive Height
+
+```tsx
+<ScrollArea height={{ s: "300px", m: "400px", l: "500px" }}>
+  <View padding={4} gap={4}>
+    {Array.from({ length: 20 }).map((_, i) => (
+      <View key={i} padding={4} backgroundColor="neutral-faded">
+        Item {i + 1}
+      </View>
+    ))}
+  </View>
+</ScrollArea>
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting content
+</ParamField>
+
+<ParamField path="height" type="Responsive<string | number>">
+  Height of the scroll area, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="maxHeight" type="Responsive<string | number>">
+  Maximum height of the scroll area, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="scrollbarDisplay" type="'visible' | 'hover' | 'hidden'" default="hover">
+  Scrollbar visibility behavior based on user interaction
+  - `visible`: Always show scrollbars
+  - `hover`: Show scrollbars on hover
+  - `hidden`: Hide scrollbars (content still scrollable)
+</ParamField>
+
+<ParamField path="onScroll" type="(position: { x: number; y: number }) => void">
+  Callback when the scroll area is scrolled. Position values range from 0 to 1, representing the scroll progress
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes<HTMLDivElement>">
+  Additional attributes for the root element
+</ParamField>
+
+<Note>
+  ScrollArea uses custom styled scrollbars that work consistently across browsers.
+</Note>
+
+<Note>
+  The component automatically detects content overflow and only displays scrollbars when needed.
+</Note>
+
+<Note>
+  Scrollbars are draggable - users can click and drag the scrollbar thumb or click the track to jump to a position.
+</Note>
+
+<Note>
+  The `onScroll` callback provides normalized scroll positions (0-1), where 0 is the start and 1 is the end of scrollable content.
+</Note>

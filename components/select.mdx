@@ -1,0 +1,334 @@
+---
+title: "Select"
+description: "A dropdown component for selecting one or multiple values from a list"
+icon: "list-dropdown"
+---
+
+Select is a form component that allows users to choose from a list of options. It supports both native and custom rendering, single and multiple selection modes.
+
+## Basic usage (native)
+
+```jsx
+import { Select } from 'reshaped';
+
+function Example() {
+  return (
+    <Select
+      name="animal"
+      placeholder="Select an animal"
+      inputAttributes={{ 'aria-label': 'Select an animal' }}
+    >
+      <option value="dog">Dog</option>
+      <option value="cat">Cat</option>
+      <option value="bird">Bird</option>
+    </Select>
+  );
+}
+```
+
+## Custom rendering
+
+```jsx
+import { Select } from 'reshaped';
+
+function CustomExample() {
+  return (
+    <Select.Custom
+      name="animal"
+      placeholder="Select an animal"
+      inputAttributes={{ 'aria-label': 'Select an animal' }}
+    >
+      <Select.Option value="dog">Dog</Select.Option>
+      <Select.Option value="cat">Cat</Select.Option>
+      <Select.Option value="bird">Bird</Select.Option>
+    </Select.Custom>
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { Select } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState('');
+
+  return (
+    <Select.Custom
+      name="country"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      placeholder="Select a country"
+    >
+      <Select.Option value="us">United States</Select.Option>
+      <Select.Option value="uk">United Kingdom</Select.Option>
+      <Select.Option value="ca">Canada</Select.Option>
+    </Select.Custom>
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { Select } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <Select.Custom
+      name="language"
+      defaultValue="en"
+      onChange={({ name, value }) => console.log(name, value)}
+    >
+      <Select.Option value="en">English</Select.Option>
+      <Select.Option value="es">Spanish</Select.Option>
+      <Select.Option value="fr">French</Select.Option>
+    </Select.Custom>
+  );
+}
+```
+
+## Multiple selection
+
+```jsx
+import { useState } from 'react';
+import { Select } from 'reshaped';
+
+function MultipleExample() {
+  const [value, setValue] = useState([]);
+
+  return (
+    <Select.Custom
+      multiple
+      name="interests"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      placeholder="Select your interests"
+    >
+      <Select.Option value="tech">Technology</Select.Option>
+      <Select.Option value="art">Art</Select.Option>
+      <Select.Option value="music">Music</Select.Option>
+      <Select.Option value="sports">Sports</Select.Option>
+    </Select.Custom>
+  );
+}
+```
+
+## With option groups
+
+```jsx
+import { Select } from 'reshaped';
+
+<Select.Custom
+  name="location"
+  placeholder="Select a location"
+>
+  <Select.Group label="North America">
+    <Select.Option value="us">United States</Select.Option>
+    <Select.Option value="ca">Canada</Select.Option>
+  </Select.Group>
+  <Select.Group label="Europe">
+    <Select.Option value="uk">United Kingdom</Select.Option>
+    <Select.Option value="de">Germany</Select.Option>
+  </Select.Group>
+</Select.Custom>
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, Select } from 'reshaped';
+
+function FormExample() {
+  return (
+    <FormControl>
+      <FormControl.Label>Country</FormControl.Label>
+      <Select.Custom
+        name="country"
+        placeholder="Select your country"
+      >
+        <Select.Option value="us">United States</Select.Option>
+        <Select.Option value="uk">United Kingdom</Select.Option>
+      </Select.Custom>
+      <FormControl.Helper>
+        Choose the country where you reside.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Custom value rendering
+
+```jsx
+import { Select, Badge } from 'reshaped';
+
+<Select.Custom
+  name="priority"
+  defaultValue="high"
+  renderValue={({ value }) => <Badge>{value}</Badge>}
+>
+  <Select.Option value="low">Low Priority</Select.Option>
+  <Select.Option value="medium">Medium Priority</Select.Option>
+  <Select.Option value="high">High Priority</Select.Option>
+</Select.Custom>
+```
+
+## Variants and sizes
+
+```jsx
+import { Select } from 'reshaped';
+
+<Select.Custom variant="faded" name="variant" placeholder="Faded" />
+<Select.Custom variant="ghost" name="variant" placeholder="Ghost" />
+<Select.Custom size="small" name="size" placeholder="Small" />
+<Select.Custom size="large" name="size" placeholder="Large" />
+```
+
+## With icons
+
+```jsx
+import { Select } from 'reshaped';
+import IconGlobe from './icons/Globe';
+
+<Select.Custom
+  name="language"
+  icon={IconGlobe}
+  placeholder="Select language"
+>
+  <Select.Option value="en">English</Select.Option>
+  <Select.Option value="es">Spanish</Select.Option>
+</Select.Custom>
+```
+
+## Accessibility
+
+Select follows accessibility best practices:
+
+- Native select uses semantic HTML select elements
+- Custom select uses ARIA combobox pattern
+- Keyboard navigation support (Arrow keys, Enter, Escape)
+- Screen reader friendly with proper ARIA attributes
+- Works with FormControl for label associations
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the input element
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the select
+</ParamField>
+
+<ParamField path="value" type="string | string[]">
+  Value of the select, enables controlled mode. Array for multiple selection.
+</ParamField>
+
+<ParamField path="defaultValue" type="string | string[]">
+  Default value of the select, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text when there is no value selected
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large' | 'xlarge'">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="variant" type="'outline' | 'faded' | 'ghost' | 'headless'">
+  Component render variant
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the select user interaction and form submission
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Show an error state. Automatically inherited when used inside FormControl.
+</ParamField>
+
+<ParamField path="multiple" type="boolean">
+  Enable multiple selection mode (custom select only)
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  Icon to display in the select start position
+</ParamField>
+
+<ParamField path="startSlot" type="React.ReactNode">
+  Node for inserting content before the select value
+</ParamField>
+
+<ParamField path="renderValue" type="(args: { value: string | string[] }) => React.ReactNode">
+  Render a custom value display (custom select only)
+</ParamField>
+
+<ParamField path="onChange" type="(args: { name: string, value: string | string[], event?: Event }) => void">
+  Callback when the select value changes
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent) => void">
+  Callback when the select is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent) => void">
+  Callback when the select is blurred
+</ParamField>
+
+<ParamField path="onClick" type="(e: React.MouseEvent) => void">
+  Callback when the trigger is clicked
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input element. Use for ARIA attributes.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Option elements or custom content
+</ParamField>
+
+## Sub-components
+
+### Select.Custom
+
+Custom-styled select with enhanced functionality.
+
+### Select.Option
+
+Option item for custom select (used with `Select.Custom`).
+
+<ParamField path="value" type="string" required>
+  Option value used in form submission
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Option display content
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the option from selection
+</ParamField>
+
+### Select.Group
+
+Groups options together with an optional label.
+
+<ParamField path="label" type="string">
+  Group label text
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Select.Option elements
+</ParamField>

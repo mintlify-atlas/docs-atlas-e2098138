@@ -1,0 +1,214 @@
+---
+title: "TextArea"
+description: "A multi-line text input component for collecting longer text input"
+icon: "paragraph"
+---
+
+TextArea is a form input component that allows users to enter multi-line text values. It supports both controlled and uncontrolled modes, with auto-resizing capabilities.
+
+## Basic usage
+
+```jsx
+import { TextArea } from 'reshaped';
+
+function Example() {
+  return (
+    <TextArea
+      name="description"
+      placeholder="Enter a description"
+    />
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { TextArea } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState('');
+
+  return (
+    <TextArea
+      name="comment"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      placeholder="Write your comment"
+    />
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { TextArea } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <TextArea
+      name="feedback"
+      defaultValue="Initial feedback"
+      onChange={({ name, value }) => console.log(name, value)}
+    />
+  );
+}
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, TextArea } from 'reshaped';
+
+function FormExample() {
+  return (
+    <FormControl>
+      <FormControl.Label>Description</FormControl.Label>
+      <TextArea
+        name="description"
+        placeholder="Describe your project..."
+      />
+      <FormControl.Helper>
+        Provide a detailed description of your project.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Auto-resize
+
+```jsx
+import { TextArea } from 'reshaped';
+
+<TextArea
+  name="auto"
+  placeholder="This textarea will auto-resize"
+  resize="auto"
+/>
+```
+
+## Variants
+
+```jsx
+import { TextArea } from 'reshaped';
+
+<TextArea variant="outline" name="default" placeholder="Outline (default)" />
+<TextArea variant="faded" name="faded" placeholder="Faded variant" />
+<TextArea variant="ghost" name="ghost" placeholder="Ghost variant" />
+<TextArea variant="headless" name="headless" placeholder="Headless variant" />
+```
+
+## Sizes
+
+```jsx
+import { TextArea } from 'reshaped';
+
+<TextArea size="medium" name="medium" placeholder="Medium (default)" />
+<TextArea size="large" name="large" placeholder="Large" />
+<TextArea size="xlarge" name="xlarge" placeholder="Extra large" />
+```
+
+## Validation
+
+```jsx
+import { FormControl, TextArea } from 'reshaped';
+import { useState } from 'react';
+
+function ValidationExample() {
+  const [value, setValue] = useState('');
+  const hasError = value.length > 0 && value.length < 10;
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Bio</FormControl.Label>
+      <TextArea
+        name="bio"
+        value={value}
+        onChange={({ value }) => setValue(value)}
+        placeholder="Tell us about yourself"
+      />
+      <FormControl.Error>
+        Bio must be at least 10 characters long.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Accessibility
+
+TextArea follows accessibility best practices:
+
+- Uses semantic HTML textarea elements
+- Supports ARIA attributes via `inputAttributes`
+- Works with FormControl for proper label associations
+- Keyboard navigable and screen reader friendly
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the text area input element
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the text area
+</ParamField>
+
+<ParamField path="value" type="string">
+  Value of the text area, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default value of the text area, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text when there is no value
+</ParamField>
+
+<ParamField path="size" type="'medium' | 'large' | 'xlarge'" default="medium">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="variant" type="'outline' | 'faded' | 'ghost' | 'headless'" default="outline">
+  Component render variant
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the text area user interaction
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Show an error state. Automatically inherited when used inside FormControl.
+</ParamField>
+
+<ParamField path="resize" type="'none' | 'auto'">
+  Enable or disable the text area resizing. Supports auto-sizing.
+</ParamField>
+
+<ParamField path="onChange" type="(args: { name: string, value: string, event: Event }) => void">
+  Callback when the text area value changes
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent<HTMLTextAreaElement>) => void">
+  Callback when the text area is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent<HTMLTextAreaElement>) => void">
+  Callback when the text area is blurred
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the textarea element. Use for ARIA attributes.
+</ParamField>

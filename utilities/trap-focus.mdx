@@ -1,0 +1,246 @@
+---
+title: 'TrapFocus'
+description: 'Focus management utility for accessible interactive components'
+---
+
+## Overview
+
+`TrapFocus` is a utility class for managing focus within interactive components like modals, popovers, and flyouts. It ensures keyboard focus remains trapped within a component until explicitly released, improving accessibility for keyboard and screen reader users.
+
+## Import
+
+```tsx
+import { TrapFocus } from 'reshaped';
+```
+
+## Usage
+
+### Basic Example
+
+```tsx
+import { TrapFocus } from 'reshaped';
+import { useEffect, useRef } from 'react';
+
+function Modal({ isOpen, onClose }) {
+  const contentRef = useRef(null);
+  const trapFocusRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen || !contentRef.current) return;
+
+    trapFocusRef.current = new TrapFocus();
+    trapFocusRef.current.trap(contentRef.current, {
+      mode: 'dialog',
+      onEscape: onClose,
+    });
+
+    return () => {
+      trapFocusRef.current?.release();
+    };
+  }, [isOpen, onClose]);
+
+  return (
+    <div ref={contentRef}>
+      {/* Modal content */}
+    </div>
+  );
+}
+```
+
+### With Trigger Element
+
+```tsx
+const trapFocus = new TrapFocus();
+
+trapFocus.trap(flyoutElement, {
+  mode: 'action-menu',
+  includeTrigger: true,
+  onEscape: handleClose,
+});
+```
+
+## API
+
+### Constructor
+
+```tsx
+const trapFocus = new TrapFocus();
+```
+
+### Methods
+
+#### trap()
+
+Traps focus within the specified element.
+
+<ParamField path="element" type="HTMLElement" required>
+  The DOM element to trap focus within
+</ParamField>
+
+<ParamField path="options" type="object">
+  Configuration options for focus trapping
+</ParamField>
+
+<ParamField path="options.mode" type="'dialog' | 'action-menu' | 'selection-menu' | 'action-bar' | 'content-menu'">
+  Focus trap behavior mode:
+  - `dialog` - Full modal behavior with escape and backdrop handling
+  - `action-menu` - Focus trap for dropdown action menus
+  - `selection-menu` - Focus trap for selection dropdowns
+  - `action-bar` - Focus trap for action bars
+  - `content-menu` - Focus trap for content menus with hover support
+</ParamField>
+
+<ParamField path="options.includeTrigger" type="boolean" default="false">
+  Whether to include the trigger element in the focus cycle
+</ParamField>
+
+<ParamField path="options.onEscape" type="() => void">
+  Callback function called when Escape key is pressed
+</ParamField>
+
+#### release()
+
+Releases the focus trap and returns focus to the previous element.
+
+<ParamField path="options" type="object">
+  Release options
+</ParamField>
+
+<ParamField path="options.withoutFocusReturn" type="boolean" default="false">
+  If true, prevents returning focus to the previous element
+</ParamField>
+
+### Properties
+
+<ResponseField name="trapped" type="boolean">
+  Boolean indicating whether focus is currently trapped
+</ResponseField>
+
+## Focus Trap Modes
+
+### Dialog Mode
+
+Used for modal dialogs and overlays that require full attention.
+
+```tsx
+trapFocus.trap(element, {
+  mode: 'dialog',
+  onEscape: closeModal,
+});
+```
+
+### Action Menu Mode
+
+Used for dropdown menus with actions.
+
+```tsx
+trapFocus.trap(element, {
+  mode: 'action-menu',
+  includeTrigger: true,
+});
+```
+
+### Selection Menu Mode
+
+Used for selection dropdowns and comboboxes.
+
+```tsx
+trapFocus.trap(element, {
+  mode: 'selection-menu',
+});
+```
+
+### Content Menu Mode
+
+Used for content-rich menus that support hover interactions.
+
+```tsx
+trapFocus.trap(element, {
+  mode: 'content-menu',
+  includeTrigger: false,
+});
+```
+
+## Examples
+
+### Overlay Component
+
+```tsx
+import { TrapFocus } from 'reshaped';
+import { useEffect, useRef } from 'react';
+
+function Overlay({ children, onClose }) {
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const trapFocus = new TrapFocus();
+
+    if (contentRef.current) {
+      trapFocus.trap(contentRef.current, {
+        mode: 'dialog',
+        onEscape: onClose,
+      });
+    }
+
+    return () => trapFocus.release();
+  }, [onClose]);
+
+  return (
+    <div ref={contentRef}>
+      {children}
+    </div>
+  );
+}
+```
+
+### Popover with Conditional Focus Trap
+
+```tsx
+import { TrapFocus } from 'reshaped';
+import { useEffect, useRef } from 'react';
+
+function Popover({ isOpen, trapFocusMode = 'dialog' }) {
+  const trapFocusRef = useRef(null);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen || trapFocusMode === false) return;
+    if (!contentRef.current) return;
+
+    trapFocusRef.current = new TrapFocus();
+    trapFocusRef.current.trap(contentRef.current, {
+      mode: trapFocusMode,
+    });
+
+    return () => {
+      trapFocusRef.current?.release();
+    };
+  }, [isOpen, trapFocusMode]);
+
+  return <div ref={contentRef}>{/* Content */}</div>;
+}
+```
+
+## Best Practices
+
+1. Always release the trap when the component unmounts
+2. Use appropriate mode for the interaction pattern
+3. Provide an escape mechanism (usually Escape key)
+4. Consider whether to include the trigger in the focus cycle
+5. Test with keyboard-only navigation
+6. Verify screen reader announcements
+
+## Accessibility
+
+The `TrapFocus` utility helps implement:
+
+- **ARIA Authoring Practices** for modal dialogs and menus
+- **Focus management** for overlay components
+- **Keyboard navigation** patterns
+- **Screen reader compatibility** through proper focus handling
+
+## Related Components
+
+- [Modal](/components/modal) - Uses `TrapFocus` with dialog mode
+- [Popover](/components/popover) - Uses `TrapFocus` with various modes
+- [Flyout](/components/flyout) - Uses `TrapFocus` for dropdown menus

@@ -1,0 +1,242 @@
+---
+title: Accordion
+description: Expandable and collapsible content section with smooth animations
+---
+
+The `Accordion` component provides an expandable/collapsible content section. It supports both controlled and uncontrolled modes and can be composed with `Accordion.Trigger` and `Accordion.Content` for custom layouts.
+
+## Basic Usage
+
+```jsx
+import { Accordion, Text } from 'reshaped';
+
+function Example() {
+  return (
+    <Accordion>
+      <Accordion.Trigger>
+        <Text variant="body-2" weight="medium">Click to expand</Text>
+      </Accordion.Trigger>
+      <Accordion.Content>
+        <Text>This content can be expanded and collapsed</Text>
+      </Accordion.Content>
+    </Accordion>
+  );
+}
+```
+
+## Controlled Accordion
+
+```jsx
+import { Accordion } from 'reshaped';
+import { useState } from 'react';
+
+function ControlledExample() {
+  const [active, setActive] = useState(false);
+  
+  return (
+    <Accordion 
+      active={active} 
+      onToggle={setActive}
+    >
+      <Accordion.Trigger>Trigger</Accordion.Trigger>
+      <Accordion.Content>Content</Accordion.Content>
+    </Accordion>
+  );
+}
+```
+
+## Custom Icon Position
+
+```jsx
+import { Accordion } from 'reshaped';
+
+function CustomIconExample() {
+  return (
+    <Accordion iconPosition="end" iconSize={5}>
+      <Accordion.Trigger>Expand</Accordion.Trigger>
+      <Accordion.Content>Content here</Accordion.Content>
+    </Accordion>
+  );
+}
+```
+
+## Props
+
+### Accordion
+
+<ParamField path="active" type="boolean">
+  Control whether the accordion is expanded or collapsed, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultActive" type="boolean">
+  Control whether the accordion is expanded or collapsed by default, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="iconSize" type="number">
+  Expand / collapse icon size in units
+</ParamField>
+
+<ParamField path="iconPosition" type="'start' | 'end'">
+  Position of the expand / collapse icon
+</ParamField>
+
+<ParamField path="gap" type="number | { s?: number, m?: number, l?: number }">
+  Gap between the trigger and the content
+</ParamField>
+
+<ParamField path="onToggle" type="(active: boolean) => void">
+  Callback when the accordion is expanded or collapsed
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting the trigger and the content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="HTMLAttributes<HTMLDivElement>">
+  Additional attributes for the root element
+</ParamField>
+
+### Accordion.Trigger
+
+<ParamField path="children" type="React.ReactNode | Function">
+  Node or render function for inserting the trigger. When using a render function, receives `attributes` and `props` with `active` state:
+  
+  ```jsx
+  <Accordion.Trigger>
+    {(attributes, { active }) => (
+      <button {...attributes}>
+        {active ? 'Collapse' : 'Expand'}
+      </button>
+    )}
+  </Accordion.Trigger>
+  ```
+</ParamField>
+
+### Accordion.Content
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting the expandable content
+</ParamField>
+
+## When to Use
+
+- **FAQ Sections**: Show questions with expandable answers
+- **Settings Panels**: Organize settings into collapsible groups
+- **Progressive Disclosure**: Show advanced options only when needed
+- **Mobile Navigation**: Create expandable menu sections
+- **Content Organization**: Structure long-form content into digestible sections
+
+## Composition Patterns
+
+### FAQ List
+
+```jsx
+import { Accordion, Stack, Text } from 'reshaped';
+
+function FAQ({ items }) {
+  return (
+    <Stack gap={3}>
+      {items.map((item) => (
+        <Accordion key={item.id}>
+          <Accordion.Trigger>
+            <Text weight="medium">{item.question}</Text>
+          </Accordion.Trigger>
+          <Accordion.Content>
+            <Text color="neutral">{item.answer}</Text>
+          </Accordion.Content>
+        </Accordion>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Custom Trigger with Icon
+
+```jsx
+import { Accordion, View, Text } from 'reshaped';
+
+function CustomAccordion({ title, children }) {
+  return (
+    <Accordion>
+      <Accordion.Trigger>
+        {(attributes, { active }) => (
+          <View 
+            {...attributes}
+            padding={3}
+            backgroundColor={active ? 'primary-faded' : 'neutral-faded'}
+            borderRadius="medium"
+          >
+            <Text weight="medium">{title}</Text>
+            <Text variant="caption-1">
+              {active ? '▼' : '▶'}
+            </Text>
+          </View>
+        )}
+      </Accordion.Trigger>
+      <Accordion.Content>
+        <View padding={3}>
+          {children}
+        </View>
+      </Accordion.Content>
+    </Accordion>
+  );
+}
+```
+
+### Controlled Accordion Group
+
+```jsx
+import { Accordion, Stack } from 'reshaped';
+import { useState } from 'react';
+
+function AccordionGroup({ items }) {
+  const [activeId, setActiveId] = useState(null);
+  
+  return (
+    <Stack gap={2}>
+      {items.map((item) => (
+        <Accordion
+          key={item.id}
+          active={activeId === item.id}
+          onToggle={() => setActiveId(activeId === item.id ? null : item.id)}
+        >
+          <Accordion.Trigger>{item.title}</Accordion.Trigger>
+          <Accordion.Content>{item.content}</Accordion.Content>
+        </Accordion>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### With Custom Gap and Icon
+
+```jsx
+import { Accordion, View } from 'reshaped';
+
+function SpacedAccordion() {
+  return (
+    <Accordion 
+      gap={4}
+      iconPosition="end"
+      iconSize={6}
+    >
+      <Accordion.Trigger>
+        <View padding={3}>
+          Section Title
+        </View>
+      </Accordion.Trigger>
+      <Accordion.Content>
+        <View padding={3}>
+          Section content with custom spacing
+        </View>
+      </Accordion.Content>
+    </Accordion>
+  );
+}
+```

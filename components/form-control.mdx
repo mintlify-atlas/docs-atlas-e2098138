@@ -1,0 +1,337 @@
+---
+title: "FormControl"
+description: "A container component for form fields with labels, helpers, and error messages"
+icon: "square"
+---
+
+FormControl is a container component that wraps form inputs to provide consistent layout, labels, helper text, and error messaging. It automatically connects labels and error messages to form fields for better accessibility.
+
+## Basic usage
+
+```jsx
+import { FormControl, TextField } from 'reshaped';
+
+function Example() {
+  return (
+    <FormControl>
+      <FormControl.Label>Email address</FormControl.Label>
+      <TextField name="email" />
+    </FormControl>
+  );
+}
+```
+
+## With helper text
+
+```jsx
+import { FormControl, TextField } from 'reshaped';
+
+function HelperExample() {
+  return (
+    <FormControl>
+      <FormControl.Label>Email address</FormControl.Label>
+      <TextField name="email" placeholder="you@example.com" />
+      <FormControl.Helper>
+        We'll never share your email with anyone else.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## With error state
+
+```jsx
+import { FormControl, TextField } from 'reshaped';
+import { useState } from 'react';
+
+function ErrorExample() {
+  const [email, setEmail] = useState('');
+  const hasError = email.length > 0 && !email.includes('@');
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Email address</FormControl.Label>
+      <TextField
+        name="email"
+        value={email}
+        onChange={({ value }) => setEmail(value)}
+      />
+      <FormControl.Helper>
+        Enter a valid email address.
+      </FormControl.Helper>
+      <FormControl.Error>
+        Please enter a valid email address.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Required fields
+
+```jsx
+import { FormControl, TextField } from 'reshaped';
+
+<FormControl required>
+  <FormControl.Label>Full name</FormControl.Label>
+  <TextField name="fullName" />
+</FormControl>
+```
+
+## Disabled state
+
+```jsx
+import { FormControl, TextField } from 'reshaped';
+
+<FormControl disabled>
+  <FormControl.Label>Username</FormControl.Label>
+  <TextField name="username" />
+  <FormControl.Helper>
+    Username cannot be changed.
+  </FormControl.Helper>
+</FormControl>
+```
+
+## Sizes
+
+```jsx
+import { FormControl, TextField } from 'reshaped';
+
+<FormControl size="medium">
+  <FormControl.Label>Medium size</FormControl.Label>
+  <TextField name="medium" size="medium" />
+</FormControl>
+
+<FormControl size="large">
+  <FormControl.Label>Large size</FormControl.Label>
+  <TextField name="large" size="large" />
+</FormControl>
+```
+
+## With different input types
+
+```jsx
+import { FormControl, TextField, TextArea, Select, Checkbox, Switch } from 'reshaped';
+import { View } from 'reshaped';
+
+function InputTypesExample() {
+  return (
+    <View gap={6}>
+      <FormControl>
+        <FormControl.Label>Text input</FormControl.Label>
+        <TextField name="text" />
+      </FormControl>
+      
+      <FormControl>
+        <FormControl.Label>Text area</FormControl.Label>
+        <TextArea name="description" />
+      </FormControl>
+      
+      <FormControl>
+        <FormControl.Label>Select</FormControl.Label>
+        <Select.Custom name="option">
+          <Select.Option value="1">Option 1</Select.Option>
+          <Select.Option value="2">Option 2</Select.Option>
+        </Select.Custom>
+      </FormControl>
+      
+      <FormControl>
+        <Checkbox name="agree">I agree to the terms</Checkbox>
+      </FormControl>
+      
+      <FormControl>
+        <Switch name="notifications">Enable notifications</Switch>
+      </FormControl>
+    </View>
+  );
+}
+```
+
+## Group mode for radio/checkbox groups
+
+```jsx
+import { FormControl, RadioGroup, Radio, View } from 'reshaped';
+
+function GroupExample() {
+  return (
+    <FormControl group>
+      <FormControl.Label>Choose a plan</FormControl.Label>
+      <RadioGroup name="plan">
+        <View gap={3}>
+          <Radio value="free">Free</Radio>
+          <Radio value="pro">Pro</Radio>
+          <Radio value="enterprise">Enterprise</Radio>
+        </View>
+      </RadioGroup>
+      <FormControl.Helper>
+        You can upgrade or downgrade at any time.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Custom layout
+
+```jsx
+import { FormControl, TextField, View } from 'reshaped';
+
+function CustomLayoutExample() {
+  return (
+    <FormControl>
+      <View direction="row" gap={4} align="center">
+        <View width="150px">
+          <FormControl.Label>Amount</FormControl.Label>
+        </View>
+        <View.Item grow>
+          <TextField name="amount" />
+        </View.Item>
+      </View>
+    </FormControl>
+  );
+}
+```
+
+## Complete form example
+
+```jsx
+import { FormControl, TextField, TextArea, Select, Button, View } from 'reshaped';
+import { useState } from 'react';
+
+function CompleteFormExample() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    country: '',
+    message: '',
+  });
+  
+  const [errors, setErrors] = useState({});
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Validate and submit
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <View gap={6}>
+        <FormControl required hasError={errors.name}>
+          <FormControl.Label>Full name</FormControl.Label>
+          <TextField
+            name="name"
+            value={formData.name}
+            onChange={({ value }) => setFormData({ ...formData, name: value })}
+          />
+          <FormControl.Error>Name is required</FormControl.Error>
+        </FormControl>
+        
+        <FormControl required hasError={errors.email}>
+          <FormControl.Label>Email address</FormControl.Label>
+          <TextField
+            name="email"
+            value={formData.email}
+            onChange={({ value }) => setFormData({ ...formData, email: value })}
+          />
+          <FormControl.Helper>
+            We'll never share your email.
+          </FormControl.Helper>
+          <FormControl.Error>Please enter a valid email</FormControl.Error>
+        </FormControl>
+        
+        <FormControl>
+          <FormControl.Label>Country</FormControl.Label>
+          <Select.Custom
+            name="country"
+            value={formData.country}
+            onChange={({ value }) => setFormData({ ...formData, country: value })}
+          >
+            <Select.Option value="us">United States</Select.Option>
+            <Select.Option value="uk">United Kingdom</Select.Option>
+            <Select.Option value="ca">Canada</Select.Option>
+          </Select.Custom>
+        </FormControl>
+        
+        <FormControl>
+          <FormControl.Label>Message</FormControl.Label>
+          <TextArea
+            name="message"
+            value={formData.message}
+            onChange={({ value }) => setFormData({ ...formData, message: value })}
+          />
+        </FormControl>
+        
+        <Button type="submit">Submit</Button>
+      </View>
+    </form>
+  );
+}
+```
+
+## Accessibility
+
+FormControl provides comprehensive accessibility support:
+
+- Automatically generates unique IDs for proper label associations
+- Connects helper text and error messages via `aria-describedby`
+- Adds `aria-invalid` when `hasError` is true
+- Marks required fields with `aria-required`
+- Uses semantic fieldset/legend for group mode
+- Screen reader announces all associated content
+
+## Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting children
+</ParamField>
+
+<ParamField path="id" type="string">
+  Custom id for the form control. Auto-generated if not provided.
+</ParamField>
+
+<ParamField path="size" type="'medium' | 'large'">
+  Component size, to be used together with the other form component sizes
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Change component to show an error state and display FormControl.Error
+</ParamField>
+
+<ParamField path="required" type="boolean">
+  Change component to show a required indicator
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Apply disabled styles and propagate to child form elements
+</ParamField>
+
+<ParamField path="group" type="boolean">
+  Apply semantic html markup when used for displaying multiple form fields together with a single label (e.g., RadioGroup, CheckboxGroup)
+</ParamField>
+
+## Sub-components
+
+### FormControl.Label
+
+Label component for form fields.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting the label text
+</ParamField>
+
+### FormControl.Helper
+
+Helper text component for providing additional context.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting the caption text
+</ParamField>
+
+### FormControl.Error
+
+Error message component. Only visible when `hasError` is true.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting the error message text
+</ParamField>

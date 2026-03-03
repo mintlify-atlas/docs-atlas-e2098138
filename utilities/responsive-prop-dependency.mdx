@@ -1,0 +1,256 @@
+---
+title: 'responsivePropDependency'
+description: 'Transform responsive prop values across viewport breakpoints'
+---
+
+## Overview
+
+`responsivePropDependency` is a utility function that transforms responsive prop values by applying a resolver function to each viewport breakpoint value. It handles both static values and responsive objects with viewport-specific values.
+
+## Import
+
+```tsx
+import { responsivePropDependency } from 'reshaped';
+```
+
+## Usage
+
+### Basic Example
+
+```tsx
+import { responsivePropDependency } from 'reshaped';
+
+const padding = { s: 4, m: 6, l: 8 };
+
+const paddingStyles = responsivePropDependency(
+  padding,
+  (value, viewport) => ({
+    padding: `${value * 4}px`,
+  })
+);
+
+// Result:
+// {
+//   s: { padding: '16px' },
+//   m: { padding: '24px' },
+//   l: { padding: '32px' }
+// }
+```
+
+### With Static Values
+
+```tsx
+const spacing = 4;
+
+const spacingStyles = responsivePropDependency(
+  spacing,
+  (value, viewport) => ({
+    margin: `${value * 4}px`,
+  })
+);
+
+// Result: { margin: '16px' }
+// Treated as if it were { s: 4 }
+```
+
+## Function Signature
+
+<ParamField path="prop" type="Responsive<T>" required>
+  The responsive prop value to transform. Can be:
+  - A static value of type `T`
+  - A responsive object with viewport keys: `{ s?: T, m?: T, l?: T, xl?: T }`
+</ParamField>
+
+<ParamField path="resolver" type="(value: T, viewport: Viewport) => Result" required>
+  Function called for each viewport value. Receives:
+  - `value` - The prop value for the current viewport
+  - `viewport` - The viewport key ('s', 'm', 'l', or 'xl')
+  
+  Returns the transformed result for that viewport.
+</ParamField>
+
+<ResponseField name="return" type="Result">
+  - If prop is static: Returns the result of calling resolver once with the static value
+  - If prop is responsive: Returns an object with viewport keys mapped to resolver results
+</ResponseField>
+
+## Type Definitions
+
+```tsx
+type Viewport = 's' | 'm' | 'l' | 'xl';
+
+type Responsive<T> = T | {
+  s?: T;
+  m?: T;
+  l?: T;
+  xl?: T;
+};
+
+function responsivePropDependency<Result, T>(
+  prop: Responsive<T>,
+  resolver: (value: T, key: Viewport) => Result
+): Result;
+```
+
+## Examples
+
+### Creating Responsive Styles
+
+```tsx
+import { responsivePropDependency } from 'reshaped';
+
+function useResponsiveGap(gap: Responsive<number>) {
+  return responsivePropDependency(
+    gap,
+    (value, viewport) => ({
+      gap: `${value * 4}px`,
+      [`@media (min-width: ${getBreakpoint(viewport)})`]: {
+        gap: `${value * 4}px`,
+      },
+    })
+  );
+}
+```
+
+### Converting Units
+
+```tsx
+const fontSize = { s: 14, m: 16, l: 18 };
+
+const fontSizeStyles = responsivePropDependency(
+  fontSize,
+  (value) => `${value}px`
+);
+
+// Result:
+// {
+//   s: '14px',
+//   m: '16px',
+//   l: '18px'
+// }
+```
+
+### Conditional Transformations
+
+```tsx
+const display = { s: 'block', m: 'flex', l: 'grid' };
+
+const layoutStyles = responsivePropDependency(
+  display,
+  (value, viewport) => {
+    if (value === 'flex') {
+      return { display: 'flex', flexDirection: 'row' };
+    }
+    if (value === 'grid') {
+      return { display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' };
+    }
+    return { display: value };
+  }
+);
+```
+
+### With Component Props
+
+```tsx
+interface BoxProps {
+  padding?: Responsive<number>;
+  margin?: Responsive<number>;
+}
+
+function Box({ padding, margin }: BoxProps) {
+  const paddingStyles = padding
+    ? responsivePropDependency(padding, (value) => ({
+        padding: `${value * 4}px`,
+      }))
+    : undefined;
+
+  const marginStyles = margin
+    ? responsivePropDependency(margin, (value) => ({
+        margin: `${value * 4}px`,
+      }))
+    : undefined;
+
+  return <div style={{ ...paddingStyles, ...marginStyles }} />;
+}
+```
+
+## Viewport Breakpoints
+
+Reshaped uses four viewport sizes:
+
+- `s` (small) - Mobile devices, 0px and up (base styles)
+- `m` (medium) - Tablets, 600px and up
+- `l` (large) - Desktop, 1024px and up
+- `xl` (extra large) - Large desktop, 1440px and up
+
+## Handling Undefined Values
+
+```tsx
+const spacing = { s: 4, l: 8 }; // m is undefined
+
+const styles = responsivePropDependency(
+  spacing,
+  (value, viewport) => {
+    // Only called for 's' and 'l'
+    // 'm' is skipped because it's undefined
+    return { padding: `${value * 4}px` };
+  }
+);
+
+// Result:
+// {
+//   s: { padding: '16px' },
+//   l: { padding: '32px' }
+// }
+// 'm' is not included in output
+```
+
+## Common Use Cases
+
+### Spacing Systems
+
+```tsx
+function getSpacing(value: Responsive<number>) {
+  return responsivePropDependency(
+    value,
+    (v) => v * 4 // Convert to pixels using 4px base unit
+  );
+}
+```
+
+### Class Name Generation
+
+```tsx
+function getResponsiveClassNames(align: Responsive<string>, styles: any) {
+  return responsivePropDependency(
+    align,
+    (value, viewport) => {
+      const className = styles[`align-${value}`];
+      return viewport === 's' ? className : `${className}--${viewport}`;
+    }
+  );
+}
+```
+
+### CSS Variable Assignment
+
+```tsx
+function getResponsiveVariables(width: Responsive<string>) {
+  return responsivePropDependency(
+    width,
+    (value, viewport) => ({
+      [`--width-${viewport}`]: value,
+    })
+  );
+}
+```
+
+## Related Utilities
+
+- [classNames](/utilities/class-names) - Conditional class name joining
+- `responsiveClassNames` - Generate responsive class names (internal)
+- `responsiveVariables` - Generate responsive CSS variables (internal)
+
+## Source Location
+
+Implementation: `/src/utilities/props.ts:75-88`

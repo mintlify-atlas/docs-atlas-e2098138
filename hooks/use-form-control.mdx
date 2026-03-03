@@ -1,0 +1,255 @@
+---
+title: useFormControl
+description: Access form control context for consistent form field behavior
+---
+
+The `useFormControl` hook provides access to the form control context established by the `FormControl` component. Use it to create custom form fields that integrate with FormControl's validation, error states, and accessibility features.
+
+## Import
+
+```tsx
+import { useFormControl } from 'reshaped';
+```
+
+## Usage
+
+```tsx
+import { useFormControl } from 'reshaped';
+
+function CustomInput() {
+  const { attributes, required, hasError, disabled } = useFormControl();
+
+  return (
+    <input
+      {...attributes}
+      required={required}
+      aria-invalid={hasError}
+      disabled={disabled}
+      className={hasError ? 'error' : ''}
+    />
+  );
+}
+```
+
+## Return Value
+
+The hook returns an object with the following properties:
+
+<ResponseField name="attributes" type="Record<string, any>">
+  HTML attributes that should be spread onto the form field. Includes accessibility attributes like `id`, `aria-describedby`, etc.
+</ResponseField>
+
+<ResponseField name="required" type="boolean | undefined">
+  Whether the form field is required. Use this to add visual required indicators.
+</ResponseField>
+
+<ResponseField name="hasError" type="boolean | undefined">
+  Whether the form control is in an error state. Use this to style the field appropriately.
+</ResponseField>
+
+<ResponseField name="disabled" type="boolean | undefined">
+  Whether the form field is disabled.
+</ResponseField>
+
+## Examples
+
+### Custom Text Input
+
+```tsx
+import { FormControl, useFormControl } from 'reshaped';
+
+function CustomTextInput() {
+  const { attributes, hasError, disabled } = useFormControl();
+
+  return (
+    <input
+      {...attributes}
+      type="text"
+      disabled={disabled}
+      style={{
+        borderColor: hasError ? 'red' : 'gray',
+        opacity: disabled ? 0.5 : 1,
+      }}
+    />
+  );
+}
+
+function Form() {
+  return (
+    <FormControl hasError required>
+      <FormControl.Label>Username</FormControl.Label>
+      <CustomTextInput />
+      <FormControl.Error>Username is required</FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+### Custom Checkbox
+
+```tsx
+import { FormControl, useFormControl } from 'reshaped';
+
+function CustomCheckbox({ checked, onChange }) {
+  const { attributes, required, disabled } = useFormControl();
+
+  return (
+    <label>
+      <input
+        {...attributes}
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        required={required}
+        disabled={disabled}
+      />
+      {required && <span aria-label="required">*</span>}
+    </label>
+  );
+}
+
+function Form() {
+  const [checked, setChecked] = useState(false);
+
+  return (
+    <FormControl required>
+      <CustomCheckbox
+        checked={checked}
+        onChange={(e) => setChecked(e.target.checked)}
+      />
+      <FormControl.Label>Accept terms and conditions</FormControl.Label>
+    </FormControl>
+  );
+}
+```
+
+### Custom Select with Error Styling
+
+```tsx
+import { FormControl, useFormControl } from 'reshaped';
+
+function CustomSelect({ options, value, onChange }) {
+  const { attributes, hasError, disabled } = useFormControl();
+
+  return (
+    <select
+      {...attributes}
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+      className={hasError ? 'select-error' : 'select-normal'}
+    >
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function Form() {
+  const [value, setValue] = useState('');
+
+  return (
+    <FormControl hasError={!value}>
+      <FormControl.Label>Country</FormControl.Label>
+      <CustomSelect
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        options={[
+          { value: '', label: 'Select a country' },
+          { value: 'us', label: 'United States' },
+          { value: 'uk', label: 'United Kingdom' },
+        ]}
+      />
+      {!value && <FormControl.Error>Please select a country</FormControl.Error>}
+    </FormControl>
+  );
+}
+```
+
+### Accessible Custom Radio Group
+
+```tsx
+import { FormControl, useFormControl } from 'reshaped';
+
+function CustomRadioButton({ value, checked, onChange, children }) {
+  const { disabled } = useFormControl();
+
+  return (
+    <label>
+      <input
+        type="radio"
+        value={value}
+        checked={checked}
+        onChange={onChange}
+        disabled={disabled}
+      />
+      {children}
+    </label>
+  );
+}
+
+function CustomRadioGroup({ name, value, onChange, options }) {
+  const { attributes, hasError } = useFormControl();
+
+  return (
+    <div {...attributes} role="radiogroup" aria-invalid={hasError}>
+      {options.map((option) => (
+        <CustomRadioButton
+          key={option.value}
+          value={option.value}
+          checked={value === option.value}
+          onChange={(e) => onChange(e.target.value)}
+        >
+          {option.label}
+        </CustomRadioButton>
+      ))}
+    </div>
+  );
+}
+
+function Form() {
+  const [value, setValue] = useState('');
+
+  return (
+    <FormControl hasError={!value} group>
+      <FormControl.Label>Preferred contact method</FormControl.Label>
+      <CustomRadioGroup
+        name="contact"
+        value={value}
+        onChange={setValue}
+        options={[
+          { value: 'email', label: 'Email' },
+          { value: 'phone', label: 'Phone' },
+          { value: 'sms', label: 'SMS' },
+        ]}
+      />
+      {!value && <FormControl.Error>Please select a contact method</FormControl.Error>}
+    </FormControl>
+  );
+}
+```
+
+## TypeScript
+
+```tsx
+type UseFormControlReturn = {
+  attributes: Record<string, any> & { id: string };
+  required?: boolean;
+  hasError?: boolean;
+  disabled?: boolean;
+};
+
+function useFormControl(): UseFormControlReturn;
+```
+
+## Notes
+
+- This hook must be used within a `FormControl` component
+- The `attributes` object includes essential accessibility attributes that should always be spread onto your form field
+- The `id` attribute in `attributes` connects the field to its label and helper text
+- Use the `hasError` flag to apply appropriate error styling
+- The hook automatically handles ARIA attributes for accessibility
+- When building custom form components, always spread `attributes` onto the actual input element

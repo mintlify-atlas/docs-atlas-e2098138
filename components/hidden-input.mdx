@@ -1,0 +1,411 @@
+---
+title: HiddenInput
+description: Utility component for managing hidden form inputs with proper integration
+---
+
+The `HiddenInput` component provides a styled hidden input element that integrates with form controls, checkbox groups, and radio groups. It's used internally by form components but can also be used directly for custom implementations.
+
+## Basic Usage
+
+```jsx
+import { HiddenInput } from 'reshaped';
+
+function Example() {
+  return (
+    <HiddenInput
+      type="checkbox"
+      name="terms"
+      value="accepted"
+      onChange={({ checked }) => console.log('Checked:', checked)}
+    />
+  );
+}
+```
+
+## Controlled Checkbox
+
+```jsx
+import { HiddenInput } from 'reshaped';
+import { useState } from 'react';
+
+function ControlledCheckbox() {
+  const [checked, setChecked] = useState(false);
+  
+  return (
+    <HiddenInput
+      type="checkbox"
+      name="feature"
+      checked={checked}
+      onChange={({ checked }) => setChecked(checked)}
+    />
+  );
+}
+```
+
+## Radio Input
+
+```jsx
+import { HiddenInput } from 'reshaped';
+
+function RadioExample() {
+  return (
+    <div>
+      <label>
+        <HiddenInput
+          type="radio"
+          name="option"
+          value="option1"
+          defaultChecked
+        />
+        Option 1
+      </label>
+      <label>
+        <HiddenInput
+          type="radio"
+          name="option"
+          value="option2"
+        />
+        Option 2
+      </label>
+    </div>
+  );
+}
+```
+
+## Props
+
+<ParamField path="type" type="'checkbox' | 'radio'" required>
+  Type of the input element
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name of the input element
+</ParamField>
+
+<ParamField path="value" type="string">
+  Value of the input element that is used for form submission
+</ParamField>
+
+<ParamField path="checked" type="boolean">
+  Checked state of the input element, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultChecked" type="boolean">
+  Default checked state of the input element, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the input element
+</ParamField>
+
+<ParamField path="onChange" type="(args: { name: string, value: string, checked: boolean, event: Event }) => void">
+  Callback when the input value changes
+</ParamField>
+
+<ParamField path="onFocus" type="(event: FocusEvent) => void">
+  Callback when the input or label is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(event: FocusEvent) => void">
+  Callback when the input or label is blurred
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="HTMLAttributes<HTMLInputElement>">
+  Additional attributes for the input element
+</ParamField>
+
+## When to Use
+
+- **Custom Form Controls**: Building custom checkbox or radio components
+- **Form Integration**: Need native form submission with custom UI
+- **Group Contexts**: Automatically integrates with CheckboxGroup and RadioGroup
+- **Accessibility**: Maintain native input semantics while customizing appearance
+- **Form Libraries**: Integrate with form libraries that need native inputs
+
+## Composition Patterns
+
+### Custom Checkbox
+
+```jsx
+import { HiddenInput, Actionable, View, Icon } from 'reshaped';
+import { Check } from './icons';
+import { useState } from 'react';
+
+function CustomCheckbox({ label, name, value }) {
+  const [checked, setChecked] = useState(false);
+  
+  return (
+    <label>
+      <Actionable as="span">
+        <View 
+          as="span"
+          display="inline-flex"
+          align="center"
+          gap={2}
+        >
+          <View
+            as="span"
+            width={5}
+            height={5}
+            borderRadius="small"
+            borderWidth={2}
+            borderColor={checked ? 'primary' : 'neutral'}
+            backgroundColor={checked ? 'primary' : 'transparent'}
+            align="center"
+            justify="center"
+          >
+            {checked && <Icon svg={Check} size={3} color="white" />}
+          </View>
+          {label}
+        </View>
+      </Actionable>
+      <HiddenInput
+        type="checkbox"
+        name={name}
+        value={value}
+        checked={checked}
+        onChange={({ checked }) => setChecked(checked)}
+      />
+    </label>
+  );
+}
+```
+
+### Custom Radio Button
+
+```jsx
+import { HiddenInput, Actionable, View, Text, Stack } from 'reshaped';
+import { useState } from 'react';
+
+function CustomRadio({ options, name, defaultValue }) {
+  const [selected, setSelected] = useState(defaultValue);
+  
+  return (
+    <Stack gap={2}>
+      {options.map((option) => (
+        <label key={option.value}>
+          <Actionable as="span">
+            <View 
+              padding={3}
+              borderRadius="medium"
+              borderWidth={2}
+              borderColor={selected === option.value ? 'primary' : 'neutral-faded'}
+              backgroundColor={selected === option.value ? 'primary-faded' : 'transparent'}
+            >
+              <Stack direction="row" gap={2} align="center">
+                <View
+                  width={4}
+                  height={4}
+                  borderRadius="full"
+                  borderWidth={2}
+                  borderColor="primary"
+                  align="center"
+                  justify="center"
+                >
+                  {selected === option.value && (
+                    <View
+                      width={2}
+                      height={2}
+                      borderRadius="full"
+                      backgroundColor="primary"
+                    />
+                  )}
+                </View>
+                <Stack gap={0.5}>
+                  <Text weight="medium">{option.label}</Text>
+                  {option.description && (
+                    <Text variant="caption-1" color="neutral">
+                      {option.description}
+                    </Text>
+                  )}
+                </Stack>
+              </Stack>
+            </View>
+          </Actionable>
+          <HiddenInput
+            type="radio"
+            name={name}
+            value={option.value}
+            checked={selected === option.value}
+            onChange={({ value }) => setSelected(value)}
+          />
+        </label>
+      ))}
+    </Stack>
+  );
+}
+```
+
+### Toggle Switch
+
+```jsx
+import { HiddenInput, Actionable, View } from 'reshaped';
+import { useState } from 'react';
+
+function ToggleSwitch({ name, defaultChecked = false, onChange }) {
+  const [checked, setChecked] = useState(defaultChecked);
+  
+  const handleChange = ({ checked: newChecked }) => {
+    setChecked(newChecked);
+    onChange?.(newChecked);
+  };
+  
+  return (
+    <label>
+      <Actionable as="span">
+        <View
+          as="span"
+          display="inline-flex"
+          width={12}
+          height={6}
+          borderRadius="full"
+          backgroundColor={checked ? 'primary' : 'neutral-faded'}
+          padding={0.5}
+          align="center"
+          justify={checked ? 'end' : 'start'}
+          attributes={{
+            style: {
+              transition: 'background-color 0.2s ease',
+              cursor: 'pointer'
+            }
+          }}
+        >
+          <View
+            as="span"
+            width={5}
+            height={5}
+            borderRadius="full"
+            backgroundColor="white"
+            attributes={{
+              style: {
+                transition: 'transform 0.2s ease'
+              }
+            }}
+          />
+        </View>
+      </Actionable>
+      <HiddenInput
+        type="checkbox"
+        name={name}
+        checked={checked}
+        onChange={handleChange}
+      />
+    </label>
+  );
+}
+```
+
+### Chip Selection
+
+```jsx
+import { HiddenInput, View, Text } from 'reshaped';
+import { useState } from 'react';
+
+function ChipSelect({ options, name }) {
+  const [selected, setSelected] = useState([]);
+  
+  const toggleOption = (value) => {
+    setSelected(prev => 
+      prev.includes(value)
+        ? prev.filter(v => v !== value)
+        : [...prev, value]
+    );
+  };
+  
+  return (
+    <View display="flex" direction="row" gap={2} wrap="wrap">
+      {options.map((option) => {
+        const isSelected = selected.includes(option.value);
+        return (
+          <label key={option.value}>
+            <View
+              as="span"
+              display="inline-flex"
+              padding={2}
+              paddingInline={3}
+              borderRadius="full"
+              backgroundColor={isSelected ? 'primary' : 'neutral-faded'}
+              attributes={{ style: { cursor: 'pointer' } }}
+            >
+              <Text 
+                variant="body-2" 
+                weight="medium"
+                color={isSelected ? 'white' : 'neutral'}
+              >
+                {option.label}
+              </Text>
+            </View>
+            <HiddenInput
+              type="checkbox"
+              name={name}
+              value={option.value}
+              checked={isSelected}
+              onChange={() => toggleOption(option.value)}
+            />
+          </label>
+        );
+      })}
+    </View>
+  );
+}
+```
+
+### Form Integration
+
+```jsx
+import { HiddenInput, Button, Stack } from 'reshaped';
+
+function FormExample() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    console.log('Submitted:', data);
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <Stack gap={3}>
+        <label>
+          Accept Terms
+          <HiddenInput
+            type="checkbox"
+            name="terms"
+            value="accepted"
+            required
+          />
+        </label>
+        
+        <fieldset>
+          <legend>Select Plan</legend>
+          <Stack gap={2}>
+            <label>
+              Basic
+              <HiddenInput
+                type="radio"
+                name="plan"
+                value="basic"
+                defaultChecked
+              />
+            </label>
+            <label>
+              Pro
+              <HiddenInput
+                type="radio"
+                name="plan"
+                value="pro"
+              />
+            </label>
+          </Stack>
+        </fieldset>
+        
+        <Button type="submit">Submit</Button>
+      </Stack>
+    </form>
+  );
+}
+```

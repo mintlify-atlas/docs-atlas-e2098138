@@ -1,0 +1,258 @@
+---
+title: "PinField"
+description: "A specialized input for entering PIN codes and verification codes"
+icon: "key"
+---
+
+PinField is a form component for entering PIN codes, verification codes, or other fixed-length character sequences. It provides individual input boxes for each character.
+
+## Basic usage
+
+```jsx
+import { PinField } from 'reshaped';
+
+function Example() {
+  return (
+    <PinField
+      name="pin"
+      valueLength={4}
+    />
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { PinField } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState('');
+
+  return (
+    <PinField
+      name="code"
+      valueLength={6}
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    />
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { PinField } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <PinField
+      name="verification"
+      valueLength={6}
+      defaultValue="123"
+      onChange={({ name, value }) => console.log(name, value)}
+    />
+  );
+}
+```
+
+## Pattern types
+
+```jsx
+import { PinField } from 'reshaped';
+
+// Numeric only (default)
+<PinField
+  name="numeric"
+  valueLength={4}
+  pattern="numeric"
+/>
+
+// Alphabetic only
+<PinField
+  name="alphabetic"
+  valueLength={4}
+  pattern="alphabetic"
+/>
+
+// Alphanumeric
+<PinField
+  name="alphanumeric"
+  valueLength={6}
+  pattern="alphanumeric"
+/>
+```
+
+## Sizes
+
+```jsx
+import { PinField } from 'reshaped';
+
+<PinField size="small" name="small" valueLength={4} />
+<PinField size="medium" name="medium" valueLength={4} />
+<PinField size="large" name="large" valueLength={4} />
+<PinField size="xlarge" name="xlarge" valueLength={4} />
+```
+
+## Variants
+
+```jsx
+import { PinField } from 'reshaped';
+
+<PinField variant="outline" name="outline" valueLength={4} />
+<PinField variant="faded" name="faded" valueLength={4} />
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, PinField } from 'reshaped';
+
+function FormExample() {
+  return (
+    <FormControl>
+      <FormControl.Label>Verification code</FormControl.Label>
+      <PinField
+        name="verificationCode"
+        valueLength={6}
+      />
+      <FormControl.Helper>
+        Enter the 6-digit code sent to your email.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Validation
+
+```jsx
+import { FormControl, PinField } from 'reshaped';
+import { useState } from 'react';
+
+function ValidationExample() {
+  const [value, setValue] = useState('');
+  const hasError = value.length > 0 && value.length < 6;
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Two-factor authentication</FormControl.Label>
+      <PinField
+        name="twoFactor"
+        valueLength={6}
+        value={value}
+        onChange={({ value }) => setValue(value)}
+      />
+      <FormControl.Error>
+        Please enter all 6 digits.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## OTP verification example
+
+```jsx
+import { PinField, View, Text, Button } from 'reshaped';
+import { useState } from 'react';
+
+function OTPExample() {
+  const [code, setCode] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  const handleVerify = async () => {
+    if (code.length === 6) {
+      setIsVerifying(true);
+      // Verify code...
+      setIsVerifying(false);
+    }
+  };
+
+  return (
+    <View gap={4}>
+      <View gap={2}>
+        <Text weight="medium" variant="body-1">
+          Enter verification code
+        </Text>
+        <Text variant="body-2" color="neutral-faded">
+          We sent a 6-digit code to your phone
+        </Text>
+      </View>
+      
+      <PinField
+        name="otp"
+        valueLength={6}
+        value={code}
+        onChange={({ value }) => setCode(value)}
+        pattern="numeric"
+      />
+      
+      <Button
+        onClick={handleVerify}
+        disabled={code.length !== 6 || isVerifying}
+      >
+        {isVerifying ? 'Verifying...' : 'Verify'}
+      </Button>
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+PinField follows accessibility best practices:
+
+- Each input has proper ARIA attributes
+- Keyboard navigation between inputs (Arrow keys, Backspace)
+- Automatic focus management
+- Screen reader friendly
+- Paste support for complete codes
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the input element
+</ParamField>
+
+<ParamField path="valueLength" type="number" default="4">
+  Amount of characters in the pin
+</ParamField>
+
+<ParamField path="value" type="string">
+  Value of the input element, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default value of the input element, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="pattern" type="'alphabetic' | 'numeric' | 'alphanumeric'">
+  Character pattern used in the input value
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large' | 'xlarge'">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="variant" type="'outline' | 'faded'">
+  Input fields render variant
+</ParamField>
+
+<ParamField path="onChange" type="(args: { name: string, value: string }) => void">
+  Callback when the input value changes
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input elements. Use for ARIA attributes.
+</ParamField>

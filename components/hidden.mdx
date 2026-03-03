@@ -1,0 +1,120 @@
+---
+title: Hidden
+description: A utility component for conditionally hiding content at different viewport sizes
+---
+
+Hidden provides a simple way to show or hide content based on viewport size using responsive breakpoints. It supports both display and visibility hiding methods.
+
+## Import
+
+```tsx
+import { Hidden } from 'reshaped';
+```
+
+## Basic Usage
+
+```tsx
+<View gap={4}>
+  <Hidden hide={{ s: true, m: false }}>
+    <View padding={4} backgroundColor="neutral-faded">
+      Hidden on small screens, visible on medium and up
+    </View>
+  </Hidden>
+</View>
+```
+
+## Hide on Large Screens
+
+```tsx
+<Hidden hide={{ s: false, m: true }}>
+  <View padding={4} backgroundColor="primary-faded">
+    Visible on small screens only
+  </View>
+</Hidden>
+```
+
+## Using Visibility Instead of Display
+
+```tsx
+<Hidden hide={{ s: true, m: false }} visibility>
+  <View padding={4} backgroundColor="neutral-faded">
+    Uses visibility: hidden instead of display: none
+  </View>
+</Hidden>
+```
+
+## With Different Elements
+
+```tsx
+<Hidden hide={{ s: true, m: false }} as="section">
+  <View padding={4} backgroundColor="neutral-faded">
+    Renders as a section element
+  </View>
+</Hidden>
+```
+
+## Responsive Navigation Example
+
+```tsx
+<View direction="row" gap={4} align="center">
+  <View padding={4} backgroundColor="primary">Logo</View>
+  
+  <Hidden hide={{ s: true, m: false }}>
+    <View direction="row" gap={3}>
+      <Button>Home</Button>
+      <Button>About</Button>
+      <Button>Contact</Button>
+    </View>
+  </Hidden>
+  
+  <Hidden hide={{ s: false, m: true }}>
+    <Button icon={IconMenu} />
+  </Hidden>
+</View>
+```
+
+## With View Items
+
+```tsx
+<View direction="row" gap={4}>
+  <View.Item grow>
+    <View padding={4} backgroundColor="neutral-faded">Main Content</View>
+  </View.Item>
+  
+  <Hidden hide={{ s: true, l: false }}>
+    <View.Item columns={3}>
+      <View padding={4} backgroundColor="primary-faded">Sidebar</View>
+    </View.Item>
+  </Hidden>
+</View>
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting children
+</ParamField>
+
+<ParamField path="hide" type="Responsive<boolean>">
+  Pick at which viewport sizes to hide the children. Use responsive breakpoints: `{ s: boolean, m: boolean, l: boolean }`
+</ParamField>
+
+<ParamField path="visibility" type="boolean">
+  Use `visibility: hidden` instead of `display: none`. This maintains the element's space in the layout while making it invisible
+</ParamField>
+
+<ParamField path="as" type="keyof React.JSX.IntrinsicElements">
+  Custom root element html tag (default: "div")
+</ParamField>
+
+<Note>
+  Hidden works seamlessly with View's divided prop - when an item is hidden, its divider is also hidden automatically.
+</Note>
+
+<Note>
+  Use `visibility` when you need to maintain layout spacing even when content is hidden. Without it, the element is completely removed from the layout.
+</Note>
+
+<Note>
+  The responsive `hide` prop follows Reshaped's breakpoint system: `s` (small), `m` (medium), `l` (large).
+</Note>

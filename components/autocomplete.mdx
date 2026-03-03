@@ -1,0 +1,312 @@
+---
+title: "Autocomplete"
+description: "A text input with dropdown suggestions for typeahead and search"
+icon: "input-text"
+---
+
+Autocomplete is a form component that combines a text input with a dropdown menu of suggestions. It's perfect for typeahead search, tag selection, and filtered options.
+
+## Basic usage
+
+```jsx
+import { Autocomplete } from 'reshaped';
+
+function Example() {
+  const items = [
+    { value: 'apple', label: 'Apple' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'orange', label: 'Orange' },
+  ];
+
+  return (
+    <Autocomplete
+      name="fruit"
+      placeholder="Search fruits..."
+    >
+      {items.map(item => (
+        <Autocomplete.Item key={item.value} value={item.value}>
+          {item.label}
+        </Autocomplete.Item>
+      ))}
+    </Autocomplete>
+  );
+}
+```
+
+## With filtering
+
+```jsx
+import { useState } from 'react';
+import { Autocomplete } from 'reshaped';
+
+function FilterExample() {
+  const [value, setValue] = useState('');
+  
+  const allItems = [
+    { value: 'apple', label: 'Apple' },
+    { value: 'apricot', label: 'Apricot' },
+    { value: 'banana', label: 'Banana' },
+    { value: 'orange', label: 'Orange' },
+  ];
+  
+  const filteredItems = allItems.filter(item =>
+    item.label.toLowerCase().includes(value.toLowerCase())
+  );
+
+  return (
+    <Autocomplete
+      name="fruit"
+      value={value}
+      onInput={({ value }) => setValue(value)}
+      placeholder="Search fruits..."
+    >
+      {filteredItems.map(item => (
+        <Autocomplete.Item key={item.value} value={item.value}>
+          {item.label}
+        </Autocomplete.Item>
+      ))}
+    </Autocomplete>
+  );
+}
+```
+
+## With item selection
+
+```jsx
+import { useState } from 'react';
+import { Autocomplete } from 'reshaped';
+
+function SelectionExample() {
+  const [value, setValue] = useState('');
+  const [selectedValue, setSelectedValue] = useState(null);
+  
+  const items = [
+    { value: 'us', label: 'United States' },
+    { value: 'uk', label: 'United Kingdom' },
+    { value: 'ca', label: 'Canada' },
+  ];
+
+  return (
+    <Autocomplete
+      name="country"
+      value={value}
+      onInput={({ value }) => setValue(value)}
+      onItemSelect={({ value }) => {
+        setSelectedValue(value);
+        setValue(items.find(i => i.value === value)?.label || '');
+      }}
+      placeholder="Select a country..."
+    >
+      {items.map(item => (
+        <Autocomplete.Item key={item.value} value={item.value}>
+          {item.label}
+        </Autocomplete.Item>
+      ))}
+    </Autocomplete>
+  );
+}
+```
+
+## With keyboard handling
+
+```jsx
+import { useState } from 'react';
+import { Autocomplete } from 'reshaped';
+
+function KeyboardExample() {
+  const [value, setValue] = useState('');
+
+  return (
+    <Autocomplete
+      name="search"
+      value={value}
+      onInput={({ value }) => setValue(value)}
+      onEnter={() => console.log('Search:', value)}
+      onBackspace={() => console.log('Backspace pressed')}
+      placeholder="Type and press Enter to search..."
+    >
+      <Autocomplete.Item value="option-1">Option 1</Autocomplete.Item>
+      <Autocomplete.Item value="option-2">Option 2</Autocomplete.Item>
+    </Autocomplete>
+  );
+}
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, Autocomplete } from 'reshaped';
+
+function FormExample() {
+  const countries = [
+    { value: 'us', label: 'United States' },
+    { value: 'uk', label: 'United Kingdom' },
+    { value: 'ca', label: 'Canada' },
+  ];
+
+  return (
+    <FormControl>
+      <FormControl.Label>Country</FormControl.Label>
+      <Autocomplete
+        name="country"
+        placeholder="Type to search..."
+      >
+        {countries.map(country => (
+          <Autocomplete.Item key={country.value} value={country.value}>
+            {country.label}
+          </Autocomplete.Item>
+        ))}
+      </Autocomplete>
+      <FormControl.Helper>
+        Start typing to see suggestions.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Tag selection example
+
+```jsx
+import { useState } from 'react';
+import { Autocomplete, View, Badge } from 'reshaped';
+
+function TagExample() {
+  const [value, setValue] = useState('');
+  const [tags, setTags] = useState([]);
+  
+  const availableTags = [
+    'javascript',
+    'react',
+    'typescript',
+    'nodejs',
+    'python',
+  ];
+  
+  const filteredTags = availableTags.filter(
+    tag => !tags.includes(tag) && tag.includes(value.toLowerCase())
+  );
+
+  const handleSelect = ({ value: tag }) => {
+    setTags([...tags, tag]);
+    setValue('');
+  };
+  
+  const removeTag = (tagToRemove) => {
+    setTags(tags.filter(tag => tag !== tagToRemove));
+  };
+
+  return (
+    <View gap={3}>
+      {tags.length > 0 && (
+        <View direction="row" gap={2} wrap>
+          {tags.map(tag => (
+            <Badge
+              key={tag}
+              onClose={() => removeTag(tag)}
+            >
+              {tag}
+            </Badge>
+          ))}
+        </View>
+      )}
+      
+      <Autocomplete
+        name="tags"
+        value={value}
+        onInput={({ value }) => setValue(value)}
+        onItemSelect={handleSelect}
+        placeholder="Add tags..."
+      >
+        {filteredTags.map(tag => (
+          <Autocomplete.Item key={tag} value={tag}>
+            {tag}
+          </Autocomplete.Item>
+        ))}
+      </Autocomplete>
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+Autocomplete follows accessibility best practices:
+
+- Uses ARIA combobox pattern
+- Keyboard navigation (Arrow keys, Enter, Escape)
+- Screen reader announces suggestions
+- Proper focus management
+- Supports all TextField accessibility features
+
+## Props
+
+Autocomplete extends all [TextField](/components/text-field) props and adds:
+
+<ParamField path="children" type="React.ReactNode" required>
+  Slot for rendering the Autocomplete.Item components
+</ParamField>
+
+<ParamField path="onInput" type="(args: { name: string, value: string, event: Event }) => void">
+  Callback for when value changes from user input
+</ParamField>
+
+<ParamField path="onItemSelect" type="(args: { value: string, data?: unknown }) => void">
+  Callback for when an item is selected in the dropdown
+</ParamField>
+
+<ParamField path="onBackspace" type="() => void">
+  Callback for when the backspace key is pressed while the input is focused
+</ParamField>
+
+<ParamField path="onEnter" type="() => void">
+  Callback for when the enter key is pressed while the input is focused
+</ParamField>
+
+<ParamField path="active" type="boolean">
+  Control the dropdown menu visibility
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the dropdown opens
+</ParamField>
+
+<ParamField path="onClose" type="() => void">
+  Callback when the dropdown closes
+</ParamField>
+
+<ParamField path="containerRef" type="React.RefObject">
+  Reference to the container element
+</ParamField>
+
+<ParamField path="instanceRef" type="React.RefObject">
+  Reference to the dropdown instance
+</ParamField>
+
+<ParamField path="contentMaxHeight" type="string | number">
+  Maximum height of the dropdown content
+</ParamField>
+
+<ParamField path="contentZIndex" type="number">
+  Z-index of the dropdown content
+</ParamField>
+
+## Sub-components
+
+### Autocomplete.Item
+
+Represents a selectable item in the autocomplete dropdown.
+
+<ParamField path="value" type="string" required>
+  Value that will be passed to the input on selection
+</ParamField>
+
+<ParamField path="data" type="unknown">
+  Additional data that will be passed to the onItemSelect callback
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Item display content
+</ParamField>
+
+Autocomplete.Item also accepts all [MenuItem](/components/menu-item) props for styling and icons.

@@ -1,0 +1,402 @@
+---
+title: 'Tailwind Configuration'
+description: 'Integrate Reshaped themes with Tailwind CSS v4'
+---
+
+## Overview
+
+Reshaped automatically generates Tailwind CSS v4 configuration files when you run the theming command. These files map Reshaped design tokens to Tailwind's utility classes.
+
+## Generated Files
+
+When you generate themes with the CLI, a `tailwind.css` file is created for each theme:
+
+```
+themes/
+└── custom/
+    ├── theme.css
+    ├── theme.json
+    └── tailwind.css    ← Tailwind configuration
+```
+
+## Tailwind CSS Output
+
+The generated `tailwind.css` file uses Tailwind v4's `@theme` directive:
+
+```css tailwind.css
+@theme inline {
+  /* Colors */
+  --background-color-primary: var(--rs-color-background-primary);
+  --background-color-secondary: var(--rs-color-background-secondary);
+  --text-color-primary: var(--rs-color-foreground-primary);
+  --text-color-on-primary: var(--rs-color-on-background-primary);
+  --border-color-default: var(--rs-color-border-default);
+  --outline-color-default: var(--rs-color-border-default);
+  
+  /* Spacing */
+  --spacing-0: 0px;
+  --spacing-x1: var(--rs-unit-x1);
+  --spacing-x2: var(--rs-unit-x2);
+  --spacing-x3: var(--rs-unit-x3);
+  --spacing-x4: var(--rs-unit-x4);
+  --spacing-x5: var(--rs-unit-x5);
+  --spacing-x6: var(--rs-unit-x6);
+  --spacing-x7: var(--rs-unit-x7);
+  --spacing-x8: var(--rs-unit-x8);
+  --spacing-x9: var(--rs-unit-x9);
+  --spacing-x10: var(--rs-unit-x10);
+  
+  /* Radius */
+  --radius-small: var(--rs-radius-small);
+  --radius-medium: var(--rs-radius-medium);
+  --radius-large: var(--rs-radius-large);
+  
+  /* Shadows */
+  --shadow-small: var(--rs-shadow-small);
+  --shadow-medium: var(--rs-shadow-medium);
+  --shadow-large: var(--rs-shadow-large);
+  
+  /* Font Weight */
+  --font-weight-regular: var(--rs-font-weight-regular);
+  --font-weight-medium: var(--rs-font-weight-medium);
+  --font-weight-bold: var(--rs-font-weight-bold);
+  
+  /* Breakpoints */
+  --breakpoint-s: 0px;
+  --breakpoint-m: 600px;
+  --breakpoint-l: 1024px;
+  --breakpoint-xl: 1440px;
+}
+```
+
+## Token Mapping
+
+Reshaped tokens are mapped to Tailwind utilities:
+
+### Color Tokens
+
+| Reshaped Token | Tailwind Variable | Utilities |
+|----------------|-------------------|------------|
+| `backgroundPrimary` | `--background-color-primary` | `bg-primary` |
+| `foregroundPrimary` | `--text-color-primary` | `text-primary` |
+| `onBackgroundPrimary` | `--text-color-on-primary` | `text-on-primary` |
+| `borderDefault` | `--border-color-default`, `--outline-color-default` | `border-default`, `outline-default` |
+
+### Spacing Tokens
+
+| Reshaped Token | Tailwind Variable | Utilities |
+|----------------|-------------------|------------|
+| `x1` (0.25rem) | `--spacing-x1` | `p-x1`, `m-x1`, `gap-x1` |
+| `x2` (0.5rem) | `--spacing-x2` | `p-x2`, `m-x2`, `gap-x2` |
+| `x4` (1rem) | `--spacing-x4` | `p-x4`, `m-x4`, `gap-x4` |
+
+### Radius Tokens
+
+| Reshaped Token | Tailwind Variable | Utilities |
+|----------------|-------------------|------------|
+| `small` | `--radius-small` | `rounded-small` |
+| `medium` | `--radius-medium` | `rounded-medium` |
+| `large` | `--radius-large` | `rounded-large` |
+
+### Shadow Tokens
+
+| Reshaped Token | Tailwind Variable | Utilities |
+|----------------|-------------------|------------|
+| `shadowSmall` | `--shadow-small` | `shadow-small` |
+| `shadowMedium` | `--shadow-medium` | `shadow-medium` |
+| `shadowLarge` | `--shadow-large` | `shadow-large` |
+
+## Setup
+
+### 1. Generate Tailwind Configuration
+
+Run the Reshaped CLI to generate theme files:
+
+```bash
+reshaped theming --output ./themes
+```
+
+### 2. Import in Your CSS
+
+Import both the theme and Tailwind configuration:
+
+```css app.css
+@import '../themes/custom/theme.css';
+@import '../themes/custom/tailwind.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+### 3. Configure Tailwind
+
+Create or update `tailwind.config.js`:
+
+```js tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    './pages/**/*.{js,jsx,ts,tsx}',
+  ],
+  // Theme variables are loaded from tailwind.css
+};
+```
+
+## Usage Examples
+
+### Using Generated Tokens
+
+```tsx
+function Card() {
+  return (
+    <div className="
+      bg-primary 
+      text-on-primary 
+      p-x4 
+      rounded-medium 
+      shadow-medium
+    ">
+      Card content
+    </div>
+  );
+}
+```
+
+### Responsive Design
+
+```tsx
+function Hero() {
+  return (
+    <div className="
+      p-x2 m:p-x4 l:p-x6
+      text-x4 l:text-x6
+    ">
+      Responsive hero section
+    </div>
+  );
+}
+```
+
+### Custom Components
+
+```tsx
+function Button({ variant = 'primary' }) {
+  return (
+    <button className={`
+      px-x4 py-x2
+      rounded-medium
+      font-weight-medium
+      ${variant === 'primary' ? 'bg-primary text-on-primary' : 'bg-secondary text-primary'}
+      hover:opacity-90
+      transition-opacity
+    `}>
+      Click me
+    </button>
+  );
+}
+```
+
+## Token Transformation
+
+The transformation process (from `tailwind.ts:10-107`):
+
+### Color Tokens
+
+```js
+// Input: backgroundPrimary
+// Output: --background-color-primary
+
+if (cssTokenName.startsWith('background-')) {
+  const name = cssTokenName.replace('background-', '');
+  variables[`--background-color-${name}`] = `var(--rs-color-${cssTokenName})`;
+}
+```
+
+### On-Color Tokens
+
+```js
+// Input: onBackgroundPrimary
+// Output: --text-color-on-primary
+
+if (cssTokenName.startsWith('on-')) {
+  const name = cssTokenName.replace('on-', '').replace('background-', '');
+  variables[`--text-color-on-${name}`] = `var(--rs-color-${cssTokenName})`;
+}
+```
+
+### Spacing Tokens
+
+```js
+// Input: unit.x1
+// Output: --spacing-x1
+
+Object.keys(definition.unit).forEach((tokenName) => {
+  if (tokenName.startsWith('base')) {
+    for (let i = 0; i <= 10; i++) {
+      variables[`--spacing-x${i}`] = i === 0 ? '0px' : `var(--rs-unit-x${i})`;
+    }
+  }
+});
+```
+
+## Multiple Themes
+
+Switch between themes dynamically:
+
+### Generate Multiple Themes
+
+```js reshaped.config.js
+export default {
+  themes: {
+    light: {
+      color: {
+        backgroundPrimary: { hex: '#ffffff' },
+        foregroundPrimary: { hex: '#000000' },
+      },
+    },
+    dark: {
+      color: {
+        backgroundPrimary: { hex: '#000000' },
+        foregroundPrimary: { hex: '#ffffff' },
+      },
+    },
+  },
+};
+```
+
+### Import Both Themes
+
+```css
+@import '../themes/light/theme.css';
+@import '../themes/light/tailwind.css';
+
+[data-theme='dark'] {
+  @import '../themes/dark/theme.css';
+  @import '../themes/dark/tailwind.css';
+}
+```
+
+### Toggle in React
+
+```tsx
+import { useState } from 'react';
+
+function App() {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <div data-theme={theme}>
+      <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+        Toggle theme
+      </button>
+      <div className="bg-primary text-primary p-x4">
+        Content adapts to theme
+      </div>
+    </div>
+  );
+}
+```
+
+## Framework Integration
+
+### Next.js
+
+```js next.config.js
+/** @type {import('next').NextConfig} */
+module.exports = {
+  // Next.js automatically processes PostCSS and Tailwind
+};
+```
+
+```css app/globals.css
+@import '../themes/custom/theme.css';
+@import '../themes/custom/tailwind.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+### Vite
+
+```js vite.config.js
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  css: {
+    postcss: './postcss.config.js',
+  },
+});
+```
+
+```css src/index.css
+@import '../themes/custom/theme.css';
+@import '../themes/custom/tailwind.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+## Advanced Customization
+
+### Extending Tailwind Config
+
+```js tailwind.config.js
+module.exports = {
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  theme: {
+    extend: {
+      // Add custom utilities beyond Reshaped tokens
+      colors: {
+        custom: '#ff00ff',
+      },
+    },
+  },
+};
+```
+
+### Custom Utilities
+
+```css
+@layer utilities {
+  .card {
+    @apply bg-primary rounded-medium shadow-medium p-x4;
+  }
+  
+  .button-primary {
+    @apply bg-primary text-on-primary px-x4 py-x2 rounded-medium;
+  }
+}
+```
+
+## Tailwind v4 Features
+
+Reshaped's generated Tailwind configuration uses v4 features:
+
+### @theme Directive
+
+```css
+@theme inline {
+  --color-primary: #0066ff;
+}
+```
+
+### CSS Variable Integration
+
+Direct mapping to CSS custom properties:
+
+```css
+.bg-primary {
+  background-color: var(--background-color-primary);
+}
+```
+
+## Related
+
+- [PostCSS Configuration](/configuration/postcss)
+- [Reshaped Config](/configuration/reshaped-config)
+- [theming Command](/cli/theming-command)
+- [Design Tokens](/concepts/styling)

@@ -1,0 +1,477 @@
+---
+title: Overlay
+description: Low-level component for creating overlay containers
+---
+
+<RequestExample>
+```jsx
+import { Overlay, Button } from 'reshaped';
+
+function Example() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setActive(true)}>Show Overlay</Button>
+      
+      <Overlay
+        active={active}
+        onClose={() => setActive(false)}
+      >
+        <View
+          padding={6}
+          backgroundColor="neutral"
+          borderRadius="medium"
+        >
+          <Text>Overlay content</Text>
+          <Button onClick={() => setActive(false)}>Close</Button>
+        </View>
+      </Overlay>
+    </>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Overlay is a low-level component for creating full-screen overlay containers. It handles portal rendering, animations, click-outside detection, and scroll locking. Use Modal for most dialog use cases.
+
+## Props
+
+<ParamField path="active" type="boolean">
+  Controls the visibility of the overlay.
+  
+  ```jsx
+  <Overlay active={isOpen} onClose={() => setIsOpen(false)}>
+  ```
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode | (props: { active: boolean }) => React.ReactNode">
+  Content of the overlay. Can be a render function that receives the active state.
+  
+  ```jsx
+  <Overlay active={active}>
+    <View>Content</View>
+  </Overlay>
+  
+  <Overlay active={active}>
+    {({ active }) => <View opacity={active ? 1 : 0}>Content</View>}
+  </Overlay>
+  ```
+</ParamField>
+
+<ParamField path="transparent" type="boolean | number">
+  Make the overlay background transparent. Pass a number (0-1) for custom opacity.
+  
+  ```jsx
+  <Overlay transparent> {/* Fully transparent */}
+  <Overlay transparent={0.5}> {/* 50% opacity */}
+  ```
+</ParamField>
+
+<ParamField path="blurred" type="boolean">
+  Apply blur effect to the overlay background.
+  
+  ```jsx
+  <Overlay blurred>
+  ```
+</ParamField>
+
+<ParamField path="overflow" type="string">
+  Control overflow behavior of the content.
+  
+  Options: `"auto"`, `"hidden"`
+  
+  Default: `"auto"`
+</ParamField>
+
+<ParamField path="onClose" type="(args: { reason: string }) => void">
+  Callback when the overlay is closed. Reason can be:
+  - `"overlay-click"`: User clicked on the overlay background
+  - `"escape-key"`: User pressed Escape
+  
+  ```jsx
+  <Overlay
+    onClose={({ reason }) => {
+      console.log('Closed via:', reason);
+      setActive(false);
+    }}
+  />
+  ```
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the overlay opens.
+</ParamField>
+
+<ParamField path="onAfterOpen" type="() => void">
+  Callback after the open animation completes.
+</ParamField>
+
+<ParamField path="onAfterClose" type="() => void">
+  Callback after the close animation completes.
+</ParamField>
+
+<ParamField path="disableCloseOnClick" type="boolean">
+  Prevent closing when clicking on the overlay background.
+  
+  ```jsx
+  <Overlay disableCloseOnClick>
+  ```
+</ParamField>
+
+<ParamField path="containerRef" type="React.RefObject<HTMLElement>">
+  Container element to render the overlay within.
+  
+  ```jsx
+  const containerRef = React.useRef();
+  
+  <View attributes={{ ref: containerRef }}>
+    <Overlay containerRef={containerRef}>
+  </View>
+  ```
+</ParamField>
+
+<ParamField path="contained" type="boolean">
+  Contain the overlay within the container bounds. Defaults to `true` when `containerRef` is provided.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the root element.
+</ParamField>
+
+## Examples
+
+### Basic Overlay
+
+```jsx
+function BasicOverlay() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setActive(true)}>Open</Button>
+      
+      <Overlay active={active} onClose={() => setActive(false)}>
+        <View
+          align="center"
+          justify="center"
+          height="100%"
+          onClick={() => setActive(false)}
+        >
+          <View
+            padding={6}
+            backgroundColor="neutral"
+            borderRadius="medium"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Text variant="title-5">Overlay Content</Text>
+            <Button onClick={() => setActive(false)}>Close</Button>
+          </View>
+        </View>
+      </Overlay>
+    </>
+  );
+}
+```
+
+### Transparent Overlay
+
+```jsx
+<Overlay transparent active={active} onClose={handleClose}>
+  <View align="center" justify="center" height="100%">
+    <View padding={6} backgroundColor="neutral" borderRadius="medium">
+      <Text>Content on transparent overlay</Text>
+    </View>
+  </View>
+</Overlay>
+```
+
+### Blurred Overlay
+
+```jsx
+<Overlay blurred active={active} onClose={handleClose}>
+  <View align="center" justify="center" height="100%">
+    <View padding={6} backgroundColor="neutral" borderRadius="medium">
+      <Text>Content with blurred background</Text>
+    </View>
+  </View>
+</Overlay>
+```
+
+### Custom Opacity
+
+```jsx
+<Overlay transparent={0.3} active={active} onClose={handleClose}>
+  <View align="center" justify="center" height="100%">
+    <Text>30% opacity overlay</Text>
+  </View>
+</Overlay>
+```
+
+### Lightbox
+
+```jsx
+function Lightbox({ images, initialIndex = 0 }) {
+  const [active, setActive] = React.useState(false);
+  const [currentIndex, setCurrentIndex] = React.useState(initialIndex);
+
+  return (
+    <>
+      <Button onClick={() => setActive(true)}>View Gallery</Button>
+      
+      <Overlay
+        active={active}
+        onClose={() => setActive(false)}
+        transparent={0.95}
+      >
+        <View height="100%" align="center" justify="center" gap={4}>
+          <View position="relative">
+            <Image
+              src={images[currentIndex]}
+              attributes={{
+                style: { maxHeight: '80vh', maxWidth: '90vw' },
+              }}
+            />
+          </View>
+          
+          <View direction="row" gap={2}>
+            <Button
+              onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+              disabled={currentIndex === 0}
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={() => setCurrentIndex(Math.min(images.length - 1, currentIndex + 1))}
+              disabled={currentIndex === images.length - 1}
+            >
+              Next
+            </Button>
+            <Button onClick={() => setActive(false)}>
+              Close
+            </Button>
+          </View>
+        </View>
+      </Overlay>
+    </>
+  );
+}
+```
+
+### Loading Overlay
+
+```jsx
+function LoadingOverlay({ active }) {
+  return (
+    <Overlay
+      active={active}
+      transparent={0.5}
+      disableCloseOnClick
+    >
+      <View
+        height="100%"
+        align="center"
+        justify="center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <View gap={3} align="center">
+          <Loader size="large" color="primary" ariaLabel="Loading" />
+          <Text variant="body-2">Processing...</Text>
+        </View>
+      </View>
+    </Overlay>
+  );
+}
+```
+
+### Render Props Pattern
+
+```jsx
+<Overlay active={active}>
+  {({ active }) => (
+    <View
+      height="100%"
+      align="center"
+      justify="center"
+      attributes={{
+        style: {
+          opacity: active ? 1 : 0,
+          transform: active ? 'scale(1)' : 'scale(0.95)',
+          transition: 'all 0.2s',
+        },
+      }}
+    >
+      <Text>Animated content</Text>
+    </View>
+  )}
+</Overlay>
+```
+
+### Contained Overlay
+
+```jsx
+function ContainedOverlay() {
+  const containerRef = React.useRef();
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <View
+      attributes={{ ref: containerRef }}
+      height="400px"
+      position="relative"
+      overflow="hidden"
+      borderRadius="medium"
+      backgroundColor="neutral-faded"
+    >
+      <View padding={4}>
+        <Button onClick={() => setActive(true)}>
+          Open Overlay
+        </Button>
+      </View>
+      
+      <Overlay
+        containerRef={containerRef}
+        active={active}
+        onClose={() => setActive(false)}
+      >
+        <View height="100%" align="center" justify="center">
+          <View padding={4} backgroundColor="neutral" borderRadius="medium">
+            <Text>Contained within parent</Text>
+            <Button onClick={() => setActive(false)}>Close</Button>
+          </View>
+        </View>
+      </Overlay>
+    </View>
+  );
+}
+```
+
+### Video Player Overlay
+
+```jsx
+function VideoOverlay({ videoUrl }) {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setActive(true)} icon={IconPlay}>
+        Watch Video
+      </Button>
+      
+      <Overlay
+        active={active}
+        onClose={() => setActive(false)}
+        transparent
+      >
+        <View height="100%" align="center" justify="center" padding={4}>
+          <View
+            width="100%"
+            attributes={{ style: { maxWidth: '1200px' } }}
+          >
+            <video
+              src={videoUrl}
+              controls
+              autoPlay
+              style={{ width: '100%', borderRadius: '8px' }}
+            />
+          </View>
+        </View>
+      </Overlay>
+    </>
+  );
+}
+```
+
+### Custom Close Button
+
+```jsx
+function OverlayWithClose() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <Overlay
+      active={active}
+      onClose={() => setActive(false)}
+    >
+      <View height="100%" align="center" justify="center">
+        <View position="relative" padding={6} backgroundColor="neutral" borderRadius="medium">
+          <Button
+            variant="ghost"
+            icon={IconX}
+            onClick={() => setActive(false)}
+            attributes={{
+              style: {
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+              },
+            }}
+          />
+          
+          <View gap={3}>
+            <Text variant="title-5">Content</Text>
+            <Text>Overlay content here</Text>
+          </View>
+        </View>
+      </View>
+    </Overlay>
+  );
+}
+```
+
+### Prevent Close
+
+```jsx
+function PersistentOverlay() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <Overlay
+      active={active}
+      disableCloseOnClick
+      onClose={({ reason }) => {
+        // Only allow close via button, not Escape or outside click
+        if (reason !== 'escape-key' && reason !== 'overlay-click') {
+          setActive(false);
+        }
+      }}
+    >
+      <View height="100%" align="center" justify="center">
+        <View padding={6} backgroundColor="neutral" borderRadius="medium">
+          <Text>Click the button to close</Text>
+          <Button onClick={() => setActive(false)}>Close</Button>
+        </View>
+      </View>
+    </Overlay>
+  );
+}
+```
+
+## When to Use
+
+Use Overlay for:
+- Building custom modal-like components
+- Lightboxes and media viewers
+- Full-screen loading states
+- Custom overlay patterns not covered by Modal
+
+Don't use Overlay for:
+- Standard dialogs (use Modal)
+- Floating menus (use DropdownMenu)
+- Tooltips (use Tooltip)
+- Popovers (use Popover)
+
+## Accessibility
+
+- Locks body scroll when active
+- Pressing Escape closes the overlay
+- Clicking outside closes by default
+- Provide proper focus management in your content
+- Add appropriate ARIA attributes via `attributes`
+- Ensure keyboard accessibility for interactive content

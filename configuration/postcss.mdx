@@ -1,0 +1,407 @@
+---
+title: 'PostCSS Configuration'
+description: 'Configure PostCSS for Reshaped theme processing'
+---
+
+## Overview
+
+Reshaped uses PostCSS to process and optimize CSS files during theme generation. The default configuration includes plugins for responsive styles, nested rules, and minification.
+
+## Default Configuration
+
+Reshaped's internal PostCSS configuration:
+
+```js postcss.config.mjs
+import cssNano from 'cssnano';
+import eachPlugin from 'postcss-each';
+import nestedPlugin from 'postcss-nested';
+import responsivePlugin from './postcss.responsive.mjs';
+
+export default {
+  plugins: [
+    responsivePlugin(),
+    eachPlugin(),
+    nestedPlugin(),
+    cssNano({ preset: ['default', { calc: false }] }),
+  ],
+};
+```
+
+## Plugins
+
+### Responsive Plugin
+
+Custom plugin for handling Reshaped's responsive viewport system.
+
+**Purpose:**
+- Transforms responsive utility classes
+- Generates viewport-specific media queries
+- Applies mobile-first responsive patterns
+
+### postcss-each
+
+Iterates over arrays and objects in CSS.
+
+**Usage:**
+```css
+@each $viewport in s, m, l, xl {
+  .padding--$(viewport) {
+    /* viewport-specific styles */
+  }
+}
+```
+
+**Installation:**
+```bash
+npm install postcss-each
+```
+
+### postcss-nested
+
+Supports nested CSS rules similar to Sass.
+
+**Usage:**
+```css
+.button {
+  color: blue;
+  
+  &:hover {
+    color: darkblue;
+  }
+  
+  .icon {
+    margin-right: 8px;
+  }
+}
+```
+
+**Installation:**
+```bash
+npm install postcss-nested
+```
+
+### cssnano
+
+Minifies and optimizes CSS output.
+
+**Configuration:**
+```js
+cssNano({
+  preset: ['default', {
+    calc: false, // Preserve calc() expressions
+  }],
+})
+```
+
+**Installation:**
+```bash
+npm install cssnano
+```
+
+## Custom Configuration
+
+If you're processing Reshaped CSS files in your project, create a `postcss.config.js`:
+
+### Basic Setup
+
+```js postcss.config.js
+module.exports = {
+  plugins: {
+    'postcss-nested': {},
+    'autoprefixer': {},
+    'cssnano': process.env.NODE_ENV === 'production' ? {} : false,
+  },
+};
+```
+
+### With Tailwind CSS
+
+```js postcss.config.js
+module.exports = {
+  plugins: {
+    'tailwindcss': {},
+    'postcss-nested': {},
+    'autoprefixer': {},
+  },
+};
+```
+
+### Advanced Configuration
+
+```js postcss.config.js
+const postcssNested = require('postcss-nested');
+const autoprefixer = require('autoprefixer');
+const cssnano = require('cssnano');
+
+module.exports = {
+  plugins: [
+    postcssNested(),
+    autoprefixer({
+      overrideBrowserslist: ['> 1%', 'last 2 versions'],
+    }),
+    process.env.NODE_ENV === 'production' && cssnano({
+      preset: ['default', {
+        discardComments: { removeAll: true },
+        normalizeWhitespace: true,
+      }],
+    }),
+  ].filter(Boolean),
+};
+```
+
+## Framework Integration
+
+### Next.js
+
+Next.js automatically uses `postcss.config.js` if present:
+
+```js postcss.config.js
+module.exports = {
+  plugins: {
+    'postcss-import': {},
+    'postcss-nested': {},
+    'tailwindcss': {},
+    'autoprefixer': {},
+  },
+};
+```
+
+Import generated theme CSS in your app:
+
+```tsx app/layout.tsx
+import '../themes/custom/theme.css';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+### Vite
+
+Vite has built-in PostCSS support:
+
+```js vite.config.js
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  css: {
+    postcss: {
+      plugins: [
+        require('postcss-nested'),
+        require('autoprefixer'),
+      ],
+    },
+  },
+});
+```
+
+Or use a separate `postcss.config.js` file:
+
+```js postcss.config.js
+module.exports = {
+  plugins: {
+    'postcss-nested': {},
+    'autoprefixer': {},
+  },
+};
+```
+
+### Webpack
+
+```js webpack.config.js
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  require('postcss-nested'),
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+};
+```
+
+## Processing Generated Themes
+
+To process Reshaped's generated theme files:
+
+### Import in Your App
+
+```tsx
+import 'reshaped/themes/reshaped/theme.css';
+// or your custom theme
+import '../themes/custom/theme.css';
+```
+
+### Import Multiple Themes
+
+```tsx
+import { useState } from 'react';
+import 'reshaped/themes/reshaped/theme.css';
+import '../themes/dark/theme.css';
+
+function App() {
+  const [theme, setTheme] = useState('light');
+  
+  return (
+    <div data-theme={theme}>
+      {/* Your app */}
+    </div>
+  );
+}
+```
+
+### CSS Import with Media Queries
+
+```css
+@import 'reshaped/themes/reshaped/theme.css';
+
+@media (prefers-color-scheme: dark) {
+  @import '../themes/dark/theme.css';
+}
+```
+
+## Common Plugins
+
+### autoprefixer
+
+Adds vendor prefixes for browser compatibility:
+
+```bash
+npm install autoprefixer
+```
+
+```js
+{
+  plugins: {
+    'autoprefixer': {},
+  },
+}
+```
+
+### postcss-import
+
+Inlines `@import` statements:
+
+```bash
+npm install postcss-import
+```
+
+```js
+{
+  plugins: {
+    'postcss-import': {},
+  },
+}
+```
+
+### postcss-custom-properties
+
+Transforms CSS custom properties for older browsers:
+
+```bash
+npm install postcss-custom-properties
+```
+
+```js
+{
+  plugins: {
+    'postcss-custom-properties': {
+      preserve: true,
+    },
+  },
+}
+```
+
+## Optimization Tips
+
+### Production Build
+
+```js postcss.config.js
+module.exports = {
+  plugins: [
+    require('postcss-nested'),
+    require('autoprefixer'),
+    process.env.NODE_ENV === 'production' && require('cssnano')({
+      preset: ['default', {
+        discardComments: { removeAll: true },
+        normalizeWhitespace: true,
+        colormin: false, // Preserve color formats
+        calc: false, // Preserve calc() for CSS variables
+      }],
+    }),
+  ].filter(Boolean),
+};
+```
+
+### Source Maps
+
+```js postcss.config.js
+module.exports = {
+  map: process.env.NODE_ENV === 'development' ? { inline: true } : false,
+  plugins: {
+    'postcss-nested': {},
+  },
+};
+```
+
+## Troubleshooting
+
+### CSS Variables Not Working
+
+Ensure CSS custom properties are preserved:
+
+```js
+cssNano({
+  preset: ['default', {
+    calc: false,
+    colormin: false,
+  }],
+})
+```
+
+### Nested Rules Not Parsing
+
+Install and configure `postcss-nested`:
+
+```bash
+npm install postcss-nested
+```
+
+### Build Performance
+
+Disable minification in development:
+
+```js
+module.exports = {
+  plugins: [
+    require('postcss-nested'),
+    process.env.NODE_ENV === 'production' && require('cssnano'),
+  ].filter(Boolean),
+};
+```
+
+## Related
+
+- [Tailwind Configuration](/configuration/tailwind)
+- [Reshaped Config](/configuration/reshaped-config)
+- [CLI Overview](/cli/overview)
+- [Theme Customization](/guides/custom-themes)

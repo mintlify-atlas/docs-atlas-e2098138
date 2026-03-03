@@ -1,0 +1,492 @@
+---
+title: Theme Fragments
+description: Create and use reusable theme fragments for brand color integration
+---
+
+Theme fragments are partial theme definitions that can be reused across projects or dynamically applied for brand integration. They're perfect for white-labeling, partner branding, or theming specific sections of your app.
+
+## Overview
+
+Theme fragments allow you to:
+
+- Define partial theme overrides (typically just colors)
+- Reuse brand colors across projects
+- Dynamically load brand themes
+- Create white-label applications
+- Theme specific UI sections independently
+
+<Info>
+  Theme fragments only override specified tokens, leaving other theme values intact from the base theme.
+</Info>
+
+## Creating Theme Fragments
+
+### Basic Fragment
+
+Define a theme fragment in your `reshaped.config.ts`:
+
+```typescript
+import type { ReshapedConfig } from "reshaped";
+
+const config: ReshapedConfig = {
+  themeFragments: {
+    twitter: {
+      color: {
+        backgroundPrimary: { hex: "#1da1f2" },
+        backgroundPrimaryHighlighted: { hex: "#1a90da" },
+        onBackgroundPrimary: { hex: "#ffffff" },
+      },
+    },
+  },
+};
+
+export default config;
+```
+
+Source: `packages/reshaped/src/cli/theming/reshaped.config.ts:14-22`
+
+### Multiple Brand Fragments
+
+Create a library of brand fragments:
+
+```typescript
+const config: ReshapedConfig = {
+  themeFragments: {
+    twitter: {
+      color: {
+        backgroundPrimary: { hex: "#1da1f2" },
+        backgroundPrimaryHighlighted: { hex: "#1a90da" },
+        onBackgroundPrimary: { hex: "#ffffff" },
+      },
+    },
+    
+    spotify: {
+      color: {
+        backgroundPrimary: { hex: "#1DB954" },
+        backgroundPrimaryHighlighted: { hex: "#1aa34a" },
+        onBackgroundPrimary: { hex: "#ffffff" },
+      },
+    },
+    
+    github: {
+      color: {
+        backgroundPrimary: { hex: "#24292e" },
+        backgroundPrimaryHighlighted: { hex: "#1b1f23" },
+        onBackgroundPrimary: { hex: "#ffffff" },
+      },
+    },
+    
+    stripe: {
+      color: {
+        backgroundPrimary: { hex: "#635BFF" },
+        backgroundPrimaryHighlighted: { hex: "#5851e8" },
+        onBackgroundPrimary: { hex: "#ffffff" },
+      },
+    },
+  },
+};
+```
+
+## Generating Fragment CSS
+
+<Steps>
+  <Step title="Define fragments">
+    Add theme fragments to your `reshaped.config.ts` as shown above.
+  </Step>
+  
+  <Step title="Generate CSS">
+    Run the theme generator:
+    
+    ```bash
+    npx reshaped theme
+    ```
+    
+    This creates fragment files in `./themes/fragments/[name]/`:
+    - `theme.css` - Fragment styles
+    - `theme.json` - Fragment tokens
+  </Step>
+  
+  <Step title="Import fragment">
+    Import and apply the fragment:
+    
+    ```tsx
+    import { Reshaped } from "reshaped";
+    import "reshaped/themes/reshaped/theme.css";
+    import "./themes/fragments/twitter/theme.css";
+    
+    export default function App() {
+      return (
+        <Reshaped theme={["reshaped", "twitter"]}>
+          {/* Base theme with Twitter colors */}
+        </Reshaped>
+      );
+    }
+    ```
+  </Step>
+</Steps>
+
+## Using Theme Fragments
+
+### Static Application
+
+Apply a fragment to your entire app:
+
+```tsx
+import { Reshaped, Button, View } from "reshaped";
+import "reshaped/themes/reshaped/theme.css";
+import "./themes/fragments/spotify/theme.css";
+
+export default function App() {
+  return (
+    <Reshaped theme={["reshaped", "spotify"]}>
+      <View padding={4}>
+        <Button color="primary">
+          This button uses Spotify green
+        </Button>
+      </View>
+    </Reshaped>
+  );
+}
+```
+
+### Dynamic Fragment Loading
+
+Load fragments dynamically based on user or context:
+
+```tsx
+import { useState } from "react";
+import { Reshaped, Button, View, DropdownMenu } from "reshaped";
+
+// Import all fragments
+import "reshaped/themes/reshaped/theme.css";
+import "./themes/fragments/twitter/theme.css";
+import "./themes/fragments/spotify/theme.css";
+import "./themes/fragments/github/theme.css";
+
+export default function App() {
+  const [brand, setBrand] = useState<string>("twitter");
+  
+  return (
+    <Reshaped theme={["reshaped", brand]}>
+      <View padding={4} gap={4}>
+        <DropdownMenu>
+          <DropdownMenu.Trigger>
+            {(attributes) => (
+              <Button attributes={attributes}>
+                Brand: {brand}
+              </Button>
+            )}
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            <DropdownMenu.Item onSelect={() => setBrand("twitter")}>
+              Twitter
+            </DropdownMenu.Item>
+            <DropdownMenu.Item onSelect={() => setBrand("spotify")}>
+              Spotify
+            </DropdownMenu.Item>
+            <DropdownMenu.Item onSelect={() => setBrand("github")}>
+              GitHub
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu>
+        
+        <Button color="primary">
+          Primary button with {brand} colors
+        </Button>
+      </View>
+    </Reshaped>
+  );
+}
+```
+
+### Scoped Fragments
+
+Apply fragments to specific sections:
+
+```tsx
+import { Reshaped, Theme, View, Card, Button } from "reshaped";
+import "reshaped/themes/reshaped/theme.css";
+import "./themes/fragments/twitter/theme.css";
+import "./themes/fragments/spotify/theme.css";
+
+export default function Dashboard() {
+  return (
+    <Reshaped theme="reshaped">
+      <View padding={4} gap={4}>
+        {/* Default theme */}
+        <Card>
+          <Button color="primary">Default primary</Button>
+        </Card>
+        
+        {/* Twitter fragment scope */}
+        <Theme name={["reshaped", "twitter"]}>
+          <Card>
+            <Button color="primary">Twitter blue primary</Button>
+          </Card>
+        </Theme>
+        
+        {/* Spotify fragment scope */}
+        <Theme name={["reshaped", "spotify"]}>
+          <Card>
+            <Button color="primary">Spotify green primary</Button>
+          </Card>
+        </Theme>
+      </View>
+    </Reshaped>
+  );
+}
+```
+
+## Runtime Fragment Generation
+
+Generate theme fragments on-the-fly from user input:
+
+```tsx
+import { useState, useLayoutEffect } from "react";
+import { Reshaped, Theme, Button, View, TextField } from "reshaped";
+import { getThemeCSS } from "reshaped/themes";
+
+export default function CustomBrandApp() {
+  const [brandColor, setBrandColor] = useState("#FF6B6B");
+  const [themeCSS, setThemeCSS] = useState("");
+  
+  useLayoutEffect(() => {
+    // Generate theme CSS from brand color
+    const css = getThemeCSS(
+      "custom-brand",
+      {
+        color: {
+          backgroundPrimary: { hex: brandColor },
+          // Auto-generate highlighted variant
+          backgroundPrimaryHighlighted: { 
+            hex: adjustBrightness(brandColor, -10) 
+          },
+        },
+      }
+    );
+    setThemeCSS(css);
+  }, [brandColor]);
+  
+  return (
+    <Reshaped theme="reshaped">
+      <View padding={4} gap={4}>
+        <TextField
+          name="brand-color"
+          label="Brand color"
+          value={brandColor}
+          onChange={(args) => setBrandColor(args.value)}
+        />
+        
+        <style>{themeCSS}</style>
+        <Theme name={["reshaped", "custom-brand"]}>
+          <Button color="primary">
+            Preview with custom color
+          </Button>
+        </Theme>
+      </View>
+    </Reshaped>
+  );
+}
+
+// Helper to adjust color brightness
+function adjustBrightness(hex: string, percent: number): string {
+  const num = parseInt(hex.replace("#", ""), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = (num >> 16) + amt;
+  const G = (num >> 8 & 0x00FF) + amt;
+  const B = (num & 0x0000FF) + amt;
+  return "#" + (
+    0x1000000 +
+    (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+    (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+    (B < 255 ? (B < 1 ? 0 : B) : 255)
+  ).toString(16).slice(1);
+}
+```
+
+## White-Label Applications
+
+Build multi-tenant apps with per-customer branding:
+
+```typescript
+// brand-config.ts
+import type { PassedThemeDefinition } from "reshaped";
+
+export const customerBrands: Record<string, PassedThemeDefinition> = {
+  acme: {
+    color: {
+      backgroundPrimary: { hex: "#FF6B6B" },
+      backgroundPrimaryHighlighted: { hex: "#FF5252" },
+    },
+  },
+  
+  globex: {
+    color: {
+      backgroundPrimary: { hex: "#4ECDC4" },
+      backgroundPrimaryHighlighted: { hex: "#45B8B0" },
+    },
+  },
+  
+  initech: {
+    color: {
+      backgroundPrimary: { hex: "#95E1D3" },
+      backgroundPrimaryHighlighted: { hex: "#86D4C5" },
+    },
+  },
+};
+```
+
+```tsx
+// app.tsx
+import { useLayoutEffect, useState } from "react";
+import { Reshaped, Theme } from "reshaped";
+import { getThemeCSS } from "reshaped/themes";
+import { customerBrands } from "./brand-config";
+
+export default function WhiteLabelApp({ customerId }: { customerId: string }) {
+  const [brandCSS, setBrandCSS] = useState("");
+  
+  useLayoutEffect(() => {
+    const brandDefinition = customerBrands[customerId];
+    if (brandDefinition) {
+      const css = getThemeCSS(`brand-${customerId}`, brandDefinition);
+      setBrandCSS(css);
+    }
+  }, [customerId]);
+  
+  return (
+    <Reshaped theme="reshaped">
+      <style>{brandCSS}</style>
+      <Theme name={["reshaped", `brand-${customerId}`]}>
+        {/* App content with customer branding */}
+      </Theme>
+    </Reshaped>
+  );
+}
+```
+
+## Fragment Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Keep fragments minimal" icon="minimize">
+    Only override essential tokens. Typically just primary colors and their variants.
+  </Card>
+  
+  <Card title="Maintain consistency" icon="layer-group">
+    Use the same fragment structure across all brands for predictable behavior.
+  </Card>
+  
+  <Card title="Test color contrast" icon="eye">
+    Ensure brand colors meet accessibility standards with `colorContrastAlgorithm`.
+  </Card>
+  
+  <Card title="Document fragments" icon="book">
+    Add comments explaining which brand each fragment represents.
+  </Card>
+  
+  <Card title="Version fragments" icon="code-branch">
+    Track fragment changes alongside your codebase for easier debugging.
+  </Card>
+  
+  <Card title="Lazy load when possible" icon="download">
+    Load fragment CSS only when needed to reduce initial bundle size.
+  </Card>
+</CardGroup>
+
+## Fragment Composition
+
+Combine multiple fragments for complex theming:
+
+```tsx
+import { Reshaped } from "reshaped";
+import "reshaped/themes/reshaped/theme.css";
+import "./themes/fragments/brand-colors/theme.css";
+import "./themes/fragments/custom-fonts/theme.css";
+import "./themes/fragments/rounded-corners/theme.css";
+
+export default function App() {
+  return (
+    <Reshaped 
+      theme={[
+        "reshaped",
+        "brand-colors",
+        "custom-fonts",
+        "rounded-corners",
+      ]}
+    >
+      {/* Combined theme from multiple fragments */}
+    </Reshaped>
+  );
+}
+```
+
+<Warning>
+  Fragments are applied in order. Later fragments override earlier ones if they define the same tokens.
+</Warning>
+
+## Generated Files
+
+When you run `npx reshaped theme`, fragments are generated to:
+
+```
+themes/
+└── fragments/
+    ├── twitter/
+    │   ├── theme.css      # CSS variables
+    │   ├── theme.json     # Token values
+    │   └── tailwind.css   # Tailwind utilities
+    ├── spotify/
+    │   ├── theme.css
+    │   ├── theme.json
+    │   └── tailwind.css
+    └── ...
+```
+
+See example fragment at `packages/reshaped/src/themes/fragments/twitter/`.
+
+## Advanced: Programmatic Fragment API
+
+Generate fragments programmatically:
+
+```typescript
+import { getThemeCSS } from "reshaped/themes";
+import type { PassedThemeDefinition } from "reshaped";
+
+// Function to create fragment from brand config
+export function createBrandFragment(
+  name: string,
+  primaryColor: string,
+  options?: {
+    highlightedColor?: string;
+    onColor?: string;
+  }
+): string {
+  const definition: PassedThemeDefinition = {
+    color: {
+      backgroundPrimary: { hex: primaryColor },
+      backgroundPrimaryHighlighted: { 
+        hex: options?.highlightedColor || primaryColor 
+      },
+      onBackgroundPrimary: { 
+        hex: options?.onColor || "#FFFFFF" 
+      },
+    },
+  };
+  
+  return getThemeCSS(name, definition);
+}
+
+// Usage
+const twitterFragment = createBrandFragment(
+  "twitter",
+  "#1da1f2",
+  { highlightedColor: "#1a90da" }
+);
+```
+
+## Related Resources
+
+- [ReshapedConfig](/types/reshaped-config) - Configuration reference
+- [Creating Custom Themes](/guides/custom-themes) - Full theme customization
+- [Reshaped Component](/components/reshaped) - Applying themes
+- [Theme Component](/components/theme) - Scoped themes

@@ -1,0 +1,108 @@
+---
+title: Container
+description: A wrapper component that constrains content width with horizontal padding
+---
+
+Container is a layout component that provides consistent horizontal padding and maximum width constraints for content. It's commonly used to center content and maintain readable line lengths.
+
+## Import
+
+```tsx
+import { Container } from 'reshaped';
+```
+
+## Basic Usage
+
+```tsx
+<Container>
+  <View padding={4} backgroundColor="neutral-faded">
+    Content is centered with horizontal padding
+  </View>
+</Container>
+```
+
+## Custom Padding
+
+```tsx
+<Container padding={8}>
+  <View backgroundColor="neutral-faded">
+    Content with larger horizontal padding
+  </View>
+</Container>
+```
+
+## Responsive Padding
+
+```tsx
+<Container padding={{ s: 4, m: 6, l: 8 }}>
+  <View backgroundColor="neutral-faded">
+    Padding increases on larger viewports
+  </View>
+</Container>
+```
+
+## Width Control
+
+```tsx
+<Container width="800px">
+  <View backgroundColor="neutral-faded">
+    Content with custom max width
+  </View>
+</Container>
+```
+
+## Vertical Alignment
+
+```tsx
+<Container height="100vh" align="center" justify="center">
+  <View padding={4} backgroundColor="neutral-faded">
+    Centered vertically and horizontally
+  </View>
+</Container>
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>
+
+<ParamField path="padding" type="Responsive<number>" default="4">
+  Component inline padding (horizontal), base unit token number multiplier
+</ParamField>
+
+<ParamField path="width" type="Responsive<string | number>">
+  Component width, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="height" type="Responsive<string | number>">
+  Component height, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="maxHeight" type="Responsive<string | number>">
+  Component max height, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="align" type="Responsive<'start' | 'center' | 'end' | 'stretch' | 'baseline'>">
+  Vertical alignment of children
+</ParamField>
+
+<ParamField path="justify" type="Responsive<'start' | 'center' | 'end' | 'space-between' | 'space-around'>">
+  Horizontal alignment of children
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes<HTMLDivElement>">
+  Additional attributes for the root element
+</ParamField>
+
+<Note>
+  Container automatically sets `maxWidth="100%"` to prevent overflow.
+</Note>
+
+<Note>
+  The default padding value of 4 provides consistent spacing across most layouts. Adjust based on your design needs.
+</Note>

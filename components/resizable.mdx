@@ -1,0 +1,220 @@
+---
+title: Resizable
+description: A layout component for creating resizable panel layouts with draggable handles
+---
+
+Resizable creates flexible panel layouts where users can drag handles to adjust panel sizes. It supports both horizontal and vertical layouts with customizable handles.
+
+## Import
+
+```tsx
+import { Resizable } from 'reshaped';
+```
+
+## Basic Usage
+
+```tsx
+<Resizable height="400px">
+  <Resizable.Item>
+    <View padding={4} backgroundColor="neutral-faded" height="100%">
+      Panel 1
+    </View>
+  </Resizable.Item>
+  <Resizable.Handle />
+  <Resizable.Item>
+    <View padding={4} backgroundColor="primary-faded" height="100%">
+      Panel 2
+    </View>
+  </Resizable.Item>
+</Resizable>
+```
+
+## Vertical Layout
+
+```tsx
+<Resizable direction="column" height="600px">
+  <Resizable.Item>
+    <View padding={4} backgroundColor="neutral-faded" height="100%">
+      Top Panel
+    </View>
+  </Resizable.Item>
+  <Resizable.Handle />
+  <Resizable.Item>
+    <View padding={4} backgroundColor="primary-faded" height="100%">
+      Bottom Panel
+    </View>
+  </Resizable.Item>
+</Resizable>
+```
+
+## Multiple Panels
+
+```tsx
+<Resizable height="400px">
+  <Resizable.Item>
+    <View padding={4} backgroundColor="neutral-faded" height="100%">
+      Sidebar
+    </View>
+  </Resizable.Item>
+  <Resizable.Handle />
+  <Resizable.Item>
+    <View padding={4} backgroundColor="primary-faded" height="100%">
+      Main Content
+    </View>
+  </Resizable.Item>
+  <Resizable.Handle />
+  <Resizable.Item>
+    <View padding={4} backgroundColor="neutral-faded" height="100%">
+      Right Panel
+    </View>
+  </Resizable.Item>
+</Resizable>
+```
+
+## With Size Constraints
+
+```tsx
+<Resizable height="400px">
+  <Resizable.Item minSize="200px" maxSize="400px" defaultSize="250px">
+    <View padding={4} backgroundColor="neutral-faded" height="100%">
+      Panel with min 200px, max 400px, default 250px
+    </View>
+  </Resizable.Item>
+  <Resizable.Handle />
+  <Resizable.Item>
+    <View padding={4} backgroundColor="primary-faded" height="100%">
+      Flexible Panel
+    </View>
+  </Resizable.Item>
+</Resizable>
+```
+
+## Custom Handle
+
+```tsx
+<Resizable height="400px">
+  <Resizable.Item>
+    <View padding={4} backgroundColor="neutral-faded" height="100%">
+      Panel 1
+    </View>
+  </Resizable.Item>
+  <Resizable.Handle>
+    {(attributes, props) => (
+      <View
+        backgroundColor={props.status === "dragging" ? "primary" : "primary-faded"}
+        padding={props.direction === "column" ? 1 : 8}
+        height="100%"
+        align="center"
+        justify="center"
+        borderRadius="small"
+        animated
+      >
+        <Button attributes={attributes} type="button">
+          Drag me
+        </Button>
+      </View>
+    )}
+  </Resizable.Handle>
+  <Resizable.Item>
+    <View padding={4} backgroundColor="primary-faded" height="100%">
+      Panel 2
+    </View>
+  </Resizable.Item>
+</Resizable>
+```
+
+## Bordered Variant
+
+```tsx
+<Resizable height="400px" variant="bordered">
+  <Resizable.Item>
+    <View padding={4} backgroundColor="neutral-faded" height="100%">
+      Panel 1
+    </View>
+  </Resizable.Item>
+  <Resizable.Handle />
+  <Resizable.Item>
+    <View padding={4} backgroundColor="primary-faded" height="100%">
+      Panel 2
+    </View>
+  </Resizable.Item>
+</Resizable>
+```
+
+## Props
+
+### Resizable Props
+
+<ParamField path="children" type="React.ReactNode">
+  Component content (Resizable.Item and Resizable.Handle components)
+</ParamField>
+
+<ParamField path="direction" type="'row' | 'column'" default="row">
+  Component content direction with the resize handle rendered in between the children
+  - `row`: Horizontal layout with vertical resize handles
+  - `column`: Vertical layout with horizontal resize handles
+</ParamField>
+
+<ParamField path="variant" type="'bordered' | 'borderless'" default="borderless">
+  Component render variant
+  - `bordered`: Adds borders to panels
+  - `borderless`: No borders
+</ParamField>
+
+<ParamField path="height" type="Responsive<string | number>">
+  Container height, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="gap" type="Responsive<number>" default="2">
+  Gap between panels, base unit token number multiplier
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes<HTMLDivElement>">
+  Additional attributes for the root element
+</ParamField>
+
+### Resizable.Item Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting content
+</ParamField>
+
+<ParamField path="minSize" type="string (e.g., '200px')">
+  Minimum size of the resizable pane in pixels
+</ParamField>
+
+<ParamField path="maxSize" type="string (e.g., '500px')">
+  Maximum size of the resizable pane in pixels
+</ParamField>
+
+<ParamField path="defaultSize" type="string (e.g., '300px')">
+  Default size of the resizable pane in pixels
+</ParamField>
+
+### Resizable.Handle Props
+
+<ParamField path="children" type="(attributes, props) => React.ReactNode">
+  Render function for custom resize handles. Receives:
+  - `attributes`: Object with `ref` to be spread on the draggable element
+  - `props`: Object with `direction` ('row' | 'column') and `status` ('idle' | 'dragging')
+</ParamField>
+
+<Note>
+  The Resizable component requires a height to be set. Panels will adjust their widths/heights based on user interaction.
+</Note>
+
+<Note>
+  Size constraints (`minSize`, `maxSize`) must be specified in pixels. The component prevents resizing beyond these bounds.
+</Note>
+
+<Note>
+  When using custom handles, make sure to spread the `attributes` object (especially the `ref`) on your draggable element.
+</Note>
+
+<Note>
+  The resize handle can be clicked (jumps to position) or dragged. The drag interaction prevents page scrolling during resize.
+</Note>

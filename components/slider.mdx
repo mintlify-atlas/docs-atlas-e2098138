@@ -1,0 +1,301 @@
+---
+title: "Slider"
+description: "A slider component for selecting numeric values or ranges"
+icon: "sliders"
+---
+
+Slider is a form component that allows users to select a numeric value or range by dragging a thumb along a track. It supports both single value and range selection modes.
+
+## Basic usage
+
+```jsx
+import { Slider } from 'reshaped';
+
+function Example() {
+  return (
+    <Slider
+      name="volume"
+      min={0}
+      max={100}
+    />
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { Slider } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState(50);
+
+  return (
+    <Slider
+      name="brightness"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      min={0}
+      max={100}
+    />
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { Slider } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <Slider
+      name="opacity"
+      defaultValue={75}
+      min={0}
+      max={100}
+      onChange={({ name, value }) => console.log(name, value)}
+    />
+  );
+}
+```
+
+## Range slider
+
+```jsx
+import { useState } from 'react';
+import { Slider } from 'reshaped';
+
+function RangeExample() {
+  const [minValue, setMinValue] = useState(20);
+  const [maxValue, setMaxValue] = useState(80);
+
+  return (
+    <Slider
+      range
+      name="priceRange"
+      minValue={minValue}
+      maxValue={maxValue}
+      onChange={({ minValue, maxValue }) => {
+        setMinValue(minValue);
+        setMaxValue(maxValue);
+      }}
+      min={0}
+      max={100}
+    />
+  );
+}
+```
+
+## With step
+
+```jsx
+import { Slider } from 'reshaped';
+
+<Slider
+  name="rating"
+  min={0}
+  max={10}
+  step={1}
+  defaultValue={5}
+/>
+```
+
+## Custom value rendering
+
+```jsx
+import { Slider } from 'reshaped';
+
+<Slider
+  name="price"
+  min={0}
+  max={1000}
+  renderValue={({ value }) => `$${value}`}
+  defaultValue={500}
+/>
+```
+
+## Vertical orientation
+
+```jsx
+import { Slider } from 'reshaped';
+
+<Slider
+  name="height"
+  orientation="vertical"
+  min={0}
+  max={100}
+  defaultValue={50}
+/>
+```
+
+## Disabled state
+
+```jsx
+import { Slider } from 'reshaped';
+
+<Slider
+  name="disabled"
+  disabled
+  min={0}
+  max={100}
+  defaultValue={50}
+/>
+```
+
+## With labels
+
+```jsx
+import { Slider, View, Text } from 'reshaped';
+import { useState } from 'react';
+
+function LabelExample() {
+  const [value, setValue] = useState(50);
+
+  return (
+    <View gap={2}>
+      <View direction="row" justify="space-between">
+        <Text variant="body-2">Volume</Text>
+        <Text variant="body-2" weight="medium">{value}%</Text>
+      </View>
+      <Slider
+        name="volume"
+        value={value}
+        onChange={({ value }) => setValue(value)}
+        min={0}
+        max={100}
+      />
+    </View>
+  );
+}
+```
+
+## Price range example
+
+```jsx
+import { Slider, View, Text } from 'reshaped';
+import { useState } from 'react';
+
+function PriceRangeExample() {
+  const [minValue, setMinValue] = useState(100);
+  const [maxValue, setMaxValue] = useState(500);
+
+  return (
+    <View gap={3}>
+      <Text weight="medium">Price Range</Text>
+      <Slider
+        range
+        name="price"
+        minValue={minValue}
+        maxValue={maxValue}
+        onChange={({ minValue, maxValue }) => {
+          setMinValue(minValue);
+          setMaxValue(maxValue);
+        }}
+        min={0}
+        max={1000}
+        step={10}
+        renderValue={({ value }) => `$${value}`}
+      />
+      <View direction="row" gap={2}>
+        <Text variant="body-2" color="neutral-faded">
+          ${minValue} - ${maxValue}
+        </Text>
+      </View>
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+Slider follows accessibility best practices:
+
+- Uses ARIA slider role
+- Keyboard accessible (Arrow keys to adjust, Home/End for min/max)
+- Screen reader announces current value
+- Visual focus indicators
+- Supports custom value formatting for better announcements
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the slider input element
+</ParamField>
+
+<ParamField path="value" type="number">
+  Value of the slider, enables controlled mode (single value mode)
+</ParamField>
+
+<ParamField path="defaultValue" type="number">
+  Default value of the slider, enables uncontrolled mode (single value mode)
+</ParamField>
+
+<ParamField path="minValue" type="number">
+  Minimum value of the slider (range mode)
+</ParamField>
+
+<ParamField path="maxValue" type="number">
+  Maximum value of the slider (range mode)
+</ParamField>
+
+<ParamField path="defaultMinValue" type="number">
+  Default minimum value of the slider, enables uncontrolled mode (range mode)
+</ParamField>
+
+<ParamField path="defaultMaxValue" type="number">
+  Default maximum value of the slider, enables uncontrolled mode (range mode)
+</ParamField>
+
+<ParamField path="min" type="number" default="0">
+  Minimum value of the slider range
+</ParamField>
+
+<ParamField path="max" type="number" default="100">
+  Maximum value of the slider range
+</ParamField>
+
+<ParamField path="step" type="number">
+  Step of the slider
+</ParamField>
+
+<ParamField path="range" type="boolean">
+  Enables range slider with two thumbs
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the slider user interaction
+</ParamField>
+
+<ParamField path="orientation" type="'horizontal' | 'vertical'" default="horizontal">
+  Orientation of the slider
+</ParamField>
+
+<ParamField path="renderValue" type="(args: { value: number }) => string | false">
+  Render a custom value in the thumb tooltip. Pass `false` to hide tooltip.
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: number } | { minValue: number, maxValue: number }) => void">
+  Callback when the slider value changes
+</ParamField>
+
+<ParamField path="onChangeCommit" type="(args: { value: number } | { minValue: number, maxValue: number }) => void">
+  Callback when the user commits the change by releasing the thumb
+</ParamField>
+
+<ParamField path="minName" type="string">
+  Name of the slider min value input element (for range mode with separate inputs)
+</ParamField>
+
+<ParamField path="maxName" type="string">
+  Name of the slider max value input element (for range mode with separate inputs)
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>

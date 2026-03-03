@@ -1,0 +1,171 @@
+---
+title: 'CLI Overview'
+description: 'Command-line interface for Reshaped theme generation'
+---
+
+## Overview
+
+The Reshaped CLI provides commands for generating custom themes from configuration files. It compiles theme definitions into CSS variables, JSON data, and Tailwind CSS configurations.
+
+## Installation
+
+The CLI is included with the `reshaped` package:
+
+```bash
+npm install reshaped
+```
+
+The CLI binary is available at:
+
+```bash
+node_modules/.bin/reshaped
+```
+
+## Available Commands
+
+### theming
+
+Generate custom themes from a Reshaped configuration file.
+
+```bash
+reshaped theming --output <path> [--config <path>]
+```
+
+See [theming command](/cli/theming-command) for detailed documentation.
+
+## Configuration Files
+
+The CLI automatically searches for configuration files in the following order:
+
+1. `reshaped.config.js`
+2. `reshaped.config.cjs`
+3. `reshaped.config.ts`
+
+You can also specify a custom config path using the `--config` flag.
+
+## Quick Start
+
+### 1. Create a configuration file
+
+Create `reshaped.config.js` in your project root:
+
+```js reshaped.config.js
+export default {
+  themes: {
+    custom: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+        backgroundPrimaryHighlighted: { hex: '#0052cc' },
+      },
+    },
+  },
+};
+```
+
+### 2. Run the CLI
+
+```bash
+reshaped theming --output ./themes
+```
+
+### 3. Output structure
+
+The CLI generates the following files for each theme:
+
+```
+themes/
+└── custom/
+    ├── theme.css       # CSS custom properties
+    ├── theme.json      # JSON theme data
+    ├── tailwind.css    # Tailwind 4 configuration
+    └── media.css       # Media query styles (if needed)
+```
+
+## Usage in Package Scripts
+
+Add to your `package.json`:
+
+```json package.json
+{
+  "scripts": {
+    "build:themes": "reshaped theming --output ./public/themes",
+    "watch:themes": "reshaped theming --output ./public/themes --watch"
+  }
+}
+```
+
+Then run:
+
+```bash
+npm run build:themes
+```
+
+## CLI Output
+
+When running the CLI, you'll see output like:
+
+```bash
+Using Reshaped config at /path/to/reshaped.config.js
+Processing Reshaped themes...
+Compiled custom theme
+Compiled custom-dark theme fragment
+```
+
+## Error Handling
+
+### Config not found
+
+If no configuration file is found:
+
+```
+Error: Reshaped config not found
+```
+
+Ensure you have a `reshaped.config.js`, `reshaped.config.cjs`, or `reshaped.config.ts` file in your project root, or specify the path with `--config`.
+
+### Invalid configuration
+
+If your configuration is invalid:
+
+```
+Error: Invalid theme definition
+```
+
+Verify your configuration follows the [ReshapedConfig](/configuration/reshaped-config) type definition.
+
+## Examples
+
+### Basic theme generation
+
+```bash
+reshaped theming --output ./themes
+```
+
+### Custom config path
+
+```bash
+reshaped theming --output ./themes --config ./config/themes.config.js
+```
+
+### Using npm scripts
+
+```json
+{
+  "scripts": {
+    "prebuild": "reshaped theming -o ./public/themes",
+    "build": "next build"
+  }
+}
+```
+
+## Next Steps
+
+- Learn about the [theming command](/cli/theming-command) in detail
+- Configure your [Reshaped config file](/configuration/reshaped-config)
+- Set up [PostCSS](/configuration/postcss) and [Tailwind](/configuration/tailwind) integration
+
+## Related
+
+- [theming Command](/cli/theming-command)
+- [Reshaped Config](/configuration/reshaped-config)
+- [Theme Customization Guide](/guides/custom-themes)

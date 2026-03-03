@@ -1,0 +1,327 @@
+---
+title: MenuItem
+description: Interactive list item component for menus and action lists
+---
+
+The MenuItem component represents an actionable item within a menu or list. It supports icons, custom content slots, and various states like selected and highlighted.
+
+## Basic Usage
+
+```jsx
+import { MenuItem } from 'reshaped';
+
+function App() {
+  return (
+    <MenuItem onClick={() => console.log('Clicked')}>
+      Menu Item
+    </MenuItem>
+  );
+}
+```
+
+## With Icons
+
+Add an icon to the start of the menu item:
+
+```jsx
+import { MenuItem } from 'reshaped';
+import IconHome from '@/icons/Home';
+import IconSettings from '@/icons/Settings';
+import IconUser from '@/icons/User';
+
+<MenuItem icon={IconHome} onClick={() => navigate('/')}>
+  Home
+</MenuItem>
+<MenuItem icon={IconUser} onClick={() => navigate('/profile')}>
+  Profile
+</MenuItem>
+<MenuItem icon={IconSettings} onClick={() => navigate('/settings')}>
+  Settings
+</MenuItem>
+```
+
+## Sizes
+
+MenuItem supports three size options:
+
+```jsx
+<MenuItem size="small">Small Item</MenuItem>
+<MenuItem size="medium">Medium Item</MenuItem>
+<MenuItem size="large">Large Item</MenuItem>
+```
+
+## Colors
+
+MenuItem can be displayed in multiple colors:
+
+```jsx
+<MenuItem color="neutral">Neutral Item</MenuItem>
+<MenuItem color="primary">Primary Item</MenuItem>
+<MenuItem color="critical">Delete Item</MenuItem>
+```
+
+## States
+
+### Selected State
+
+Highlight a menu item as selected:
+
+```jsx
+<MenuItem selected>
+  Selected Item
+</MenuItem>
+```
+
+### Highlighted State
+
+Highlight a menu item (e.g., for keyboard navigation):
+
+```jsx
+<MenuItem highlighted>
+  Highlighted Item
+</MenuItem>
+```
+
+### Disabled State
+
+Disable user interaction:
+
+```jsx
+<MenuItem disabled>
+  Disabled Item
+</MenuItem>
+```
+
+## Custom Slots
+
+Use start and end slots for custom content:
+
+```jsx
+import { MenuItem, Badge, Switch } from 'reshaped';
+
+<MenuItem
+  startSlot={<Avatar src="/avatar.jpg" size="small" />}
+  endSlot={<Badge>New</Badge>}
+>
+  User Profile
+</MenuItem>
+
+<MenuItem
+  endSlot={<Switch checked />}
+>
+  Enable notifications
+</MenuItem>
+```
+
+## Navigation
+
+Use MenuItem for navigation:
+
+```jsx
+<MenuItem href="/dashboard">
+  Dashboard
+</MenuItem>
+```
+
+## Rounded Corners
+
+Apply rounded corners to the menu item:
+
+```jsx
+<MenuItem roundedCorners>
+  Rounded Item
+</MenuItem>
+```
+
+## MenuItem Aligner
+
+Align menu items within a container:
+
+```jsx
+import { MenuItem } from 'reshaped';
+
+function App() {
+  return (
+    <MenuItem.Aligner side="inline">
+      <MenuItem>Aligned Item</MenuItem>
+    </MenuItem.Aligner>
+  );
+}
+```
+
+## Menu Examples
+
+### Basic Menu
+
+```jsx
+import { MenuItem, View } from 'reshaped';
+import IconEdit from '@/icons/Edit';
+import IconCopy from '@/icons/Copy';
+import IconTrash from '@/icons/Trash';
+
+function ContextMenu() {
+  return (
+    <View gap={1} padding={2} backgroundColor="elevated">
+      <MenuItem icon={IconEdit} onClick={handleEdit}>
+        Edit
+      </MenuItem>
+      <MenuItem icon={IconCopy} onClick={handleCopy}>
+        Duplicate
+      </MenuItem>
+      <MenuItem icon={IconTrash} color="critical" onClick={handleDelete}>
+        Delete
+      </MenuItem>
+    </View>
+  );
+}
+```
+
+### Navigation Menu
+
+```jsx
+import { MenuItem, View } from 'reshaped';
+import IconHome from '@/icons/Home';
+import IconUser from '@/icons/User';
+import IconSettings from '@/icons/Settings';
+
+function NavigationMenu({ activePath }) {
+  return (
+    <View gap={1}>
+      <MenuItem
+        icon={IconHome}
+        href="/"
+        selected={activePath === '/'}
+      >
+        Home
+      </MenuItem>
+      <MenuItem
+        icon={IconUser}
+        href="/profile"
+        selected={activePath === '/profile'}
+      >
+        Profile
+      </MenuItem>
+      <MenuItem
+        icon={IconSettings}
+        href="/settings"
+        selected={activePath === '/settings'}
+      >
+        Settings
+      </MenuItem>
+    </View>
+  );
+}
+```
+
+### Keyboard Navigation
+
+```jsx
+function KeyboardMenu() {
+  const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const items = ['Item 1', 'Item 2', 'Item 3'];
+  
+  return (
+    <View gap={1}>
+      {items.map((item, index) => (
+        <MenuItem
+          key={index}
+          highlighted={highlightedIndex === index}
+          onClick={() => handleSelect(item)}
+        >
+          {item}
+        </MenuItem>
+      ))}
+    </View>
+  );
+}
+```
+
+## Props
+
+### MenuItem
+
+<ParamField path="color" type="'neutral' | 'critical' | 'primary'" default="primary">
+  Component color based on color tokens
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large'" default="medium">
+  Component size (responsive)
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  SVG component for the icon at the start position
+</ParamField>
+
+<ParamField path="startSlot" type="React.ReactNode">
+  Node for inserting custom content at the start side of the component
+</ParamField>
+
+<ParamField path="endSlot" type="React.ReactNode">
+  Node for inserting custom content at the end side of the component
+</ParamField>
+
+<ParamField path="selected" type="boolean" default="false">
+  Highlight the component as selected
+</ParamField>
+
+<ParamField path="highlighted" type="boolean" default="false">
+  Highlight the component as hovered or focused (e.g., for keyboard navigation)
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disable user interaction
+</ParamField>
+
+<ParamField path="roundedCorners" type="boolean" default="false">
+  Round the corners of the component (responsive)
+</ParamField>
+
+<ParamField path="href" type="string">
+  URL to navigate to when clicked
+</ParamField>
+
+<ParamField path="onClick" type="(event: React.MouseEvent) => void">
+  Callback when the item is clicked
+</ParamField>
+
+<ParamField path="stopPropagation" type="boolean">
+  Stop event propagation when clicked
+</ParamField>
+
+<ParamField path="as" type="React.ElementType">
+  Override the root element type
+</ParamField>
+
+<ParamField path="render" type="function">
+  Custom render function for advanced use cases
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode" required>
+  Item content
+</ParamField>
+
+### MenuItem.Aligner
+
+<ParamField path="side" type="'start' | 'end' | 'inline'" default="inline">
+  Side to align the menu item to
+</ParamField>
+
+<ParamField path="children" type="React.ReactElement" required>
+  MenuItem element to align
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>

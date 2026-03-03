@@ -1,0 +1,359 @@
+---
+title: Carousel
+description: Display scrollable content with navigation controls
+---
+
+The Carousel component creates a horizontally scrollable container for displaying multiple items with navigation controls.
+
+## Basic Usage
+
+```jsx
+import { Carousel, Card, Text } from 'reshaped';
+
+function App() {
+  return (
+    <Carousel>
+      <Card padding={4}>
+        <Text>Item 1</Text>
+      </Card>
+      <Card padding={4}>
+        <Text>Item 2</Text>
+      </Card>
+      <Card padding={4}>
+        <Text>Item 3</Text>
+      </Card>
+    </Carousel>
+  );
+}
+```
+
+## Visible Items
+
+Control how many items are visible at once:
+
+```jsx
+<Carousel visibleItems={3}>
+  {/* Items */}
+</Carousel>
+```
+
+## Responsive Visible Items
+
+Adjust visible items across breakpoints:
+
+```jsx
+<Carousel visibleItems={{ s: 1, m: 2, l: 3 }}>
+  {/* Items */}
+</Carousel>
+```
+
+## Gap Between Items
+
+Set spacing between carousel items:
+
+```jsx
+<Carousel gap={2}>
+  {/* Items with small gap */}
+</Carousel>
+
+<Carousel gap={4}>
+  {/* Items with default gap */}
+</Carousel>
+
+<Carousel gap={{ s: 2, m: 3, l: 4 }}>
+  {/* Responsive gap */}
+</Carousel>
+```
+
+## Bleed
+
+Extend carousel items beyond container edges:
+
+```jsx
+<Carousel bleed={4}>
+  {/* Items with bleed effect */}
+</Carousel>
+
+<Carousel bleed={{ s: 2, m: 4, l: 6 }}>
+  {/* Responsive bleed */}
+</Carousel>
+```
+
+## Hide Navigation
+
+Remove navigation controls:
+
+```jsx
+<Carousel navigationDisplay="hidden">
+  {/* Items without navigation */}
+</Carousel>
+```
+
+## Programmatic Control
+
+Control carousel navigation programmatically:
+
+```jsx
+import { Carousel, Card, View, Button } from 'reshaped';
+
+function ControlledCarousel() {
+  const carouselRef = React.useRef();
+
+  return (
+    <View gap={4}>
+      <Carousel instanceRef={carouselRef}>
+        <Card>Item 1</Card>
+        <Card>Item 2</Card>
+        <Card>Item 3</Card>
+      </Carousel>
+      
+      <View direction="row" gap={2}>
+        <Button onClick={() => carouselRef.current?.navigateBack()}>
+          Previous
+        </Button>
+        <Button onClick={() => carouselRef.current?.navigateForward()}>
+          Next
+        </Button>
+        <Button onClick={() => carouselRef.current?.navigateTo(0)}>
+          Go to First
+        </Button>
+      </View>
+    </View>
+  );
+}
+```
+
+## Track Changes
+
+Respond to carousel navigation:
+
+```jsx
+function TrackedCarousel() {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  return (
+    <View gap={2}>
+      <Text>Current item: {currentIndex + 1}</Text>
+      <Carousel onChange={({ index }) => setCurrentIndex(index)}>
+        <Card>Item 1</Card>
+        <Card>Item 2</Card>
+        <Card>Item 3</Card>
+      </Carousel>
+    </View>
+  );
+}
+```
+
+## Complete Examples
+
+### Product Carousel
+
+```jsx
+import { Carousel, Card, Image, View, Text, Button } from 'reshaped';
+
+function ProductCarousel({ products }) {
+  return (
+    <Carousel visibleItems={{ s: 1, m: 2, l: 3, xl: 4 }} gap={4}>
+      {products.map(product => (
+        <Card key={product.id} elevated>
+          <Image
+            src={product.image}
+            alt={product.name}
+            aspectRatio={1}
+          />
+          <View gap={2} padding={4}>
+            <View gap={1}>
+              <Text variant="body-2" weight="semibold">
+                {product.name}
+              </Text>
+              <Text variant="caption-1" color="neutral-faded">
+                {product.category}
+              </Text>
+            </View>
+            <View direction="row" align="center" justify="space-between">
+              <Text variant="body-2" weight="bold">
+                ${product.price}
+              </Text>
+              <Button size="small">View</Button>
+            </View>
+          </View>
+        </Card>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+### Testimonial Carousel
+
+```jsx
+import { Carousel, Card, View, Text, Avatar } from 'reshaped';
+
+function TestimonialCarousel({ testimonials }) {
+  return (
+    <Carousel visibleItems={1} gap={4}>
+      {testimonials.map(testimonial => (
+        <Card key={testimonial.id} padding={6}>
+          <View gap={4}>
+            <Text variant="body-1" align="center">
+              "{testimonial.quote}"
+            </Text>
+            <View direction="row" gap={3} align="center" justify="center">
+              <Avatar
+                src={testimonial.author.avatar}
+                alt={testimonial.author.name}
+                size={12}
+              />
+              <View>
+                <Text variant="body-3" weight="semibold">
+                  {testimonial.author.name}
+                </Text>
+                <Text variant="caption-1" color="neutral-faded">
+                  {testimonial.author.title}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Card>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+### Image Gallery
+
+```jsx
+import { Carousel, Image, View, Text } from 'reshaped';
+
+function ImageGallery({ images }) {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const carouselRef = React.useRef();
+
+  return (
+    <View gap={3}>
+      <Carousel
+        instanceRef={carouselRef}
+        visibleItems={1}
+        onChange={({ index }) => setCurrentIndex(index)}
+      >
+        {images.map((image, index) => (
+          <Image
+            key={index}
+            src={image.src}
+            alt={image.alt}
+            aspectRatio={16 / 9}
+          />
+        ))}
+      </Carousel>
+      
+      <View direction="row" gap={2} justify="center">
+        {images.map((_, index) => (
+          <View
+            key={index}
+            width={2}
+            height={2}
+            borderRadius="circular"
+            backgroundColor={index === currentIndex ? 'primary' : 'neutral-faded'}
+            attributes={{
+              onClick: () => carouselRef.current?.navigateTo(index),
+              style: { cursor: 'pointer' }
+            }}
+          />
+        ))}
+      </View>
+      
+      <Text variant="caption-1" align="center" color="neutral-faded">
+        {currentIndex + 1} / {images.length}
+      </Text>
+    </View>
+  );
+}
+```
+
+### Featured Content Carousel
+
+```jsx
+import { Carousel, Card, View, Text, Button, Image } from 'reshaped';
+
+function FeaturedCarousel({ items }) {
+  return (
+    <Carousel 
+      visibleItems={{ s: 1, l: 1.2 }}
+      gap={4}
+      bleed={{ s: 4, l: 8 }}
+    >
+      {items.map(item => (
+        <Card key={item.id} padding={0} elevated>
+          <View direction="row">
+            <View.Item grow>
+              <Image
+                src={item.image}
+                alt={item.title}
+                aspectRatio={16 / 9}
+              />
+            </View.Item>
+            <View.Item grow>
+              <View gap={4} padding={6}>
+                <View gap={2}>
+                  <Text variant="featured-3" weight="bold">
+                    {item.title}
+                  </Text>
+                  <Text variant="body-2" color="neutral-faded">
+                    {item.description}
+                  </Text>
+                </View>
+                <Button href={item.link}>Learn More</Button>
+              </View>
+            </View.Item>
+          </View>
+        </Card>
+      ))}
+    </Carousel>
+  );
+}
+```
+
+## Props
+
+<ParamField path="visibleItems" type="number | responsive" default="undefined">
+  Number of items visible at once in the container. Can be responsive.
+</ParamField>
+
+<ParamField path="gap" type="number | responsive" default="3">
+  Gap between items in the container, base unit multiplier. Can be responsive.
+</ParamField>
+
+<ParamField path="bleed" type="number | responsive" default="undefined">
+  Apply negative margins to extend content beyond container edges. Base unit multiplier. Can be responsive.
+</ParamField>
+
+<ParamField path="navigationDisplay" type="string" default="undefined">
+  Control navigation controls visibility.
+  
+  Options: `hidden`
+</ParamField>
+
+<ParamField path="instanceRef" type="React.Ref" default="undefined">
+  Ref accessor for carousel methods: `navigateBack()`, `navigateForward()`, `navigateTo(index)`.
+</ParamField>
+
+<ParamField path="onChange" type="function" default="undefined">
+  Callback when the first visible carousel index changes. Receives `{ index }` as argument.
+</ParamField>
+
+<ParamField path="onScroll" type="function" default="undefined">
+  Callback when the carousel scrolls. Receives scroll event as argument.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" default="undefined">
+  Node for inserting children. Each child is rendered as a carousel item.
+</ParamField>

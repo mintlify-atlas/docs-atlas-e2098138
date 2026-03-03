@@ -1,0 +1,318 @@
+---
+title: useToggle
+description: Manage boolean state with convenience methods
+---
+
+The `useToggle` hook provides a convenient way to manage boolean state with built-in methods for activation, deactivation, and toggling. Use it for any on/off, open/closed, or show/hide state management.
+
+## Import
+
+```tsx
+import { useToggle } from 'reshaped';
+```
+
+## Usage
+
+```tsx
+import { useToggle, Button } from 'reshaped';
+
+function ToggleExample() {
+  const { active, toggle } = useToggle();
+
+  return (
+    <div>
+      <p>Status: {active ? 'On' : 'Off'}</p>
+      <Button onClick={toggle}>Toggle</Button>
+    </div>
+  );
+}
+```
+
+## Parameters
+
+<ParamField path="defaultValue" type="boolean" default="false">
+  The initial state of the toggle. Defaults to `false` if not provided.
+</ParamField>
+
+## Return Value
+
+The hook returns an object with the following properties and methods:
+
+<ResponseField name="active" type="boolean">
+  The current state of the toggle.
+</ResponseField>
+
+<ResponseField name="activate" type="() => void">
+  Sets the state to `true`.
+</ResponseField>
+
+<ResponseField name="deactivate" type="() => void">
+  Sets the state to `false`.
+</ResponseField>
+
+<ResponseField name="toggle" type="(targetValue?: boolean) => void">
+  Toggles the state between `true` and `false`. Optionally accepts a boolean to set a specific value.
+  
+  - `toggle()` - Flips the current state
+  - `toggle(true)` - Sets state to `true`
+  - `toggle(false)` - Sets state to `false`
+</ResponseField>
+
+## Examples
+
+### Basic Toggle
+
+```tsx
+import { useToggle, Button, Text } from 'reshaped';
+
+function LightSwitch() {
+  const { active, toggle } = useToggle();
+
+  return (
+    <div>
+      <Text>Light is {active ? 'ON' : 'OFF'}</Text>
+      <Button onClick={toggle}>Toggle Light</Button>
+    </div>
+  );
+}
+```
+
+### Modal Visibility
+
+```tsx
+import { useToggle, Button, Modal } from 'reshaped';
+
+function ModalExample() {
+  const modal = useToggle();
+
+  return (
+    <>
+      <Button onClick={modal.activate}>Open Modal</Button>
+      <Modal active={modal.active} onClose={modal.deactivate}>
+        <Modal.Content>Modal content here</Modal.Content>
+      </Modal>
+    </>
+  );
+}
+```
+
+### Dropdown Menu
+
+```tsx
+import { useToggle, Button } from 'reshaped';
+
+function Dropdown() {
+  const { active, toggle, deactivate } = useToggle();
+
+  return (
+    <div>
+      <Button onClick={toggle}>Menu</Button>
+      {active && (
+        <div className="dropdown-menu">
+          <button onClick={deactivate}>Option 1</button>
+          <button onClick={deactivate}>Option 2</button>
+          <button onClick={deactivate}>Option 3</button>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### Conditional Rendering
+
+```tsx
+import { useToggle, Button, View } from 'reshaped';
+
+function CollapsibleSection({ title, children }) {
+  const { active, toggle } = useToggle(true); // Start expanded
+
+  return (
+    <View>
+      <Button onClick={toggle}>
+        {active ? '▼' : '▶'} {title}
+      </Button>
+      {active && <div>{children}</div>}
+    </View>
+  );
+}
+```
+
+### Form Visibility
+
+```tsx
+import { useToggle, Button, TextField, View } from 'reshaped';
+
+function EditableProfile() {
+  const editing = useToggle();
+
+  return (
+    <View gap={4}>
+      {editing.active ? (
+        <>
+          <TextField name="name" placeholder="Your name" />
+          <TextField name="email" placeholder="Your email" />
+          <Button onClick={editing.deactivate}>Save</Button>
+        </>
+      ) : (
+        <>
+          <p>Name: John Doe</p>
+          <p>Email: john@example.com</p>
+          <Button onClick={editing.activate}>Edit Profile</Button>
+        </>
+      )}
+    </View>
+  );
+}
+```
+
+### Toggle with Specific Value
+
+```tsx
+import { useToggle, Button, View } from 'reshaped';
+
+function ControlledToggle() {
+  const { active, toggle } = useToggle();
+
+  return (
+    <View gap={2}>
+      <p>Status: {active ? 'Active' : 'Inactive'}</p>
+      <Button onClick={() => toggle(true)}>Activate</Button>
+      <Button onClick={() => toggle(false)}>Deactivate</Button>
+      <Button onClick={() => toggle()}>Toggle</Button>
+    </View>
+  );
+}
+```
+
+### Multiple Toggles
+
+```tsx
+import { useToggle, Switch, View } from 'reshaped';
+
+function Settings() {
+  const notifications = useToggle(true);
+  const darkMode = useToggle();
+  const autoSave = useToggle(true);
+
+  return (
+    <View gap={4}>
+      <label>
+        <Switch
+          checked={notifications.active}
+          onChange={notifications.toggle}
+        />
+        Notifications
+      </label>
+      <label>
+        <Switch
+          checked={darkMode.active}
+          onChange={darkMode.toggle}
+        />
+        Dark Mode
+      </label>
+      <label>
+        <Switch
+          checked={autoSave.active}
+          onChange={autoSave.toggle}
+        />
+        Auto Save
+      </label>
+    </View>
+  );
+}
+```
+
+### Expandable List
+
+```tsx
+import { useToggle, Button } from 'reshaped';
+
+function ExpandableList({ items }) {
+  const { active, toggle } = useToggle();
+  const visibleItems = active ? items : items.slice(0, 5);
+
+  return (
+    <div>
+      <ul>
+        {visibleItems.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+      {items.length > 5 && (
+        <Button onClick={toggle}>
+          {active ? 'Show Less' : `Show All (${items.length})`}
+        </Button>
+      )}
+    </div>
+  );
+}
+```
+
+### Loading State
+
+```tsx
+import { useToggle, Button } from 'reshaped';
+
+function LoadingButton() {
+  const loading = useToggle();
+
+  const handleClick = async () => {
+    loading.activate();
+    try {
+      await fetch('/api/data');
+    } finally {
+      loading.deactivate();
+    }
+  };
+
+  return (
+    <Button onClick={handleClick} disabled={loading.active}>
+      {loading.active ? 'Loading...' : 'Submit'}
+    </Button>
+  );
+}
+```
+
+### Event Handler Compatible
+
+```tsx
+import { useToggle, Checkbox } from 'reshaped';
+
+function CheckboxExample() {
+  const { active, toggle } = useToggle();
+
+  // toggle() can be used directly as an event handler
+  // It automatically handles events passed to it
+  return (
+    <Checkbox
+      checked={active}
+      onChange={toggle} // Works with events
+    >
+      Accept terms
+    </Checkbox>
+  );
+}
+```
+
+## TypeScript
+
+```tsx
+type UseToggleReturn = {
+  active: boolean;
+  activate: () => void;
+  deactivate: () => void;
+  toggle: (targetValue?: boolean) => void;
+};
+
+function useToggle(defaultValue?: boolean): UseToggleReturn;
+```
+
+## Notes
+
+- The `toggle()` function is compatible with event handlers (like `onClick`)
+- When `toggle()` receives a boolean, it sets that specific value
+- When `toggle()` receives no arguments or an event object, it flips the current state
+- All returned methods are memoized for performance
+- The hook is useful for managing any binary state (on/off, open/closed, visible/hidden, etc.)
+- Consider using descriptive variable names for clarity: `const modal = useToggle()` or `const menu = useToggle()`

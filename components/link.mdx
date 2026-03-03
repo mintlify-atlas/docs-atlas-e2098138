@@ -1,0 +1,152 @@
+---
+title: Link
+description: Hyperlink component for navigation within and outside your application
+---
+
+The Link component provides a styled hyperlink for navigation. It supports different variants, colors, and can include icons.
+
+## Basic Usage
+
+```jsx
+import { Link } from 'reshaped';
+
+function App() {
+  return (
+    <Link href="/about">
+      Learn more
+    </Link>
+  );
+}
+```
+
+## Variants
+
+Link supports two visual variants:
+
+```jsx
+<Link variant="underline" href="/about">
+  Underlined Link
+</Link>
+<Link variant="plain" href="/about">
+  Plain Link
+</Link>
+```
+
+## Colors
+
+Link can be displayed in multiple colors:
+
+```jsx
+<Link color="primary" href="/home">Primary</Link>
+<Link color="critical" href="/delete">Critical</Link>
+<Link color="positive" href="/success">Positive</Link>
+<Link color="warning" href="/warning">Warning</Link>
+<Link color="inherit">Inherit</Link>
+```
+
+## With Icons
+
+Add an icon to the start of the link:
+
+```jsx
+import { Link } from 'reshaped';
+import IconExternal from '@/icons/External';
+
+<Link icon={IconExternal} href="https://example.com">
+  External Link
+</Link>
+```
+
+## Navigation Examples
+
+### Internal Navigation
+
+```jsx
+<Link href="/dashboard">
+  Go to Dashboard
+</Link>
+```
+
+### External Links
+
+```jsx
+<Link href="https://example.com" attributes={{ target: "_blank", rel: "noopener" }}>
+  Visit Example
+</Link>
+```
+
+### With Click Handler
+
+```jsx
+<Link
+  href="/page"
+  onClick={(e) => {
+    e.preventDefault();
+    // Custom navigation logic
+  }}
+>
+  Custom Navigation
+</Link>
+```
+
+## States
+
+### Disabled State
+
+Disable user interaction:
+
+```jsx
+<Link disabled href="/unavailable">
+  Unavailable Link
+</Link>
+```
+
+## Props
+
+<ParamField path="variant" type="'plain' | 'underline'" default="underline">
+  Link render variant
+</ParamField>
+
+<ParamField path="color" type="'inherit' | 'critical' | 'primary' | 'positive' | 'warning'" default="primary">
+  Link color based on color tokens
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  SVG component for the icon at the start position
+</ParamField>
+
+<ParamField path="href" type="string">
+  URL to navigate to when clicked
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disable user interaction
+</ParamField>
+
+<ParamField path="onClick" type="(event: React.MouseEvent) => void">
+  Callback when the link is clicked
+</ParamField>
+
+<ParamField path="type" type="string">
+  HTML type attribute
+</ParamField>
+
+<ParamField path="stopPropagation" type="boolean">
+  Stop event propagation when clicked
+</ParamField>
+
+<ParamField path="render" type="function">
+  Custom render function for advanced use cases
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Link content
+</ParamField>

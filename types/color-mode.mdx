@@ -1,0 +1,266 @@
+---
+title: ColorMode
+description: Type definition for color mode in Reshaped theme system
+---
+
+The `ColorMode` type defines the available color modes for Reshaped themes, enabling light and dark mode support.
+
+## Type Definition
+
+```typescript
+export type ColorMode = "light" | "dark";
+```
+
+Source: `packages/reshaped/src/types/global.ts:22`
+
+## Overview
+
+Reshaped provides built-in support for light and dark color modes. Every color token in the theme system can have separate values for each mode, enabling seamless theme switching.
+
+## Usage
+
+### Setting Color Mode
+
+Control color mode through the `Reshaped` root component:
+
+```tsx
+import { Reshaped } from "reshaped";
+
+export default function App() {
+  return (
+    <Reshaped colorMode="dark">
+      {/* Your app content */}
+    </Reshaped>
+  );
+}
+```
+
+### Default Color Mode
+
+Set a default color mode that users can override:
+
+```tsx
+import { Reshaped } from "reshaped";
+
+export default function App() {
+  return (
+    <Reshaped defaultColorMode="light">
+      {/* Defaults to light, but can be changed */}
+    </Reshaped>
+  );
+}
+```
+
+### Dynamic Color Mode
+
+Implement a color mode toggle:
+
+```tsx
+import { useState } from "react";
+import { Reshaped, Button, View } from "reshaped";
+
+export default function App() {
+  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
+  
+  return (
+    <Reshaped colorMode={colorMode}>
+      <View padding={4}>
+        <Button 
+          onClick={() => setColorMode(
+            colorMode === "light" ? "dark" : "light"
+          )}
+        >
+          Toggle to {colorMode === "light" ? "dark" : "light"} mode
+        </Button>
+      </View>
+    </Reshaped>
+  );
+}
+```
+
+## Color Mode in Theme Definitions
+
+When defining custom themes, provide color values for both modes:
+
+```typescript
+import type { PassedThemeDefinition } from "reshaped";
+
+const customTheme: PassedThemeDefinition = {
+  color: {
+    // Hex format with separate dark mode value
+    backgroundPrimary: { 
+      hex: "#0D99FF",      // Light mode
+      hexDark: "#0C8CE9"   // Dark mode
+    },
+    
+    // OKLCH format with separate dark mode value
+    foregroundPrimary: {
+      oklch: { l: 0.5, c: 0.2, h: 250 },     // Light mode
+      oklchDark: { l: 0.8, c: 0.15, h: 250 }  // Dark mode
+    },
+    
+    // Same value for both modes
+    brand: { hex: "#0D99FF" }
+  }
+};
+```
+
+See the Figma theme definition for a complete example at `packages/reshaped/src/themes/_generator/definitions/figma.ts:111-156`.
+
+## Reading Current Color Mode
+
+Use the `useTheme` hook to access the current color mode:
+
+```tsx
+import { useTheme, View, Text } from "reshaped";
+
+export default function ColorModeDisplay() {
+  const { colorMode } = useTheme();
+  
+  return (
+    <View padding={4}>
+      <Text>
+        Current mode: {colorMode}
+      </Text>
+    </View>
+  );
+}
+```
+
+## System Preference Detection
+
+Detect and respect user's system color mode preference:
+
+```tsx
+import { useState, useEffect } from "react";
+import { Reshaped } from "reshaped";
+import type { ColorMode } from "reshaped";
+
+function useSystemColorMode(): ColorMode {
+  const [mode, setMode] = useState<ColorMode>("light");
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setMode(mediaQuery.matches ? "dark" : "light");
+    
+    const handler = (e: MediaQueryListEvent) => {
+      setMode(e.matches ? "dark" : "light");
+    };
+    
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+  
+  return mode;
+}
+
+export default function App() {
+  const systemMode = useSystemColorMode();
+  
+  return (
+    <Reshaped colorMode={systemMode}>
+      {/* Your app content */}
+    </Reshaped>
+  );
+}
+```
+
+## Scoped Color Modes
+
+Create sections with different color modes:
+
+```tsx
+import { Reshaped, View, Card, Text } from "reshaped";
+
+export default function ScopedModes() {
+  return (
+    <Reshaped colorMode="light">
+      <View padding={4} gap={4}>
+        <Card>
+          <Text>This card is in light mode</Text>
+        </Card>
+        
+        <Reshaped colorMode="dark" scoped>
+          <Card>
+            <Text>This card is in dark mode</Text>
+          </Card>
+        </Reshaped>
+      </View>
+    </Reshaped>
+  );
+}
+```
+
+## Color Mode Transitions
+
+Smooth transitions between color modes are handled automatically through CSS variables. All color tokens use CSS custom properties that update when the mode changes:
+
+```css
+/* Automatic smooth transitions */
+.component {
+  background: var(--rs-color-background-primary);
+  transition: background var(--rs-duration-fast) var(--rs-easing-standard);
+}
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Design for both modes" icon="palette">
+    Always test your UI in both light and dark modes to ensure readability and visual hierarchy.
+  </Card>
+  
+  <Card title="Respect user preference" icon="user">
+    Default to the system preference when possible, but allow users to override it.
+  </Card>
+  
+  <Card title="Maintain contrast" icon="eye">
+    Ensure sufficient contrast in both modes. Reshaped's built-in color tokens are designed for accessibility.
+  </Card>
+  
+  <Card title="Persist user choice" icon="save">
+    Save the user's color mode preference to localStorage for consistency across sessions.
+  </Card>
+</CardGroup>
+
+## Persisting Color Mode
+
+Example implementation with localStorage:
+
+```tsx
+import { useState, useEffect } from "react";
+import { Reshaped } from "reshaped";
+import type { ColorMode } from "reshaped";
+
+function usePersistedColorMode(): [ColorMode, (mode: ColorMode) => void] {
+  const [colorMode, setColorModeState] = useState<ColorMode>("light");
+  
+  useEffect(() => {
+    const stored = localStorage.getItem("colorMode") as ColorMode;
+    if (stored) setColorModeState(stored);
+  }, []);
+  
+  const setColorMode = (mode: ColorMode) => {
+    setColorModeState(mode);
+    localStorage.setItem("colorMode", mode);
+  };
+  
+  return [colorMode, setColorMode];
+}
+
+export default function App() {
+  const [colorMode, setColorMode] = usePersistedColorMode();
+  
+  return (
+    <Reshaped colorMode={colorMode}>
+      {/* Your app with persisted color mode */}
+    </Reshaped>
+  );
+}
+```
+
+## Related Resources
+
+- [ReshapedConfig](/types/reshaped-config) - Configuration for theme color options
+- [Creating Custom Themes](/guides/custom-themes) - Define color values for both modes
+- [Reshaped Component](/components/reshaped) - Root component for setting color mode

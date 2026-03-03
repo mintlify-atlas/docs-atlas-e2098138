@@ -1,0 +1,298 @@
+---
+title: Actionable
+description: Low-level utility for creating interactive elements with consistent behavior
+---
+
+The `Actionable` component is a low-level utility that provides a consistent foundation for interactive elements. It handles the complexity of rendering buttons, links, or custom elements with proper accessibility attributes and focus management.
+
+## Basic Usage
+
+```jsx
+import { Actionable } from 'reshaped';
+
+// Renders as button
+<Actionable onClick={() => console.log('clicked')}>
+  Click me
+</Actionable>
+
+// Renders as link
+<Actionable href="/about">
+  About
+</Actionable>
+
+// Renders as span
+<Actionable>
+  Static content
+</Actionable>
+```
+
+## With Custom Element
+
+```jsx
+import { Actionable } from 'reshaped';
+
+function Example() {
+  return (
+    <Actionable 
+      as="div"
+      onClick={() => {}}
+    >
+      Custom element
+    </Actionable>
+  );
+}
+```
+
+## With Focus Ring
+
+```jsx
+import { Actionable, View } from 'reshaped';
+
+function FocusableCard() {
+  return (
+    <Actionable 
+      insetFocus
+      borderRadius="inherit"
+      onClick={() => {}}
+    >
+      <View 
+        padding={4}
+        borderRadius="large"
+        backgroundColor="neutral-faded"
+      >
+        Focusable card content
+      </View>
+    </Actionable>
+  );
+}
+```
+
+## Props
+
+<ParamField path="onClick" type="(event: MouseEvent) => void">
+  Click handler - causes component to render as a button
+</ParamField>
+
+<ParamField path="href" type="string">
+  Link URL - causes component to render as an anchor element
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the interactive element
+</ParamField>
+
+<ParamField path="touchHitbox" type="boolean">
+  Enable a minimum required touch hitbox for better mobile accessibility
+</ParamField>
+
+<ParamField path="fullWidth" type="boolean">
+  Take up the full width of its parent
+</ParamField>
+
+<ParamField path="insetFocus" type="boolean">
+  Enable a focus ring inside the element bounds
+</ParamField>
+
+<ParamField path="disableFocusRing" type="boolean">
+  Don't show a focus ring on focus, can be used when it is within a container with a focus ring
+</ParamField>
+
+<ParamField path="borderRadius" type="'inherit'">
+  Apply the focus ring to the child and rely on its border radius
+</ParamField>
+
+<ParamField path="as" type="string">
+  HTML element to render as
+</ParamField>
+
+<ParamField path="render" type="(props) => ReactElement">
+  Custom render function for complete control over the rendered element
+</ParamField>
+
+<ParamField path="type" type="'button' | 'submit' | 'reset'">
+  Button type attribute (only applies when rendering as button)
+</ParamField>
+
+<ParamField path="stopPropagation" type="boolean">
+  Stop event propagation on click
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Content to render inside the actionable element
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="HTMLAttributes">
+  Additional attributes for the element
+</ParamField>
+
+## When to Use
+
+- **Custom Interactive Components**: Building custom buttons, cards, or interactive elements
+- **Polymorphic Elements**: Need element to render as button, link, or other based on props
+- **Focus Management**: Require custom focus ring behavior
+- **Accessibility**: Ensure proper keyboard navigation and screen reader support
+- **Touch Targets**: Mobile-first designs requiring minimum touch target sizes
+
+## Composition Patterns
+
+### Interactive Card
+
+```jsx
+import { Actionable, View, Text, Stack } from 'reshaped';
+
+function InteractiveCard({ title, description, onClick }) {
+  return (
+    <Actionable 
+      onClick={onClick}
+      insetFocus
+      borderRadius="inherit"
+    >
+      <View 
+        padding={4}
+        borderRadius="medium"
+        backgroundColor="elevated"
+        borderColor="neutral-faded"
+        borderWidth={1}
+      >
+        <Stack gap={2}>
+          <Text variant="title-5" weight="medium">{title}</Text>
+          <Text color="neutral">{description}</Text>
+        </Stack>
+      </View>
+    </Actionable>
+  );
+}
+```
+
+### Link with Custom Styling
+
+```jsx
+import { Actionable, Text } from 'reshaped';
+
+function CustomLink({ href, children }) {
+  return (
+    <Actionable 
+      href={href}
+      disableFocusRing
+    >
+      <Text color="primary" weight="medium">
+        {children}
+      </Text>
+    </Actionable>
+  );
+}
+```
+
+### Mobile Touch Target
+
+```jsx
+import { Actionable, Icon } from 'reshaped';
+
+function IconButton({ icon, onClick, label }) {
+  return (
+    <Actionable 
+      onClick={onClick}
+      touchHitbox
+      attributes={{ 'aria-label': label }}
+    >
+      <Icon svg={icon} size={5} />
+    </Actionable>
+  );
+}
+```
+
+### Disabled State
+
+```jsx
+import { Actionable, View, Text } from 'reshaped';
+
+function DisabledButton({ disabled, onClick, children }) {
+  return (
+    <Actionable 
+      disabled={disabled}
+      onClick={onClick}
+    >
+      <View 
+        padding={3}
+        backgroundColor={disabled ? 'neutral-faded' : 'primary'}
+        borderRadius="medium"
+      >
+        <Text color={disabled ? 'disabled' : 'white'}>
+          {children}
+        </Text>
+      </View>
+    </Actionable>
+  );
+}
+```
+
+### Full Width Action
+
+```jsx
+import { Actionable, View, Text } from 'reshaped';
+
+function FullWidthButton({ children, onClick }) {
+  return (
+    <Actionable 
+      fullWidth
+      onClick={onClick}
+    >
+      <View 
+        padding={4}
+        backgroundColor="primary"
+        borderRadius="medium"
+        align="center"
+      >
+        <Text color="white" weight="medium">{children}</Text>
+      </View>
+    </Actionable>
+  );
+}
+```
+
+### Custom Render Function
+
+```jsx
+import { Actionable } from 'reshaped';
+
+function CustomActionable() {
+  return (
+    <Actionable
+      onClick={() => {}}
+      render={(props) => (
+        <article {...props} data-custom="true">
+          Custom rendered element
+        </article>
+      )}
+    />
+  );
+}
+```
+
+### Preventing Event Propagation
+
+```jsx
+import { Actionable, View } from 'reshaped';
+
+function NestedAction({ onParentClick, onChildClick }) {
+  return (
+    <Actionable onClick={onParentClick}>
+      <View padding={4}>
+        Parent clickable area
+        <Actionable 
+          stopPropagation
+          onClick={onChildClick}
+        >
+          <View padding={2} backgroundColor="primary">
+            Child action (stops propagation)
+          </View>
+        </Actionable>
+      </View>
+    </Actionable>
+  );
+}
+```

@@ -1,0 +1,248 @@
+---
+title: "Switch"
+description: "A toggle switch for binary on/off states"
+icon: "toggle-on"
+---
+
+Switch is a form component that represents a binary on/off state. It's similar to a checkbox but with a more prominent visual toggle metaphor.
+
+## Basic usage
+
+```jsx
+import { Switch } from 'reshaped';
+
+function Example() {
+  return (
+    <Switch name="notifications">
+      Enable notifications
+    </Switch>
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { Switch } from 'reshaped';
+
+function ControlledExample() {
+  const [checked, setChecked] = useState(false);
+
+  return (
+    <Switch
+      name="darkMode"
+      checked={checked}
+      onChange={({ value }) => setChecked(value)}
+    >
+      Enable dark mode
+    </Switch>
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { Switch } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <Switch
+      name="autoSave"
+      defaultChecked
+      onChange={({ name, value }) => console.log(name, value)}
+    >
+      Auto-save changes
+    </Switch>
+  );
+}
+```
+
+## Reversed layout
+
+```jsx
+import { Switch } from 'reshaped';
+
+<Switch name="reversed" reversed>
+  Enable feature
+</Switch>
+```
+
+## Sizes
+
+```jsx
+import { Switch } from 'reshaped';
+
+<Switch size="small" name="small">Small switch</Switch>
+<Switch size="medium" name="medium">Medium switch</Switch>
+<Switch size="large" name="large">Large switch</Switch>
+```
+
+## Disabled state
+
+```jsx
+import { Switch } from 'reshaped';
+
+<Switch name="disabled" disabled>
+  Disabled switch
+</Switch>
+
+<Switch name="disabledChecked" disabled defaultChecked>
+  Disabled and checked
+</Switch>
+```
+
+## With descriptions
+
+```jsx
+import { Switch, View, Text } from 'reshaped';
+
+function DescriptionExample() {
+  return (
+    <View gap={1}>
+      <Switch name="analytics">
+        Enable analytics
+      </Switch>
+      <Text variant="body-2" color="neutral-faded">
+        Help us improve by sharing anonymous usage data
+      </Text>
+    </View>
+  );
+}
+```
+
+## Settings panel example
+
+```jsx
+import { Switch, View, Text, Divider } from 'reshaped';
+import { useState } from 'react';
+
+function SettingsExample() {
+  const [settings, setSettings] = useState({
+    notifications: true,
+    autoSave: false,
+    darkMode: false,
+  });
+
+  const handleChange = (name) => ({ value }) => {
+    setSettings(prev => ({ ...prev, [name]: value }));
+  };
+
+  return (
+    <View gap={4}>
+      <View gap={2}>
+        <Switch
+          name="notifications"
+          checked={settings.notifications}
+          onChange={handleChange('notifications')}
+        >
+          <Text weight="medium">Push notifications</Text>
+        </Switch>
+        <Text variant="body-2" color="neutral-faded">
+          Receive notifications about updates
+        </Text>
+      </View>
+      
+      <Divider />
+      
+      <View gap={2}>
+        <Switch
+          name="autoSave"
+          checked={settings.autoSave}
+          onChange={handleChange('autoSave')}
+        >
+          <Text weight="medium">Auto-save</Text>
+        </Switch>
+        <Text variant="body-2" color="neutral-faded">
+          Automatically save your work
+        </Text>
+      </View>
+      
+      <Divider />
+      
+      <View gap={2}>
+        <Switch
+          name="darkMode"
+          checked={settings.darkMode}
+          onChange={handleChange('darkMode')}
+        >
+          <Text weight="medium">Dark mode</Text>
+        </Switch>
+        <Text variant="body-2" color="neutral-faded">
+          Use dark theme across the app
+        </Text>
+      </View>
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+Switch follows accessibility best practices:
+
+- Uses semantic HTML checkbox input with role="switch"
+- Supports ARIA attributes via `inputAttributes`
+- Label is properly associated with input
+- Keyboard accessible (Space to toggle)
+- Screen reader announces on/off state
+- Clear visual feedback for checked state
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the switch input element
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the switch
+</ParamField>
+
+<ParamField path="checked" type="boolean">
+  Value of the switch, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultChecked" type="boolean">
+  Default value of the switch, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the switch user interaction
+</ParamField>
+
+<ParamField path="reversed" type="boolean">
+  Reverse the children position (label on right instead of left)
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large'" default="medium">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: boolean }) => void">
+  Callback when the switch value changes
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent) => void">
+  Callback when the switch is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent) => void">
+  Callback when the switch is blurred
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children (label content)
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root label element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input element. Use for ARIA attributes.
+</ParamField>

@@ -1,0 +1,487 @@
+---
+title: Contributing
+description: Learn how to contribute to Reshaped and help improve the library
+---
+
+Looking to contribute? We're excited to have you!
+
+## Overview
+
+While Reshaped is open-source, we are thoughtful about what gets included in the library. This approach helps us:
+
+<CardGroup cols={2}>
+  <Card title="Maintain Long-term Stability" icon="anchor">
+    We make a maximum of 1 major release per year, so APIs need to remain stable for years.
+  </Card>
+  
+  <Card title="Sync with Figma" icon="figma">
+    All changes are synced with the Figma library. Some decisions depend on Figma's capabilities.
+  </Card>
+  
+  <Card title="Ensure Sustainability" icon="heart">
+    We consider maintenance costs carefully to keep the project sustainable long-term.
+  </Card>
+  
+  <Card title="Encourage Extensions" icon="puzzle-piece">
+    Some features are better as community extensions built on top of Reshaped.
+  </Card>
+</CardGroup>
+
+## Good Issues to Work On
+
+Great places to start contributing:
+
+### Bug Fixes
+
+Reported bugs are always welcome contributions. Check the [GitHub issues](https://github.com/reshaped-ui/reshaped/issues) for:
+
+- Issues labeled `bug`
+- Issues labeled `good first issue`
+- Reproducible problems without assigned developers
+
+### Tests and Examples
+
+Help improve test coverage and documentation:
+
+- Missing test cases for edge scenarios
+- Additional Storybook examples
+- Component usage examples
+- Accessibility test improvements
+
+### Feature Proposals
+
+For new features, start with a proposal:
+
+1. Open a [GitHub Discussion](https://github.com/reshaped-ui/reshaped/discussions)
+2. Describe the use case and problem
+3. Discuss implementation approaches
+4. Wait for maintainer feedback before coding
+
+<Warning>
+  Always discuss new features before starting work. This prevents wasted effort on changes that may not align with the project's direction.
+</Warning>
+
+## Development Environment
+
+<Steps>
+  <Step title="Install dependencies">
+    Reshaped uses `pnpm` as the package manager:
+    
+    ```bash
+    # Install pnpm if you don't have it
+    npm install -g pnpm
+    
+    # Install project dependencies
+    pnpm install
+    ```
+  </Step>
+  
+  <Step title="Start development server">
+    Run Storybook to develop and test components:
+    
+    ```bash
+    pnpm dev
+    ```
+    
+    This starts Storybook at `http://localhost:3001`
+  </Step>
+  
+  <Step title="Make your changes">
+    Edit component files in `packages/reshaped/src/components/` or related directories.
+  </Step>
+  
+  <Step title="Run tests">
+    Test your changes:
+    
+    ```bash
+    # Component tests (in Storybook)
+    # Open Storybook and check the action panel
+    # Or use the test widget in the browser
+    
+    # Unit tests
+    pnpm test:unit
+    ```
+  </Step>
+</Steps>
+
+## Testing
+
+Reshaped uses multiple testing approaches:
+
+### Component Tests
+
+<Tabs>
+  <Tab title="Interactive Testing">
+    Component tests run directly in Storybook:
+    
+    1. Start Storybook with `pnpm dev`
+    2. Navigate to a component
+    3. Check the **Actions** panel for test results
+    4. Use the **Test** widget in the browser
+  </Tab>
+  
+  <Tab title="Writing Tests">
+    Component tests are written in story files:
+    
+    ```tsx
+    // Button.stories.tsx
+    import { expect } from '@storybook/jest';
+    import { within, userEvent } from '@storybook/testing-library';
+    
+    export const Interactive = {
+      play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole('button');
+        
+        // Test interactions
+        await userEvent.click(button);
+        await expect(button).toHaveAttribute('aria-pressed', 'true');
+      },
+    };
+    ```
+  </Tab>
+</Tabs>
+
+### Unit Tests
+
+Utility functions and hooks have dedicated unit tests:
+
+```bash
+# Run all unit tests
+pnpm test:unit
+
+# Run tests in watch mode
+pnpm test:unit --watch
+
+# Run tests with coverage
+pnpm test:unit --coverage
+```
+
+### Visual Regression Testing
+
+<Info>
+  Visual regression testing access is limited to repository maintainers. Tests are triggered manually before releases or for PRs with major changes.
+</Info>
+
+## Changelog Management
+
+Reshaped uses [Changesets](https://github.com/changesets/changesets) to manage versions and generate changelogs.
+
+### Adding a Changeset
+
+Every PR with user-facing changes should include a changeset:
+
+<Steps>
+  <Step title="Create a changeset">
+    Run the changeset command:
+    
+    ```bash
+    pnpm changeset
+    ```
+  </Step>
+  
+  <Step title="Choose the bump type">
+    Select the appropriate version bump:
+    
+    - **patch**: Bug fixes and internal tweaks
+    - **minor**: Backward-compatible feature additions
+    - **major**: Breaking changes (rare; coordinate with maintainers first)
+  </Step>
+  
+  <Step title="Write a summary">
+    Provide a concise description:
+    
+    - What changed
+    - Why it changed
+    - Any migration notes (for breaking changes)
+    
+    This becomes part of the public changelog.
+  </Step>
+  
+  <Step title="Commit the changeset file">
+    Commit the generated `.md` file:
+    
+    ```bash
+    git add .changeset/*.md
+    git commit -m "feat: add new feature"
+    ```
+  </Step>
+</Steps>
+
+### Changeset Examples
+
+<CodeGroup>
+```md Patch (Bug Fix)
+---
+"reshaped": patch
+---
+
+Button: Fixed disabled state styling in dark mode
+```
+
+```md Minor (Feature)
+---
+"reshaped": minor
+---
+
+TextField: Added support for password visibility toggle with new `type="password"` prop
+```
+
+```md Major (Breaking)
+---
+"reshaped": major
+---
+
+View: Removed deprecated `inline` prop. Use `display="inline-flex"` instead.
+
+Migration:
+- Replace `<View inline>` with `<View display="inline-flex">`
+```
+</CodeGroup>
+
+### Useful Changeset Commands
+
+```bash
+# Create a new changeset
+pnpm changeset
+
+# Preview what will be released
+pnpm changeset:status
+
+# Consume changesets and bump versions (maintainers only)
+pnpm version
+```
+
+## Commit Message Format
+
+Reshaped uses [Conventional Commits](https://www.conventionalcommits.org/) for commit messages.
+
+### Format
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+### Types
+
+- **feat**: New feature
+- **fix**: Bug fix
+- **docs**: Documentation changes
+- **style**: Code style changes (formatting, etc.)
+- **refactor**: Code refactoring
+- **test**: Test additions or changes
+- **chore**: Build process or tooling changes
+
+### Examples
+
+<CodeGroup>
+```bash Feature
+git commit -m "feat(Button): add loading state with spinner"
+```
+
+```bash Bug Fix
+git commit -m "fix(Modal): prevent scroll when open on iOS"
+```
+
+```bash Documentation
+git commit -m "docs(README): update installation instructions"
+```
+
+```bash Breaking Change
+git commit -m "feat(View)!: remove inline prop
+
+BREAKING CHANGE: The inline prop has been removed.
+Use display='inline-flex' instead."
+```
+</CodeGroup>
+
+<Info>
+  A commit-msg hook validates the format automatically when you commit.
+</Info>
+
+## Pull Request Process
+
+<Steps>
+  <Step title="Fork and clone">
+    Fork the repository and clone your fork:
+    
+    ```bash
+    git clone https://github.com/YOUR_USERNAME/reshaped.git
+    cd reshaped
+    pnpm install
+    ```
+  </Step>
+  
+  <Step title="Create a branch">
+    Create a descriptive branch name:
+    
+    ```bash
+    git checkout -b fix/button-disabled-styling
+    # or
+    git checkout -b feat/text-field-password-toggle
+    ```
+  </Step>
+  
+  <Step title="Make your changes">
+    - Write your code
+    - Add or update tests
+    - Update Storybook stories if needed
+    - Add a changeset with `pnpm changeset`
+  </Step>
+  
+  <Step title="Commit your changes">
+    Follow the commit message format:
+    
+    ```bash
+    git add .
+    git commit -m "fix(Button): improve disabled state styling"
+    ```
+  </Step>
+  
+  <Step title="Push and create PR">
+    ```bash
+    git push origin fix/button-disabled-styling
+    ```
+    
+    Then create a pull request on GitHub with:
+    - Clear description of changes
+    - Screenshots/videos for UI changes
+    - Link to related issues
+    - Testing instructions
+  </Step>
+</Steps>
+
+## Code Review
+
+When your PR is submitted:
+
+1. **Automated checks** run (lint, type-check, tests)
+2. **Maintainer review** - may request changes
+3. **Discussion** - be responsive to feedback
+4. **Approval** - once approved, a maintainer will merge
+
+<Accordion title="What reviewers look for">
+  - Code quality and readability
+  - Test coverage
+  - Documentation updates
+  - Accessibility compliance
+  - Performance implications
+  - Breaking change considerations
+  - Figma library sync requirements
+</Accordion>
+
+## Code Style
+
+Reshaped enforces code style automatically:
+
+- **Prettier** for formatting
+- **ESLint** for code quality
+- **Stylelint** for CSS
+- **TypeScript** for type checking
+
+### Pre-commit Hooks
+
+Lefthook runs checks before commits:
+
+```yaml
+# Automatically runs:
+- Prettier formatting
+- ESLint checks
+- Stylelint checks
+- Commit message validation
+```
+
+### Manual Checks
+
+```bash
+# Format code
+pnpm format
+
+# Lint JavaScript/TypeScript
+pnpm lint
+
+# Lint CSS
+pnpm stylelint
+
+# Type check
+pnpm type-check
+```
+
+## Project Structure
+
+```
+reshaped/
+├── packages/
+│   ├── reshaped/              # Main React library
+│   │   ├── src/
+│   │   │   ├── components/    # React components
+│   │   │   ├── hooks/         # React hooks
+│   │   │   ├── themes/        # Theme definitions
+│   │   │   ├── types/         # TypeScript types
+│   │   │   └── icons/         # Icon components
+│   │   └── package.json
+│   ├── headless/              # Headless components
+│   └── utilities/             # Framework-agnostic utils
+├── .storybook/                # Storybook configuration
+├── CONTRIBUTING.md
+└── package.json
+```
+
+## Getting Help
+
+<CardGroup cols={2}>
+  <Card title="GitHub Discussions" icon="github">
+    Ask questions and discuss ideas
+    
+    [reshaped-ui/reshaped/discussions](https://github.com/reshaped-ui/reshaped/discussions)
+  </Card>
+  
+  <Card title="GitHub Issues" icon="bug">
+    Report bugs and request features
+    
+    [reshaped-ui/reshaped/issues](https://github.com/reshaped-ui/reshaped/issues)
+  </Card>
+  
+  <Card title="Documentation" icon="book">
+    Read the complete documentation
+    
+    [Documentation](/introduction)
+  </Card>
+  
+  <Card title="Maintainers" icon="users">
+    Contact the team
+    
+    [@blvdmitry on X](https://x.com/blvdmitry)
+  </Card>
+</CardGroup>
+
+## Recognition
+
+Contributors are recognized in:
+
+- The project's README
+- Release notes
+- GitHub contributor graphs
+- Special mentions for significant contributions
+
+## Code of Conduct
+
+Be respectful and constructive:
+
+- Use welcoming and inclusive language
+- Be respectful of differing viewpoints
+- Accept constructive criticism gracefully
+- Focus on what's best for the community
+- Show empathy towards other community members
+
+## License
+
+By contributing to Reshaped, you agree that your contributions will be licensed under the MIT License.
+
+---
+
+Thank you for contributing to Reshaped! Every contribution, no matter how small, helps make the library better for everyone.

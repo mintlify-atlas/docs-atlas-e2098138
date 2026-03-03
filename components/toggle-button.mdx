@@ -1,0 +1,341 @@
+---
+title: ToggleButton
+description: Button component with toggle state for binary selections
+---
+
+The `ToggleButton` component is an interactive button that maintains a checked/unchecked state. It combines the visual appearance of a button with the behavior of a checkbox, perfect for toggleable actions.
+
+## Basic Usage
+
+```jsx
+import { ToggleButton } from 'reshaped';
+import { useState } from 'react';
+
+function Example() {
+  const [checked, setChecked] = useState(false);
+  
+  return (
+    <ToggleButton 
+      checked={checked}
+      onChange={({ checked }) => setChecked(checked)}
+    >
+      Toggle me
+    </ToggleButton>
+  );
+}
+```
+
+## Uncontrolled Mode
+
+```jsx
+import { ToggleButton } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <ToggleButton 
+      defaultChecked
+      onChange={({ checked }) => console.log('Checked:', checked)}
+    >
+      Auto-managed state
+    </ToggleButton>
+  );
+}
+```
+
+## Custom Selection Styling
+
+```jsx
+import { ToggleButton } from 'reshaped';
+
+function StyledToggle() {
+  return (
+    <ToggleButton 
+      variant="outline"
+      selectedColor="primary"
+      selectedVariant="solid"
+      defaultChecked={false}
+    >
+      Select me
+    </ToggleButton>
+  );
+}
+```
+
+## With Icon
+
+```jsx
+import { ToggleButton } from 'reshaped';
+import { Heart } from './icons';
+import { useState } from 'react';
+
+function FavoriteButton() {
+  const [liked, setLiked] = useState(false);
+  
+  return (
+    <ToggleButton
+      icon={Heart}
+      checked={liked}
+      selectedColor="critical"
+      onChange={({ checked }) => setLiked(checked)}
+    >
+      Like
+    </ToggleButton>
+  );
+}
+```
+
+## Props
+
+<ParamField path="checked" type="boolean">
+  Value of the toggle button, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultChecked" type="boolean">
+  Default value of the toggle button, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="value" type="string">
+  Value of the toggle button used when inside a ToggleButtonGroup
+</ParamField>
+
+<ParamField path="onChange" type="(args: { checked: boolean, value: string, event: Event }) => void">
+  Callback when the toggle button value changes
+</ParamField>
+
+<ParamField path="variant" type="'solid' | 'outline' | 'ghost' | 'faded'" default="outline">
+  Component render variant
+</ParamField>
+
+<ParamField path="selectedColor" type="'primary' | 'critical' | 'positive' | 'neutral'" default="neutral">
+  Component color scheme when selected
+</ParamField>
+
+<ParamField path="selectedVariant" type="'solid' | 'outline' | 'ghost' | 'faded'">
+  Component variant when selected
+</ParamField>
+
+<ParamField path="color" type="'primary' | 'critical' | 'positive' | 'neutral'">
+  Component color scheme
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large'">
+  Button size
+</ParamField>
+
+<ParamField path="icon" type="SVGComponent">
+  Icon to display in the button
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Button label text
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the button
+</ParamField>
+
+<ParamField path="fullWidth" type="boolean">
+  Make button take full width of parent
+</ParamField>
+
+Inherits all other props from the `Button` component.
+
+## When to Use
+
+- **Filters**: Toggle filter options on/off
+- **Favorites**: Mark items as favorites
+- **Settings**: Toggle feature flags or preferences
+- **Views**: Switch between different view modes
+- **Selections**: Allow users to select options that can be toggled
+- **Toolbar Actions**: Toggle formatting or tool states
+
+## Composition Patterns
+
+### Filter Buttons
+
+```jsx
+import { ToggleButton, Stack } from 'reshaped';
+import { useState } from 'react';
+
+function FilterBar() {
+  const [filters, setFilters] = useState({
+    active: false,
+    pending: false,
+    completed: false
+  });
+  
+  const toggleFilter = (key) => {
+    setFilters(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+  
+  return (
+    <Stack direction="row" gap={2}>
+      <ToggleButton
+        checked={filters.active}
+        onChange={() => toggleFilter('active')}
+      >
+        Active
+      </ToggleButton>
+      <ToggleButton
+        checked={filters.pending}
+        onChange={() => toggleFilter('pending')}
+      >
+        Pending
+      </ToggleButton>
+      <ToggleButton
+        checked={filters.completed}
+        onChange={() => toggleFilter('completed')}
+      >
+        Completed
+      </ToggleButton>
+    </Stack>
+  );
+}
+```
+
+### Icon-Only Toggle
+
+```jsx
+import { ToggleButton, Tooltip } from 'reshaped';
+import { Star } from './icons';
+import { useState } from 'react';
+
+function StarButton({ itemId }) {
+  const [starred, setStarred] = useState(false);
+  
+  return (
+    <Tooltip text={starred ? 'Unstar' : 'Star'}>
+      <ToggleButton
+        icon={Star}
+        checked={starred}
+        selectedColor="warning"
+        selectedVariant="solid"
+        onChange={({ checked }) => setStarred(checked)}
+        attributes={{ 'aria-label': starred ? 'Unstar' : 'Star' }}
+      />
+    </Tooltip>
+  );
+}
+```
+
+### View Mode Switcher
+
+```jsx
+import { ToggleButton, Stack } from 'reshaped';
+import { Grid, List } from './icons';
+import { useState } from 'react';
+
+function ViewSwitcher({ onChange }) {
+  const [view, setView] = useState('grid');
+  
+  const handleChange = (newView) => {
+    setView(newView);
+    onChange(newView);
+  };
+  
+  return (
+    <Stack direction="row" gap={1}>
+      <ToggleButton
+        icon={Grid}
+        checked={view === 'grid'}
+        onChange={() => handleChange('grid')}
+        attributes={{ 'aria-label': 'Grid view' }}
+      />
+      <ToggleButton
+        icon={List}
+        checked={view === 'list'}
+        onChange={() => handleChange('list')}
+        attributes={{ 'aria-label': 'List view' }}
+      />
+    </Stack>
+  );
+}
+```
+
+### Multi-Select Toolbar
+
+```jsx
+import { ToggleButton, Stack, Text } from 'reshaped';
+import { Bold, Italic, Underline } from './icons';
+import { useState } from 'react';
+
+function FormattingToolbar() {
+  const [formatting, setFormatting] = useState({
+    bold: false,
+    italic: false,
+    underline: false
+  });
+  
+  const toggle = (key) => {
+    setFormatting(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+  
+  return (
+    <Stack gap={2}>
+      <Stack direction="row" gap={1}>
+        <ToggleButton
+          icon={Bold}
+          checked={formatting.bold}
+          onChange={() => toggle('bold')}
+          size="small"
+          attributes={{ 'aria-label': 'Bold' }}
+        />
+        <ToggleButton
+          icon={Italic}
+          checked={formatting.italic}
+          onChange={() => toggle('italic')}
+          size="small"
+          attributes={{ 'aria-label': 'Italic' }}
+        />
+        <ToggleButton
+          icon={Underline}
+          checked={formatting.underline}
+          onChange={() => toggle('underline')}
+          size="small"
+          attributes={{ 'aria-label': 'Underline' }}
+        />
+      </Stack>
+      <Text variant="caption-1">
+        Active: {Object.entries(formatting)
+          .filter(([_, active]) => active)
+          .map(([key]) => key)
+          .join(', ') || 'None'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Toggle with Loading State
+
+```jsx
+import { ToggleButton } from 'reshaped';
+import { useState } from 'react';
+
+function AsyncToggle({ onToggle }) {
+  const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const handleChange = async ({ checked: newChecked }) => {
+    setLoading(true);
+    try {
+      await onToggle(newChecked);
+      setChecked(newChecked);
+    } catch (error) {
+      console.error('Failed to toggle:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <ToggleButton
+      checked={checked}
+      loading={loading}
+      onChange={handleChange}
+    >
+      Subscribe
+    </ToggleButton>
+  );
+}
+```

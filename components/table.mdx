@@ -1,0 +1,416 @@
+---
+title: Table
+description: Display structured data in rows and columns
+---
+
+The Table component provides a flexible way to display tabular data with composition using TableHead, TableBody, TableRow, TableCell, and TableHeading components.
+
+## Basic Usage
+
+```jsx
+import { Table, TableBody, TableRow, TableCell } from 'reshaped';
+
+function App() {
+  return (
+    <Table>
+      <TableBody>
+        <TableRow>
+          <TableCell>Cell 1</TableCell>
+          <TableCell>Cell 2</TableCell>
+          <TableCell>Cell 3</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Cell 4</TableCell>
+          <TableCell>Cell 5</TableCell>
+          <TableCell>Cell 6</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+## With Headers
+
+Use TableHead and TableHeading for table headers:
+
+```jsx
+import { 
+  Table, 
+  TableHead, 
+  TableBody, 
+  TableRow, 
+  TableHeading, 
+  TableCell 
+} from 'reshaped';
+
+function UsersTable() {
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableHeading>Name</TableHeading>
+          <TableHeading>Email</TableHeading>
+          <TableHeading>Status</TableHeading>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell>John Doe</TableCell>
+          <TableCell>john@example.com</TableCell>
+          <TableCell>Active</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Jane Smith</TableCell>
+          <TableCell>jane@example.com</TableCell>
+          <TableCell>Active</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+## Borders
+
+Add borders to tables:
+
+```jsx
+<Table border>
+  <TableBody>
+    <TableRow>
+      <TableCell>Cell 1</TableCell>
+      <TableCell>Cell 2</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+<Table border columnBorder>
+  <TableBody>
+    <TableRow>
+      <TableCell>Cell 1</TableCell>
+      <TableCell>Cell 2</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Cell Alignment
+
+Align cell content horizontally and vertically:
+
+```jsx
+<Table border>
+  <TableBody>
+    <TableRow>
+      <TableCell align="start">Start aligned</TableCell>
+      <TableCell align="center">Center aligned</TableCell>
+      <TableCell align="end">End aligned</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell verticalAlign="start">Top</TableCell>
+      <TableCell verticalAlign="center">Middle</TableCell>
+      <TableCell verticalAlign="end">Bottom</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Cell Width
+
+Control column widths:
+
+```jsx
+<Table border>
+  <TableHead>
+    <TableRow>
+      <TableHeading width={200}>Fixed Width</TableHeading>
+      <TableHeading width="auto">Auto Width</TableHeading>
+      <TableHeading minWidth={150}>Min Width</TableHeading>
+    </TableRow>
+  </TableHead>
+  <TableBody>
+    <TableRow>
+      <TableCell>Content 1</TableCell>
+      <TableCell>Content 2</TableCell>
+      <TableCell>Content 3</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Cell Padding
+
+Customize cell padding:
+
+```jsx
+<Table border>
+  <TableBody>
+    <TableRow>
+      <TableCell padding={2}>Small padding</TableCell>
+      <TableCell padding={4}>Default padding</TableCell>
+      <TableCell padding={6}>Large padding</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell paddingInline={6} paddingBlock={2}>Custom padding</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Spanning Cells
+
+Merge cells with rowSpan and colSpan:
+
+```jsx
+<Table border>
+  <TableBody>
+    <TableRow>
+      <TableCell rowSpan={2}>Spans 2 rows</TableCell>
+      <TableCell>Cell 1</TableCell>
+      <TableCell>Cell 2</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell colSpan={2}>Spans 2 columns</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Highlighted Rows
+
+Highlight selected or active rows:
+
+```jsx
+<Table border>
+  <TableBody>
+    <TableRow>Regular row</TableRow>
+    <TableRow highlighted>Highlighted row</TableRow>
+    <TableRow>Regular row</TableRow>
+  </TableBody>
+</Table>
+```
+
+## Interactive Rows
+
+Make rows clickable:
+
+```jsx
+function InteractiveTable() {
+  const [selected, setSelected] = React.useState(null);
+
+  const users = [
+    { id: 1, name: 'John Doe', email: 'john@example.com' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+    { id: 3, name: 'Bob Johnson', email: 'bob@example.com' },
+  ];
+
+  return (
+    <Table border>
+      <TableHead>
+        <TableRow>
+          <TableHeading>Name</TableHeading>
+          <TableHeading>Email</TableHeading>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {users.map(user => (
+          <TableRow
+            key={user.id}
+            highlighted={selected === user.id}
+            onClick={() => setSelected(user.id)}
+          >
+            <TableCell>{user.name}</TableCell>
+            <TableCell>{user.email}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+## Complete Example
+
+Full-featured data table:
+
+```jsx
+import { 
+  Table, 
+  TableHead, 
+  TableBody, 
+  TableRow, 
+  TableHeading, 
+  TableCell,
+  Badge,
+  Text 
+} from 'reshaped';
+
+function OrdersTable({ orders }) {
+  const statusColors = {
+    pending: 'warning',
+    completed: 'positive',
+    cancelled: 'critical',
+  };
+
+  return (
+    <Table border columnBorder>
+      <TableHead>
+        <TableRow>
+          <TableHeading>Order ID</TableHeading>
+          <TableHeading>Customer</TableHeading>
+          <TableHeading align="end">Amount</TableHeading>
+          <TableHeading>Status</TableHeading>
+          <TableHeading>Date</TableHeading>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {orders.map(order => (
+          <TableRow key={order.id}>
+            <TableCell>
+              <Text variant="body-3" weight="medium">
+                #{order.id}
+              </Text>
+            </TableCell>
+            <TableCell>
+              <Text variant="body-3">{order.customer}</Text>
+            </TableCell>
+            <TableCell align="end">
+              <Text variant="body-3" weight="semibold">
+                ${order.amount.toFixed(2)}
+              </Text>
+            </TableCell>
+            <TableCell>
+              <Badge 
+                color={statusColors[order.status]} 
+                size="small"
+              >
+                {order.status}
+              </Badge>
+            </TableCell>
+            <TableCell>
+              <Text variant="caption-1" color="neutral-faded">
+                {order.date}
+              </Text>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+## Props
+
+### Table
+
+<ParamField path="border" type="boolean" default="false">
+  Add border around the table.
+</ParamField>
+
+<ParamField path="columnBorder" type="boolean" default="false">
+  Add border between table columns.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+  Node for inserting children.
+</ParamField>
+
+### TableRow
+
+<ParamField path="highlighted" type="boolean" default="false">
+  Indicate that the row is selected or active.
+</ParamField>
+
+<ParamField path="onClick" type="function" default="undefined">
+  Callback when the row is clicked. Makes the row interactive.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the row element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the row element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+  Node for inserting children.
+</ParamField>
+
+### TableCell / TableHeading
+
+<ParamField path="align" type="string" default="undefined">
+  Align the cell content horizontally.
+  
+  Options: `start`, `center`, `end`
+</ParamField>
+
+<ParamField path="verticalAlign" type="string" default="undefined">
+  Align the cell content vertically.
+  
+  Options: `start`, `center`, `end`
+</ParamField>
+
+<ParamField path="width" type="string | number | 'auto'" default="undefined">
+  Width of the cell. Can be a number (base unit multiplier), string (CSS value), or 'auto'.
+</ParamField>
+
+<ParamField path="minWidth" type="string | number" default="undefined">
+  Minimum width of the cell. Can be a number (base unit multiplier) or string (CSS value).
+</ParamField>
+
+<ParamField path="padding" type="number" default="undefined">
+  Padding of the cell, base unit token number multiplier.
+</ParamField>
+
+<ParamField path="paddingInline" type="number" default="undefined">
+  Horizontal padding of the cell, base unit token number multiplier.
+</ParamField>
+
+<ParamField path="paddingBlock" type="number" default="undefined">
+  Vertical padding of the cell, base unit token number multiplier.
+</ParamField>
+
+<ParamField path="rowSpan" type="number" default="undefined">
+  Merge the cell with cells below.
+</ParamField>
+
+<ParamField path="colSpan" type="number" default="undefined">
+  Merge the cell with cells to the right.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the cell element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the cell element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" default="undefined">
+  Node for inserting children.
+</ParamField>
+
+### TableHead / TableBody
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+  Node for inserting children.
+</ParamField>

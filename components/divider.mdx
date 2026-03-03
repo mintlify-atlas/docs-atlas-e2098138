@@ -1,0 +1,127 @@
+---
+title: Divider
+description: A visual separator component for dividing content sections
+---
+
+Divider creates a horizontal or vertical line to visually separate content sections. It supports different colors, orientations, and can include text labels.
+
+## Import
+
+```tsx
+import { Divider } from 'reshaped';
+```
+
+## Basic Usage
+
+```tsx
+<View gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Section 1</View>
+  <Divider />
+  <View padding={4} backgroundColor="neutral-faded">Section 2</View>
+</View>
+```
+
+## Vertical Divider
+
+```tsx
+<View direction="row" gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Left</View>
+  <Divider vertical />
+  <View padding={4} backgroundColor="neutral-faded">Right</View>
+</View>
+```
+
+## With Label
+
+```tsx
+<View gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Section 1</View>
+  <Divider>OR</Divider>
+  <View padding={4} backgroundColor="neutral-faded">Section 2</View>
+</View>
+```
+
+## Label Positioning
+
+```tsx
+<View gap={4}>
+  <Divider contentPosition="start">Start</Divider>
+  <Divider contentPosition="center">Center</Divider>
+  <Divider contentPosition="end">End</Divider>
+</View>
+```
+
+## Color Variants
+
+```tsx
+<View gap={4}>
+  <Divider color="neutral-faded" />
+  <Divider color="neutral" />
+</View>
+```
+
+## Responsive Orientation
+
+```tsx
+<View direction={{ s: "column", m: "row" }} gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Section 1</View>
+  <Divider vertical={{ s: false, m: true }} />
+  <View padding={4} backgroundColor="neutral-faded">Section 2</View>
+</View>
+```
+
+## Blank Divider
+
+```tsx
+<View gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Section 1</View>
+  <Divider blank />
+  <View padding={4} backgroundColor="neutral-faded">Section 2</View>
+</View>
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting text labels or custom components as a part of divider
+</ParamField>
+
+<ParamField path="vertical" type="Responsive<boolean>">
+  Change component to render vertically
+</ParamField>
+
+<ParamField path="blank" type="boolean">
+  Change component to take no space, useful for using it as a border in components like Tabs
+</ParamField>
+
+<ParamField path="color" type="'neutral-faded' | 'neutral'" default="neutral-faded">
+  Color of the divider
+</ParamField>
+
+<ParamField path="contentPosition" type="'start' | 'center' | 'end'">
+  Position for rendering children (label)
+</ParamField>
+
+<ParamField path="offset" type="string">
+  Offset the divider from the container bounds (CSS value)
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes<HTMLHRElement>">
+  Additional attributes for the root element
+</ParamField>
+
+<Note>
+  The Divider component automatically adjusts its orientation based on the `vertical` prop and sets appropriate ARIA attributes.
+</Note>
+
+<Note>
+  When using `blank`, the divider takes no visual space but maintains its semantic role as a separator.
+</Note>
+
+<Note>
+  Labels inside dividers are automatically styled with caption text and neutral-faded color for consistency.
+</Note>

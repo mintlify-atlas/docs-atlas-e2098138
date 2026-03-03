@@ -1,122 +1,216 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Reshaped",
+  "theme": "willow",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#5a58f2",
+    "light": "#5a58f2",
+    "dark": "#5a58f2"
   },
-  "favicon": "/favicon.svg",
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/reshaped-ui/reshaped"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/reshaped-ui/reshaped"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "introduction",
+              "installation",
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Core Concepts",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "concepts/theming",
+              "concepts/styling",
+              "concepts/accessibility",
+              "concepts/responsive-design",
+              "concepts/typescript"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Layout Components",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "components/view",
+              "components/container",
+              "components/grid",
+              "components/divider",
+              "components/hidden",
+              "components/scroll-area",
+              "components/resizable"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Form Components",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "components/text-field",
+              "components/text-area",
+              "components/select",
+              "components/checkbox",
+              "components/checkbox-group",
+              "components/radio",
+              "components/radio-group",
+              "components/switch",
+              "components/slider",
+              "components/number-field",
+              "components/pin-field",
+              "components/autocomplete",
+              "components/file-upload",
+              "components/form-control"
+            ]
+          },
+          {
+            "group": "Navigation Components",
+            "pages": [
+              "components/button",
+              "components/link",
+              "components/breadcrumbs",
+              "components/tabs",
+              "components/pagination",
+              "components/menu-item",
+              "components/stepper"
+            ]
+          },
+          {
+            "group": "Data Display Components",
+            "pages": [
+              "components/text",
+              "components/badge",
+              "components/avatar",
+              "components/card",
+              "components/table",
+              "components/timeline",
+              "components/carousel",
+              "components/image",
+              "components/icon"
+            ]
+          },
+          {
+            "group": "Feedback Components",
+            "pages": [
+              "components/alert",
+              "components/toast",
+              "components/loader",
+              "components/progress",
+              "components/progress-indicator",
+              "components/skeleton"
+            ]
+          },
+          {
+            "group": "Overlay Components",
+            "pages": [
+              "components/modal",
+              "components/popover",
+              "components/dropdown-menu",
+              "components/context-menu",
+              "components/tooltip",
+              "components/flyout",
+              "components/overlay",
+              "components/scrim"
+            ]
+          },
+          {
+            "group": "Utility Components",
+            "pages": [
+              "components/reshaped",
+              "components/theme",
+              "components/accordion",
+              "components/actionable",
+              "components/action-bar",
+              "components/calendar",
+              "components/dismissible",
+              "components/hotkey",
+              "components/toggle-button",
+              "components/toggle-button-group",
+              "components/hidden-input",
+              "components/hidden-visually"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Hooks",
             "pages": [
-              "api-reference/introduction"
+              "hooks/use-theme",
+              "hooks/use-toast",
+              "hooks/use-form-control",
+              "hooks/use-responsive-client-value",
+              "hooks/use-hotkeys",
+              "hooks/use-rtl",
+              "hooks/use-keyboard-mode",
+              "hooks/use-toggle"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Utilities",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "utilities/class-names",
+              "utilities/trap-focus",
+              "utilities/responsive-prop-dependency"
+            ]
+          },
+          {
+            "group": "CLI",
+            "pages": [
+              "cli/overview",
+              "cli/theming-command"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/postcss",
+              "configuration/tailwind",
+              "configuration/reshaped-config"
+            ]
+          },
+          {
+            "group": "Types",
+            "pages": [
+              "types/responsive",
+              "types/color-mode",
+              "types/reshaped-config"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Resources",
+        "groups": [
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/figma-integration",
+              "guides/custom-themes",
+              "guides/theme-fragments",
+              "guides/bundle-optimization"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "community/contributing",
+              "community/changelog"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

@@ -1,0 +1,241 @@
+---
+title: Theming
+description: Learn how to customize your application's appearance using Reshaped's powerful theme system
+---
+
+# Theming
+
+Reshaped provides a comprehensive theming system that allows you to customize the visual appearance of your application. The theme system is built on design tokens and supports multiple color modes out of the box.
+
+## Theme Provider
+
+Wrap your application with the `Reshaped` component to enable theming:
+
+```tsx
+import { Reshaped } from 'reshaped';
+import 'reshaped/themes/reshaped/theme.css';
+
+function App() {
+  return (
+    <Reshaped theme="reshaped" defaultColorMode="light">
+      {/* Your app content */}
+    </Reshaped>
+  );
+}
+```
+
+### Available Props
+
+The `Reshaped` component accepts the following theming-related props:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `theme` | `string \| string[]` | Theme name(s) to use (controlled mode) |
+| `defaultTheme` | `string \| string[]` | Default theme name(s) (uncontrolled mode) |
+| `colorMode` | `'light' \| 'dark'` | Color mode (controlled mode) |
+| `defaultColorMode` | `'light' \| 'dark'` | Default color mode (uncontrolled mode) |
+| `scoped` | `boolean` | Enable scoped theming for nested providers |
+
+<Note>
+Use controlled mode (`theme`, `colorMode`) when you want to manage the theme state yourself. Use uncontrolled mode (`defaultTheme`, `defaultColorMode`) to let Reshaped manage the state internally.
+</Note>
+
+## Built-in Themes
+
+Reshaped includes several pre-built themes:
+
+- **reshaped** - The default Reshaped theme
+- **slate** - A modern, muted color palette
+- **figma** - Inspired by Figma's design system
+
+Import theme CSS files to use them:
+
+```tsx
+import 'reshaped/themes/reshaped/theme.css'; // Default theme
+import 'reshaped/themes/slate/theme.css';    // Slate theme
+import 'reshaped/themes/figma/theme.css';    // Figma theme
+```
+
+## Color Modes
+
+Reshaped supports light and dark color modes. Each theme automatically adapts to the current color mode.
+
+### Using the useTheme Hook
+
+Access and control the theme and color mode using the `useTheme` hook:
+
+```tsx
+import { useTheme } from 'reshaped';
+
+function ThemeToggle() {
+  const { colorMode, setColorMode, theme, setTheme } = useTheme();
+
+  return (
+    <Button
+      onClick={() => setColorMode(colorMode === 'light' ? 'dark' : 'light')}
+    >
+      Toggle to {colorMode === 'light' ? 'Dark' : 'Light'} Mode
+    </Button>
+  );
+}
+```
+
+### useTheme Return Values
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `theme` | `string \| string[]` | Current theme name(s) |
+| `setTheme` | `(theme: string \| string[]) => void` | Update the theme |
+| `rootTheme` | `string \| string[]` | Root provider's theme |
+| `setRootTheme` | `(theme: string \| string[]) => void` | Update the root theme |
+| `colorMode` | `'light' \| 'dark'` | Current color mode |
+| `setColorMode` | `(mode: 'light' \| 'dark') => void` | Update the color mode |
+| `invertColorMode` | `() => void` | Toggle between light and dark |
+
+## Nested Themes
+
+You can nest `Theme` components to apply different themes to specific parts of your application:
+
+```tsx
+import { Reshaped, Theme } from 'reshaped';
+
+function App() {
+  return (
+    <Reshaped theme="reshaped" defaultColorMode="light">
+      <div>
+        <p>This uses the reshaped theme</p>
+        
+        <Theme name="slate">
+          <p>This uses the slate theme</p>
+        </Theme>
+        
+        <Theme colorMode="inverted">
+          <p>This uses the opposite color mode</p>
+        </Theme>
+      </div>
+    </Reshaped>
+  );
+}
+```
+
+<Tip>
+Use `colorMode="inverted"` to automatically flip the color mode within a specific section.
+</Tip>
+
+## Design Tokens
+
+Reshaped themes are built on design tokens defined in CSS custom properties. Each theme includes tokens for:
+
+- **Colors** - Background, foreground, border colors with semantic naming
+- **Typography** - Font families, sizes, weights, and line heights
+- **Spacing** - Base unit system (4px by default)
+- **Radius** - Border radius values (small, medium, large)
+- **Shadows** - Elevation shadows (raised, overlay)
+- **Duration** - Animation durations (rapid, fast, medium, slow)
+- **Easing** - Animation timing functions
+
+### Example Theme Tokens
+
+```css
+[data-rs-theme~="reshaped"] {
+  /* Typography */
+  --rs-font-family-body: Inter, -apple-system, sans-serif;
+  --rs-font-size-body-2: 1rem;
+  --rs-line-height-body-2: 1.5rem;
+  --rs-font-weight-medium: 500;
+  
+  /* Spacing */
+  --rs-unit-base: 4px;
+  --rs-unit-x4: 16px;
+  
+  /* Colors */
+  --rs-color-background-primary: #5a58f2;
+  --rs-color-foreground-neutral: #14181f;
+  
+  /* Border radius */
+  --rs-radius-small: 4px;
+  --rs-radius-medium: 8px;
+  --rs-radius-large: 12px;
+  
+  /* Duration */
+  --rs-duration-fast: 200ms;
+  --rs-duration-medium: 300ms;
+}
+```
+
+## Scoped Theming
+
+When using Reshaped in a context where it's not at the application root, enable scoped mode:
+
+```tsx
+import { Reshaped } from 'reshaped';
+
+function WidgetInExistingApp() {
+  return (
+    <Reshaped theme="reshaped" defaultColorMode="light" scoped>
+      {/* Your widget content */}
+    </Reshaped>
+  );
+}
+```
+
+<Warning>
+Scoped mode adds additional wrapper elements. Only use it when necessary.
+</Warning>
+
+## Custom Themes
+
+You can create custom themes by defining your own design tokens. Theme definitions use a JSON structure:
+
+```json
+{
+  "fontFamily": {
+    "body": {
+      "family": "Your Font, sans-serif"
+    }
+  },
+  "color": {
+    "backgroundPrimary": {
+      "hex": "#5a58f2",
+      "hexDark": "#524fea"
+    }
+  },
+  "unit": {
+    "base": { "px": 4 }
+  }
+}
+```
+
+Theme JSON files are transformed into CSS custom properties that components consume.
+
+## TypeScript Support
+
+All theme-related APIs are fully typed:
+
+```tsx
+import type { ColorMode, Theme } from 'reshaped';
+
+interface ThemeSettings {
+  theme: Theme;
+  colorMode: ColorMode;
+}
+
+const settings: ThemeSettings = {
+  theme: 'reshaped',
+  colorMode: 'dark',
+};
+```
+
+## Best Practices
+
+1. **Place the provider at the root** - Wrap your entire app with `Reshaped` for consistent theming
+2. **Import theme CSS once** - Import theme stylesheets in your main app file
+3. **Use controlled mode for persistence** - Sync `colorMode` with localStorage or user preferences
+4. **Leverage semantic colors** - Use token-based colors instead of hardcoding values
+5. **Test both color modes** - Ensure your UI works well in light and dark modes
+
+## Related
+
+- [Styling](/concepts/styling) - Learn about custom styles and CSS modules
+- [Responsive Design](/concepts/responsive-design) - Build responsive layouts
+- [Design Tokens](https://github.com/reshaped/reshaped/tree/main/packages/reshaped/src/themes) - Explore token definitions

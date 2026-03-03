@@ -1,0 +1,134 @@
+---
+title: useTheme
+description: Access and control the current theme and color mode
+---
+
+The `useTheme` hook provides access to the current theme configuration and color mode. Use it to get theme information or programmatically switch between themes and color modes.
+
+## Import
+
+```tsx
+import { useTheme } from 'reshaped';
+```
+
+## Usage
+
+```tsx
+import { useTheme, Button } from 'reshaped';
+
+function ThemeToggle() {
+  const { colorMode, setColorMode } = useTheme();
+
+  const toggleTheme = () => {
+    setColorMode(colorMode === 'light' ? 'dark' : 'light');
+  };
+
+  return (
+    <Button onClick={toggleTheme}>
+      Switch to {colorMode === 'light' ? 'dark' : 'light'} mode
+    </Button>
+  );
+}
+```
+
+## Return Value
+
+The hook returns an object with the following properties:
+
+<ResponseField name="theme" type="string | string[]">
+  The currently active theme name(s).
+</ResponseField>
+
+<ResponseField name="setTheme" type="(theme: string | string[]) => void">
+  Function to programmatically change the active theme.
+</ResponseField>
+
+<ResponseField name="rootTheme" type="string | string[]">
+  The root theme name(s) defined at the application level.
+</ResponseField>
+
+<ResponseField name="setRootTheme" type="(theme: string | string[]) => void">
+  Function to change the root theme.
+</ResponseField>
+
+<ResponseField name="colorMode" type="'light' | 'dark'">
+  The currently active color mode.
+</ResponseField>
+
+<ResponseField name="setColorMode" type="(mode: 'light' | 'dark') => void">
+  Function to programmatically change the color mode.
+</ResponseField>
+
+<ResponseField name="invertColorMode" type="() => void">
+  Function to toggle between light and dark modes.
+</ResponseField>
+
+## Examples
+
+### Get Current Color Mode
+
+```tsx
+import { useTheme, Text } from 'reshaped';
+
+function ColorModeDisplay() {
+  const { colorMode } = useTheme();
+
+  return <Text>Current mode: {colorMode}</Text>;
+}
+```
+
+### Switch Between Themes
+
+```tsx
+import { useTheme, Select } from 'reshaped';
+
+function ThemeSelector() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <Select
+      name="theme"
+      value={theme}
+      onChange={({ value }) => setTheme(value)}
+      options={[
+        { value: 'reshaped', label: 'Reshaped' },
+        { value: 'custom', label: 'Custom Theme' },
+      ]}
+    />
+  );
+}
+```
+
+### Invert Color Mode
+
+```tsx
+import { useTheme, Button } from 'reshaped';
+
+function InvertButton() {
+  const { invertColorMode } = useTheme();
+
+  return <Button onClick={invertColorMode}>Invert Mode</Button>;
+}
+```
+
+## TypeScript
+
+```tsx
+type UseThemeReturn = {
+  theme: string | string[];
+  setTheme: (theme: string | string[]) => void;
+  rootTheme: string | string[];
+  setRootTheme: (theme: string | string[]) => void;
+  colorMode: 'light' | 'dark';
+  setColorMode: (mode: 'light' | 'dark') => void;
+  invertColorMode: () => void;
+};
+
+function useTheme(): UseThemeReturn;
+```
+
+## Notes
+
+- This hook must be used within a `Theme` component or `Reshaped` provider
+- Color mode changes persist across the application
+- The `invertColorMode` function is a shorthand for toggling between light and dark modes

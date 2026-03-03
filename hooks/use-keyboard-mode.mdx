@@ -1,0 +1,336 @@
+---
+title: useKeyboardMode
+description: Detect and control keyboard navigation mode
+---
+
+The `useKeyboardMode` hook provides methods to detect, activate, and deactivate keyboard navigation mode. Use it to show focus indicators only when users are navigating with a keyboard, improving accessibility without cluttering the interface for mouse users.
+
+## Import
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+```
+
+## Usage
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+
+function CustomButton() {
+  const { activate, deactivate } = useKeyboardMode();
+
+  return (
+    <button
+      onKeyDown={activate}
+      onMouseDown={deactivate}
+    >
+      Click or press Enter
+    </button>
+  );
+}
+```
+
+## Return Value
+
+The hook returns an object with the following methods:
+
+<ResponseField name="activate" type="() => void">
+  Activates keyboard mode. Call this when keyboard navigation is detected. The system will show focus indicators.
+</ResponseField>
+
+<ResponseField name="deactivate" type="() => void">
+  Deactivates keyboard mode. Call this when mouse interaction is detected. Focus indicators will be hidden.
+</ResponseField>
+
+<ResponseField name="disable" type="() => void">
+  Temporarily disables keyboard mode detection. Prevents automatic activation/deactivation.
+</ResponseField>
+
+<ResponseField name="enable" type="() => void">
+  Re-enables keyboard mode detection after it was disabled.
+</ResponseField>
+
+<ResponseField name="disabledRef" type="RefObject<boolean>">
+  A ref that tracks whether keyboard mode detection is currently disabled.
+</ResponseField>
+
+## How It Works
+
+Reshaped automatically manages keyboard mode:
+- Keyboard mode is activated when any key is pressed (except modifier keys and Escape)
+- Keyboard mode is deactivated when the mouse is clicked
+- Focus indicators are shown only when keyboard mode is active
+- This improves UX by showing focus rings only to keyboard users
+
+## Examples
+
+### Custom Interactive Component
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+import { useState } from 'react';
+
+function CustomCard({ onClick }) {
+  const { activate, deactivate } = useKeyboardMode();
+  const [focused, setFocused] = useState(false);
+
+  return (
+    <div
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          activate();
+          onClick();
+        }
+      }}
+      onMouseDown={deactivate}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      style={{
+        outline: focused ? '2px solid blue' : 'none',
+        padding: '16px',
+        cursor: 'pointer',
+      }}
+    >
+      Interactive Card
+    </div>
+  );
+}
+```
+
+### Conditional Focus Styles
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+import { useEffect, useState } from 'react';
+
+function SmartButton({ children }) {
+  const { disabledRef } = useKeyboardMode();
+  const [showFocusRing, setShowFocusRing] = useState(false);
+
+  useEffect(() => {
+    // Check if keyboard mode is active
+    const isKeyboardMode = !disabledRef.current;
+    setShowFocusRing(isKeyboardMode);
+  }, [disabledRef]);
+
+  return (
+    <button
+      style={{
+        outline: showFocusRing ? '2px solid blue' : 'none',
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+### Temporarily Disable Detection
+
+```tsx
+import { useKeyboardMode, Button } from 'reshaped';
+import { useState } from 'react';
+
+function DisableExample() {
+  const { disable, enable } = useKeyboardMode();
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const toggleDetection = () => {
+    if (isDisabled) {
+      enable();
+    } else {
+      disable();
+    }
+    setIsDisabled(!isDisabled);
+  };
+
+  return (
+    <Button onClick={toggleDetection}>
+      {isDisabled ? 'Enable' : 'Disable'} Keyboard Mode Detection
+    </Button>
+  );
+}
+```
+
+### Custom Link Component
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+
+function CustomLink({ href, children }) {
+  const { activate, deactivate } = useKeyboardMode();
+
+  return (
+    <a
+      href={href}
+      onKeyDown={activate}
+      onMouseDown={deactivate}
+      className="custom-link"
+    >
+      {children}
+    </a>
+  );
+}
+```
+
+### Navigation Menu
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+import { useState } from 'react';
+
+function NavigationMenu({ items }) {
+  const { activate } = useKeyboardMode();
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    activate();
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveIndex((prev) => (prev + 1) % items.length);
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveIndex((prev) => (prev - 1 + items.length) % items.length);
+        break;
+    }
+  };
+
+  return (
+    <nav onKeyDown={handleKeyDown}>
+      {items.map((item, index) => (
+        <button
+          key={item.id}
+          tabIndex={activeIndex === index ? 0 : -1}
+          style={{
+            backgroundColor: activeIndex === index ? 'lightblue' : 'white',
+          }}
+        >
+          {item.label}
+        </button>
+      ))}
+    </nav>
+  );
+}
+```
+
+### Modal with Keyboard Trap
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+import { useEffect } from 'react';
+
+function Modal({ isOpen, onClose, children }) {
+  const { activate, disable, enable } = useKeyboardMode();
+
+  useEffect(() => {
+    if (isOpen) {
+      // Ensure keyboard mode is active for modals
+      activate();
+    }
+  }, [isOpen, activate]);
+
+  useEffect(() => {
+    // Disable keyboard mode when modal is closed
+    return () => {
+      if (!isOpen) {
+        enable();
+      }
+    };
+  }, [isOpen, enable]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div role="dialog" aria-modal="true">
+      {children}
+      <button onClick={onClose}>Close</button>
+    </div>
+  );
+}
+```
+
+### Accessible Dropdown
+
+```tsx
+import { useKeyboardMode } from 'reshaped';
+import { useState } from 'react';
+
+function AccessibleDropdown({ options, onChange }) {
+  const { activate, deactivate } = useKeyboardMode();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    activate();
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setIsOpen(!isOpen);
+    }
+  };
+
+  return (
+    <div>
+      <button
+        onKeyDown={handleKeyDown}
+        onMouseDown={deactivate}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        Select an option
+      </button>
+      {isOpen && (
+        <ul>
+          {options.map((option) => (
+            <li
+              key={option.value}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }
+              }}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+```
+
+## TypeScript
+
+```tsx
+type UseKeyboardModeReturn = {
+  activate: () => void;
+  deactivate: () => void;
+  disable: () => void;
+  enable: () => void;
+  disabledRef: React.RefObject<boolean>;
+};
+
+function useKeyboardMode(): UseKeyboardModeReturn;
+```
+
+## Notes
+
+- This hook must be used within a Reshaped provider
+- Reshaped components automatically handle keyboard mode internally
+- Keyboard mode is activated on any keypress except:
+  - Modifier keys (Ctrl, Alt, Cmd, Shift)
+  - Escape key (to prevent focus rings when closing with Esc after mouse interaction)
+- Keyboard mode is deactivated on any mouse click
+- The `disabledRef` is a ref (not state) for performance reasons
+- Use this hook when building custom interactive components that need keyboard accessibility
+- Focus indicators should only be shown when keyboard mode is active for better UX

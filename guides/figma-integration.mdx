@@ -1,0 +1,367 @@
+---
+title: Figma Integration
+description: Learn how to use Reshaped with Figma libraries for design-to-development workflow
+---
+
+Reshaped provides a professionally designed Figma library that stays in sync with the React component library, enabling seamless collaboration between designers and developers.
+
+## Overview
+
+The Reshaped Figma library includes all components, design tokens, and styles from the React library. This integration ensures design consistency and speeds up the handoff process.
+
+<Info>
+  The Reshaped Figma library is available in the Figma Community and is synced with the React library.
+  See `packages/README.md` for more information.
+</Info>
+
+## Getting Started
+
+<Steps>
+  <Step title="Access the Figma library">
+    Find the Reshaped Figma library in the Figma Community:
+    
+    - Visit [Figma Community](https://www.figma.com/community/file/1546133815088483407)
+    - Search for "Reshaped"
+    - Duplicate the library to your workspace
+    
+    The library includes all components, styles, and design tokens from the React package.
+  </Step>
+  
+  <Step title="Enable the library">
+    In your Figma file:
+    
+    1. Click on the **Assets** panel
+    2. Click the **Library** icon (book icon)
+    3. Enable the **Reshaped** library
+    4. Click **Return to file**
+    
+    You can now access Reshaped components from the Assets panel.
+  </Step>
+  
+  <Step title="Start designing">
+    Insert components from the Assets panel or use search:
+    
+    - Press `/` or `Shift + I` to open component search
+    - Type "Reshaped" to filter library components
+    - Select and insert components
+    
+    All components are organized by category (Layout, Forms, Navigation, etc.).
+  </Step>
+</Steps>
+
+## Using the Figma Theme
+
+Reshaped includes a Figma-specific theme that matches Figma's design system aesthetic.
+
+### Importing the Figma Theme
+
+```tsx
+import { Reshaped } from "reshaped";
+import "reshaped/themes/figma/theme.css";
+
+export default function App() {
+  return (
+    <Reshaped theme="figma" defaultColorMode="light">
+      {/* Your app with Figma theme */}
+    </Reshaped>
+  );
+}
+```
+
+### Figma Theme Characteristics
+
+The Figma theme includes:
+
+<CardGroup cols={2}>
+  <Card title="Figma Colors" icon="palette">
+    Color palette inspired by Figma's interface with blue primary colors and neutral grays.
+  </Card>
+  
+  <Card title="Inter Font" icon="font">
+    Uses Inter font family, the same as Figma's UI, for consistency.
+  </Card>
+  
+  <Card title="4px Grid" icon="grid">
+    Base unit of 4px matching Figma's grid system for pixel-perfect layouts.
+  </Card>
+  
+  <Card title="Consistent Radius" icon="circle">
+    Border radius values (4px) that match Figma's component styles.
+  </Card>
+</CardGroup>
+
+### Figma Theme Colors
+
+The Figma theme uses these primary colors:
+
+```typescript
+// packages/reshaped/src/themes/_generator/definitions/figma.ts:111-156
+color: {
+  // Primary colors
+  backgroundPrimary: { hex: "#0D99FF", hexDark: "#0C8CE9" },
+  foregroundPrimary: { hex: "#007BE5", hexDark: "#7CC4F8" },
+  
+  // Neutral colors
+  foregroundNeutral: { hex: "#191919", hexDark: "#FFFFFF" },
+  backgroundNeutral: { hex: "#DFE2EA", hexDark: "#444444" },
+  
+  // Page backgrounds
+  backgroundPage: { hex: "#FFFFFF", hexDark: "#2C2C2C" },
+  backgroundPageFaded: { hex: "#FAFAFA", hexDark: "#1E1E1E" },
+}
+```
+
+## Design Tokens in Figma
+
+Reshaped design tokens are available as Figma styles and variables:
+
+### Color Styles
+
+All color tokens are available as color styles in Figma:
+
+- Foreground colors (text)
+- Background colors (fills)
+- Border colors (strokes)
+- Semantic colors (primary, positive, critical, warning)
+
+### Text Styles
+
+Typography tokens are available as text styles:
+
+- Title variants (title1-6)
+- Featured text (featured1-3)
+- Body text (body1-3)
+- Captions (caption1-2)
+
+### Effect Styles
+
+Elevation and shadow tokens:
+
+- `raised` - Subtle shadow for raised elements
+- `overlay` - Deeper shadow for modals and overlays
+
+## Component Variants
+
+Figma components include all variants available in React:
+
+<CodeGroup>
+```tsx React
+<Button 
+  color="primary" 
+  variant="solid"
+  size="medium"
+>
+  Click me
+</Button>
+```
+
+```text Figma
+Reshaped/Button
+├─ Color: Primary, Critical, Positive, Neutral
+├─ Variant: Solid, Outline, Ghost, Faded
+└─ Size: Small, Medium, Large
+```
+</CodeGroup>
+
+## Design-to-Code Workflow
+
+<Steps>
+  <Step title="Design in Figma">
+    Create your designs using Reshaped components and tokens:
+    
+    - Use components from the library
+    - Apply color and text styles
+    - Set spacing using 4px increments
+    - Define responsive layouts
+  </Step>
+  
+  <Step title="Inspect properties">
+    Use Figma's Inspect panel to view component properties:
+    
+    - Component names match React component names
+    - Variant properties map to React props
+    - Spacing values use the same units (4, 8, 12, etc.)
+  </Step>
+  
+  <Step title="Implement in React">
+    Translate Figma designs directly to React code:
+    
+    ```tsx
+    // Figma: Button, Color=Primary, Variant=Solid, Size=Medium
+    <Button color="primary" variant="solid" size="medium">
+      Click me
+    </Button>
+    
+    // Figma: View, Padding=4, Gap=2, Direction=Column
+    <View padding={4} gap={2} direction="column">
+      {/* Content */}
+    </View>
+    ```
+  </Step>
+  
+  <Step title="Maintain consistency">
+    Keep designs and code in sync:
+    
+    - Update both Figma and code when making changes
+    - Use the same token names (e.g., "primary", "neutral")
+    - Follow the same spacing scale
+    - Test in both environments
+  </Step>
+</Steps>
+
+## Customizing the Figma Theme
+
+You can customize the Figma theme for your brand:
+
+```typescript
+// reshaped.config.ts
+import figmaDefinition from "reshaped/themes/_generator/definitions/figma";
+import type { ReshapedConfig } from "reshaped";
+
+const config: ReshapedConfig = {
+  themes: {
+    "figma-custom": {
+      ...figmaDefinition,
+      color: {
+        ...figmaDefinition.color,
+        // Override primary colors
+        backgroundPrimary: { hex: "#FF6B6B", hexDark: "#FF5252" },
+        foregroundPrimary: { hex: "#D84040", hexDark: "#FF8A8A" },
+      },
+    },
+  },
+};
+
+export default config;
+```
+
+Then generate and use the custom theme:
+
+```bash
+npx reshaped theme
+```
+
+```tsx
+import { Reshaped } from "reshaped";
+import "./themes/figma-custom/theme.css";
+
+export default function App() {
+  return (
+    <Reshaped theme="figma-custom">
+      {/* Your app with custom Figma theme */}
+    </Reshaped>
+  );
+}
+```
+
+## Exporting Designs
+
+### Dev Mode
+
+Use Figma's Dev Mode for enhanced developer handoff:
+
+1. Open your design in Figma
+2. Click **Dev Mode** in the toolbar
+3. Select a component to view:
+   - Component name and props
+   - Spacing and sizing values
+   - Colors and styles
+   - CSS properties
+
+### Code Snippets
+
+Reshaped components have predictable prop mappings:
+
+<Tabs>
+  <Tab title="Figma Properties">
+    - **Color**: Maps to `color` prop
+    - **Variant**: Maps to `variant` prop
+    - **Size**: Maps to `size` prop
+    - **State**: Maps to boolean props (`disabled`, `loading`)
+  </Tab>
+  
+  <Tab title="React Props">
+    ```tsx
+    // All properties map directly
+    <Button
+      color="primary"      // Color property
+      variant="solid"     // Variant property
+      size="medium"       // Size property
+      disabled={false}    // State property
+    >
+      Button text
+    </Button>
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Auto Layout">
+    Match Reshaped's flexbox-based layout:
+    
+    - Set Auto Layout direction to match `View` direction
+    - Use spacing values from the 4px scale (4, 8, 12, 16, etc.)
+    - Enable "Clip content" for overflow control
+  </Accordion>
+  
+  <Accordion title="Name layers consistently">
+    Use the same naming convention:
+    
+    - Components: PascalCase (Button, TextField)
+    - Instances: Descriptive names (SubmitButton, EmailInput)
+    - Groups: Match component structure
+  </Accordion>
+  
+  <Accordion title="Document interactions">
+    Add notes for dynamic behavior:
+    
+    - Hover states and transitions
+    - Loading and disabled states
+    - Responsive breakpoints
+    - Animation specifications
+  </Accordion>
+  
+  <Accordion title="Version control">
+    Keep Figma files and code versions aligned:
+    
+    - Tag Figma file versions
+    - Reference version numbers in code comments
+    - Update both when making breaking changes
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Components look different">
+    Ensure you're using the latest library version:
+    
+    1. Check for library updates in Assets panel
+    2. Update all component instances
+    3. Verify theme and color mode match
+  </Accordion>
+  
+  <Accordion title="Spacing doesn't match">
+    Use the 4px spacing scale:
+    
+    - Figma: Use Auto Layout spacing (4, 8, 12, 16, 20, 24, etc.)
+    - React: Use spacing units (1, 2, 3, 4, 5, 6, etc.)
+    - Multiply React units by 4 to get pixels
+  </Accordion>
+  
+  <Accordion title="Colors are incorrect">
+    Check color mode and theme:
+    
+    - Verify light/dark mode in both Figma and code
+    - Ensure using the same theme (reshaped, figma, slate)
+    - Check for color token overrides
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+- [Creating Custom Themes](/guides/custom-themes) - Customize Figma theme colors
+- [ReshapedConfig](/types/reshaped-config) - Theme configuration options
+- [Reshaped Figma Library](https://www.figma.com/community/file/1546133815088483407) - Official Figma library

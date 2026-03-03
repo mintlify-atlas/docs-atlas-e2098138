@@ -1,0 +1,232 @@
+---
+title: "Checkbox"
+description: "A checkbox input for binary choices and multi-selection"
+icon: "square-check"
+---
+
+Checkbox is a form component that allows users to make binary choices or select multiple items from a list. It supports controlled and uncontrolled modes, with indeterminate state for partial selections.
+
+## Basic usage
+
+```jsx
+import { Checkbox } from 'reshaped';
+
+function Example() {
+  return (
+    <Checkbox name="terms" value="accepted">
+      I accept the terms and conditions
+    </Checkbox>
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { Checkbox } from 'reshaped';
+
+function ControlledExample() {
+  const [checked, setChecked] = useState(false);
+
+  return (
+    <Checkbox
+      name="newsletter"
+      checked={checked}
+      onChange={({ value }) => setChecked(value)}
+    >
+      Subscribe to newsletter
+    </Checkbox>
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { Checkbox } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <Checkbox
+      name="remember"
+      defaultChecked
+      onChange={({ name, value }) => console.log(name, value)}
+    >
+      Remember me
+    </Checkbox>
+  );
+}
+```
+
+## Indeterminate state
+
+```jsx
+import { Checkbox } from 'reshaped';
+
+<Checkbox
+  name="selectAll"
+  indeterminate
+>
+  Select all items
+</Checkbox>
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, Checkbox } from 'reshaped';
+
+function FormExample() {
+  return (
+    <FormControl>
+      <Checkbox name="terms" value="accepted">
+        I agree to the terms and conditions
+      </Checkbox>
+      <FormControl.Helper>
+        You must accept the terms to continue.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Sizes
+
+```jsx
+import { Checkbox } from 'reshaped';
+
+<Checkbox size="small" name="small">Small checkbox</Checkbox>
+<Checkbox size="medium" name="medium">Medium checkbox</Checkbox>
+<Checkbox size="large" name="large">Large checkbox</Checkbox>
+```
+
+## Validation
+
+```jsx
+import { FormControl, Checkbox } from 'reshaped';
+import { useState } from 'react';
+
+function ValidationExample() {
+  const [accepted, setAccepted] = useState(false);
+  const hasError = !accepted;
+
+  return (
+    <FormControl hasError={hasError}>
+      <Checkbox
+        name="terms"
+        checked={accepted}
+        onChange={({ value }) => setAccepted(value)}
+      >
+        I accept the terms and conditions
+      </Checkbox>
+      <FormControl.Error>
+        You must accept the terms to continue.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Multiple checkboxes
+
+```jsx
+import { Checkbox, View } from 'reshaped';
+
+function MultipleExample() {
+  return (
+    <View gap={3}>
+      <Checkbox name="feature-a" value="a">Feature A</Checkbox>
+      <Checkbox name="feature-b" value="b">Feature B</Checkbox>
+      <Checkbox name="feature-c" value="c">Feature C</Checkbox>
+    </View>
+  );
+}
+```
+
+## Disabled state
+
+```jsx
+import { Checkbox } from 'reshaped';
+
+<Checkbox name="disabled" disabled>
+  Disabled checkbox
+</Checkbox>
+
+<Checkbox name="disabledChecked" disabled defaultChecked>
+  Disabled and checked
+</Checkbox>
+```
+
+## Accessibility
+
+Checkbox follows accessibility best practices:
+
+- Uses semantic HTML checkbox input
+- Supports ARIA attributes via `inputAttributes`
+- Label is properly associated with input
+- Keyboard accessible (Space to toggle)
+- Screen reader announces checked/unchecked state
+- Indeterminate state is communicated to assistive technologies
+
+## Props
+
+<ParamField path="name" type="string">
+  Component name attribute
+</ParamField>
+
+<ParamField path="value" type="string">
+  Component value used for form submission
+</ParamField>
+
+<ParamField path="checked" type="boolean">
+  Component checked state, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultChecked" type="boolean">
+  Default checked state, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="indeterminate" type="boolean">
+  Show an indeterminate state, used for "select all" checkboxes with some individual checkboxes selected
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the component
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Show an error state. Automatically inherited when used inside FormControl.
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large'" default="medium">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: boolean }) => void">
+  Callback when the component selection changes
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent) => void">
+  Callback when the component is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent) => void">
+  Callback when the component is blurred
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting the label
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root label element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input element. Use for ARIA attributes.
+</ParamField>

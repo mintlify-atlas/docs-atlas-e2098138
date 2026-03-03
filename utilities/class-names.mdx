@@ -1,0 +1,97 @@
+---
+title: 'classNames'
+description: 'Utility for conditional class name concatenation'
+---
+
+## Overview
+
+The `classNames` utility is a helper function for conditionally joining CSS class names together. It's re-exported from `@reshaped/headless` and used extensively throughout Reshaped components.
+
+## Import
+
+```tsx
+import { classNames } from 'reshaped';
+```
+
+## Usage
+
+### Basic Example
+
+```tsx
+import { classNames } from 'reshaped';
+import styles from './Button.module.css';
+
+function Button({ variant, disabled, className }) {
+  return (
+    <button
+      className={classNames(
+        styles.button,
+        variant && styles[`button--${variant}`],
+        disabled && styles['button--disabled'],
+        className
+      )}
+    >
+      Click me
+    </button>
+  );
+}
+```
+
+### With Conditional Classes
+
+```tsx
+const rootClassNames = classNames(
+  styles.root,
+  active && styles['root--active'],
+  disabled && styles['root--disabled'],
+  variant && styles[`root--variant-${variant}`]
+);
+```
+
+## Function Signature
+
+<ParamField path="...classes" type="(string | boolean | undefined)[]">
+  Variable number of class name arguments. Falsy values are automatically filtered out.
+</ParamField>
+
+<ResponseField name="return" type="string">
+  Concatenated class names string with falsy values removed
+</ResponseField>
+
+## Features
+
+- Filters out falsy values (false, null, undefined, '')
+- Accepts any number of arguments
+- Returns space-separated string of valid class names
+- Type-safe with TypeScript
+
+## Common Patterns
+
+### Combining Multiple Conditions
+
+```tsx
+const className = classNames(
+  s.root,
+  mixinStyles.classNames,
+  align && s[`root--align-${align}`],
+  direction === 'row' && s['root--direction-row'],
+  wrap && s['root--wrap'],
+  className
+);
+```
+
+### With Responsive Props
+
+```tsx
+import { classNames } from 'reshaped';
+import { responsiveClassNames } from './utilities/props';
+
+const rootClassNames = classNames(
+  s.root,
+  responsiveClassNames(s, '--padding', padding)
+);
+```
+
+## Related Utilities
+
+- [responsivePropDependency](/utilities/responsive-prop-dependency) - Handle responsive prop values

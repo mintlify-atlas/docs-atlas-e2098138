@@ -1,0 +1,334 @@
+---
+title: Icon
+description: Display SVG icons with consistent sizing and colors
+---
+
+The Icon component provides a consistent way to display SVG icons with support for sizing, colors, and responsive properties.
+
+## Basic Usage
+
+```jsx
+import { Icon } from 'reshaped';
+import IconHome from './icons/Home';
+
+function App() {
+  return <Icon svg={IconHome} />;
+}
+```
+
+## Sizes
+
+Control icon size using various methods:
+
+```jsx
+import { Icon } from 'reshaped';
+import IconStar from './icons/Star';
+
+// Base unit multiplier
+<Icon svg={IconStar} size={4} />
+<Icon svg={IconStar} size={6} />
+<Icon svg={IconStar} size={8} />
+
+// CSS values
+<Icon svg={IconStar} size="16px" />
+<Icon svg={IconStar} size="1.5rem" />
+<Icon svg={IconStar} size="1em" />
+```
+
+Default size is `1em`, which inherits the parent font size.
+
+## Responsive Sizes
+
+Size can be responsive across breakpoints:
+
+```jsx
+<Icon
+  svg={IconStar}
+  size={{ s: 4, m: 5, l: 6 }}
+/>
+```
+
+## Colors
+
+Apply semantic colors to icons:
+
+```jsx
+import { Icon } from 'reshaped';
+import IconCheck from './icons/Check';
+
+<Icon svg={IconCheck} color="neutral" />
+<Icon svg={IconCheck} color="neutral-faded" />
+<Icon svg={IconCheck} color="primary" />
+<Icon svg={IconCheck} color="positive" />
+<Icon svg={IconCheck} color="warning" />
+<Icon svg={IconCheck} color="critical" />
+<Icon svg={IconCheck} color="disabled" />
+```
+
+## Auto Width
+
+Use the icon's natural width instead of a square bounding box:
+
+```jsx
+<Icon svg={IconLogo} autoWidth size={6} />
+```
+
+## With Text
+
+Icons automatically match text size when used inline:
+
+```jsx
+import { Icon, Text, View } from 'reshaped';
+import IconStar from './icons/Star';
+
+<View direction="row" gap={1} align="center">
+  <Icon svg={IconStar} />
+  <Text variant="body-2">Favorite</Text>
+</View>
+
+<Text variant="featured-3">
+  <View direction="row" gap={2} align="center">
+    <Icon svg={IconStar} />
+    Large heading with icon
+  </View>
+</Text>
+```
+
+## Complete Examples
+
+### Icon Button
+
+```jsx
+import { Icon, Button } from 'reshaped';
+import IconTrash from './icons/Trash';
+
+<Button
+  variant="ghost"
+  icon={<Icon svg={IconTrash} />}
+  attributes={{ 'aria-label': 'Delete' }}
+/>
+```
+
+### Icon with Badge
+
+```jsx
+import { Icon, Badge, View } from 'reshaped';
+import IconBell from './icons/Bell';
+
+function NotificationIcon({ count }) {
+  return (
+    <View attributes={{ style: { position: 'relative', display: 'inline-flex' } }}>
+      <Icon svg={IconBell} size={6} />
+      {count > 0 && (
+        <Badge
+          size="small"
+          color="critical"
+          rounded
+          attributes={{
+            style: {
+              position: 'absolute',
+              top: -4,
+              right: -4,
+            }
+          }}
+        >
+          {count}
+        </Badge>
+      )}
+    </View>
+  );
+}
+```
+
+### Icon List
+
+```jsx
+import { Icon, Text, View } from 'reshaped';
+import IconCheck from './icons/Check';
+
+function FeatureList({ features }) {
+  return (
+    <View gap={3}>
+      {features.map((feature, index) => (
+        <View key={index} direction="row" gap={2} align="start">
+          <Icon svg={IconCheck} size={5} color="positive" />
+          <Text variant="body-2">{feature}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
+```
+
+### Status Icons
+
+```jsx
+import { Icon, Text, View } from 'reshaped';
+import IconCheck from './icons/Check';
+import IconClock from './icons/Clock';
+import IconX from './icons/X';
+
+function StatusIndicator({ status, message }) {
+  const statusConfig = {
+    success: { icon: IconCheck, color: 'positive' },
+    pending: { icon: IconClock, color: 'warning' },
+    error: { icon: IconX, color: 'critical' },
+  };
+
+  const config = statusConfig[status];
+
+  return (
+    <View direction="row" gap={2} align="center">
+      <Icon svg={config.icon} size={5} color={config.color} />
+      <Text variant="body-3" color={config.color}>
+        {message}
+      </Text>
+    </View>
+  );
+}
+```
+
+### Icon Grid
+
+```jsx
+import { Icon, Card, View, Text } from 'reshaped';
+import IconHome from './icons/Home';
+import IconUser from './icons/User';
+import IconSettings from './icons/Settings';
+import IconMail from './icons/Mail';
+
+function IconGrid() {
+  const items = [
+    { icon: IconHome, label: 'Home', color: 'primary' },
+    { icon: IconUser, label: 'Profile', color: 'positive' },
+    { icon: IconSettings, label: 'Settings', color: 'warning' },
+    { icon: IconMail, label: 'Messages', color: 'critical' },
+  ];
+
+  return (
+    <View direction="row" gap={4}>
+      {items.map((item, index) => (
+        <Card
+          key={index}
+          padding={4}
+          onClick={() => console.log(item.label)}
+        >
+          <View gap={2} align="center">
+            <Icon svg={item.icon} size={8} color={item.color} />
+            <Text variant="caption-1">{item.label}</Text>
+          </View>
+        </Card>
+      ))}
+    </View>
+  );
+}
+```
+
+### Loading Spinner Icon
+
+```jsx
+import { Icon } from 'reshaped';
+import IconLoader from './icons/Loader';
+
+<Icon
+  svg={IconLoader}
+  size={6}
+  color="primary"
+  attributes={{
+    style: {
+      animation: 'spin 1s linear infinite',
+    }
+  }}
+/>
+```
+
+### Icon in Table
+
+```jsx
+import { 
+  Table, 
+  TableHead, 
+  TableBody, 
+  TableRow, 
+  TableHeading, 
+  TableCell,
+  Icon,
+  Text,
+  View 
+} from 'reshaped';
+import IconCheck from './icons/Check';
+import IconX from './icons/X';
+
+function FeatureTable({ features }) {
+  return (
+    <Table border>
+      <TableHead>
+        <TableRow>
+          <TableHeading>Feature</TableHeading>
+          <TableHeading align="center">Available</TableHeading>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {features.map(feature => (
+          <TableRow key={feature.id}>
+            <TableCell>{feature.name}</TableCell>
+            <TableCell align="center">
+              <Icon
+                svg={feature.available ? IconCheck : IconX}
+                size={5}
+                color={feature.available ? 'positive' : 'critical'}
+              />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+```
+
+## Accessibility
+
+The Icon component automatically sets `aria-hidden="true"` since icons are typically decorative. For icons that convey meaning, ensure the parent element has appropriate accessibility attributes:
+
+```jsx
+// Good: Button with aria-label
+<Button
+  icon={<Icon svg={IconTrash} />}
+  attributes={{ 'aria-label': 'Delete item' }}
+/>
+
+// Good: Icon with visible text
+<View direction="row" gap={1} align="center">
+  <Icon svg={IconInfo} />
+  <Text>Information</Text>
+</View>
+```
+
+## Props
+
+<ParamField path="svg" type="React.ComponentType | React.ReactElement | null" required>
+  Icon SVG component or element to render.
+</ParamField>
+
+<ParamField path="size" type="number | string | responsive" default="1em">
+  Icon size. Can be a number (base unit multiplier), string (CSS value like '1em', '16px'), or responsive.
+</ParamField>
+
+<ParamField path="color" type="string" default="undefined">
+  Icon color based on color tokens.
+  
+  Options: `neutral`, `neutral-faded`, `positive`, `critical`, `warning`, `primary`, `disabled`
+</ParamField>
+
+<ParamField path="autoWidth" type="boolean" default="false">
+  Use the width of the SVG asset instead of providing a square bounding box.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>

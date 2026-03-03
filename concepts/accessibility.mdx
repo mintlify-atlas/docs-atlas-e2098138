@@ -1,0 +1,464 @@
+---
+title: Accessibility
+description: Build inclusive applications with Reshaped's accessibility features including ARIA support, keyboard navigation, and screen reader compatibility
+---
+
+# Accessibility
+
+Reshaped is built with accessibility in mind, following WAI-ARIA best practices and ensuring all components work seamlessly with assistive technologies. Every component includes proper ARIA attributes, keyboard navigation, and focus management.
+
+## ARIA Attributes
+
+Reshaped components automatically include appropriate ARIA attributes based on their role and state.
+
+### Modal Dialogs
+
+Modals are properly marked up as dialogs with label associations:
+
+```tsx
+import { Modal } from 'reshaped';
+
+function AccessibleModal() {
+  return (
+    <Modal
+      active={isOpen}
+      onClose={handleClose}
+      ariaLabel="User Settings"
+    >
+      <Modal.Title>Settings</Modal.Title>
+      <Modal.Subtitle>Manage your account preferences</Modal.Subtitle>
+      {/* Modal content */}
+    </Modal>
+  );
+}
+```
+
+Generated markup:
+
+```html
+<div
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-123-title"
+  aria-describedby="modal-123-subtitle"
+>
+  <h2 id="modal-123-title">Settings</h2>
+  <p id="modal-123-subtitle">Manage your account preferences</p>
+</div>
+```
+
+### Button Groups
+
+Button groups are marked as grouped controls:
+
+```tsx
+import { Button } from 'reshaped';
+
+function ButtonGroup() {
+  return (
+    <Button.Group>
+      <Button>Left</Button>
+      <Button>Center</Button>
+      <Button>Right</Button>
+    </Button.Group>
+  );
+}
+```
+
+Generates:
+
+```html
+<div role="group">
+  <button>Left</button>
+  <button>Center</button>
+  <button>Right</button>
+</div>
+```
+
+### Loading States
+
+Buttons with loading states include proper ARIA labels:
+
+```tsx
+import { Button } from 'reshaped';
+
+<Button
+  loading
+  loadingAriaLabel="Saving changes"
+>
+  Save
+</Button>
+```
+
+### Icon-Only Buttons
+
+Always provide accessible labels for icon-only buttons:
+
+```tsx
+import { Button, Icon } from 'reshaped';
+import { IconZap } from '@iconify/react';
+
+<Button
+  icon={IconZap}
+  attributes={{ 'aria-label': 'Quick action' }}
+/>
+```
+
+<Warning>
+Icon-only buttons without labels will be inaccessible to screen reader users. Always include an `aria-label`.
+</Warning>
+
+## Keyboard Navigation
+
+Reshaped components support full keyboard navigation following standard patterns.
+
+### Focus Management
+
+All interactive components are keyboard-accessible and include visible focus indicators:
+
+```tsx
+import { Button } from 'reshaped';
+
+// Focus indicators are automatic
+<Button onClick={handleClick}>Click me</Button>
+```
+
+Focus styles are automatically applied:
+
+```css
+[data-rs-keyboard] button:focus {
+  outline: 2px solid var(--rs-color-foreground-primary);
+  outline-offset: 2px;
+}
+```
+
+### Keyboard Mode Detection
+
+Reshaped detects keyboard usage and applies appropriate focus styles only during keyboard navigation:
+
+```tsx
+import { useKeyboardMode } from '@reshaped/headless';
+
+function Component() {
+  const isKeyboard = useKeyboardMode();
+  
+  return (
+    <div>
+      {isKeyboard ? 'Using keyboard' : 'Using mouse/touch'}
+    </div>
+  );
+}
+```
+
+The `data-rs-keyboard` attribute is automatically added to the document when keyboard navigation is detected.
+
+### Arrow Key Navigation
+
+Components like menus and lists support arrow key navigation:
+
+```tsx
+import { DropdownMenu, MenuItem } from 'reshaped';
+
+function Menu() {
+  return (
+    <DropdownMenu>
+      {/* Use arrow keys to navigate */}
+      <MenuItem>Option 1</MenuItem>
+      <MenuItem>Option 2</MenuItem>
+      <MenuItem>Option 3</MenuItem>
+    </DropdownMenu>
+  );
+}
+```
+
+Supported keys:
+- **Arrow Up/Down** - Navigate through items
+- **Home/End** - Jump to first/last item
+- **Enter/Space** - Activate item
+- **Escape** - Close menu
+
+### Custom Keyboard Shortcuts
+
+Use the `useHotkeys` hook for custom keyboard shortcuts:
+
+```tsx
+import { useHotkeys } from '@reshaped/headless';
+
+function Editor() {
+  useHotkeys([
+    ['mod+s', () => saveDocument()],
+    ['mod+k', () => openCommandPalette()],
+  ]);
+  
+  return <div>Editor content</div>;
+}
+```
+
+<Tip>
+The `mod` key maps to `Cmd` on macOS and `Ctrl` on Windows/Linux.
+</Tip>
+
+## Screen Reader Support
+
+Reshaped components work seamlessly with screen readers like NVDA, JAWS, and VoiceOver.
+
+### Hidden Visually Content
+
+Hide content visually while keeping it accessible to screen readers:
+
+```tsx
+import { HiddenVisually } from 'reshaped';
+
+function IconButton() {
+  return (
+    <button>
+      <Icon svg={IconTrash} />
+      <HiddenVisually>Delete item</HiddenVisually>
+    </button>
+  );
+}
+```
+
+This renders content that is:
+- Hidden from sighted users
+- Announced by screen readers
+- Not removed from the DOM
+
+### Live Regions
+
+For dynamic content updates, use ARIA live regions:
+
+```tsx
+import { Toast } from 'reshaped';
+
+function Notifications() {
+  return (
+    <Toast
+      active={showToast}
+      attributes={{ 'aria-live': 'polite' }}
+    >
+      Changes saved successfully
+    </Toast>
+  );
+}
+```
+
+Live region politeness levels:
+- **polite** - Announced at next opportunity (default for toasts)
+- **assertive** - Announced immediately (use sparingly)
+- **off** - Not announced
+
+### Form Labels
+
+Always associate labels with form controls:
+
+```tsx
+import { TextField, FormControl } from 'reshaped';
+
+function LoginForm() {
+  return (
+    <FormControl>
+      <FormControl.Label>Email address</FormControl.Label>
+      <TextField
+        name="email"
+        type="email"
+        inputAttributes={{
+          'aria-describedby': 'email-hint',
+          'aria-invalid': hasError,
+        }}
+      />
+      <FormControl.Hint id="email-hint">
+        We'll never share your email
+      </FormControl.Hint>
+      {hasError && (
+        <FormControl.Error>
+          Please enter a valid email address
+        </FormControl.Error>
+      )}
+    </FormControl>
+  );
+}
+```
+
+## Focus Management
+
+### Focus Rings
+
+Focus indicators are automatically styled and can be customized:
+
+```tsx
+import { Actionable } from 'reshaped';
+
+// Standard focus ring
+<Actionable insetFocus={false}>
+  Standard focus
+</Actionable>
+
+// Inset focus ring (fits inside the element)
+<Actionable insetFocus>
+  Inset focus
+</Actionable>
+
+// Disable focus ring (use sparingly)
+<Actionable disableFocusRing>
+  No focus ring
+</Actionable>
+```
+
+<Warning>
+Only disable focus rings when you provide an alternative focus indicator. Never remove focus indicators entirely.
+</Warning>
+
+### Focus Trapping
+
+Modals and overlays automatically trap focus:
+
+```tsx
+import { Modal } from 'reshaped';
+
+function Dialog() {
+  return (
+    <Modal active={isOpen} onClose={handleClose}>
+      {/* Focus is trapped within the modal */}
+      <input type="text" />
+      <Button onClick={handleClose}>Close</Button>
+    </Modal>
+  );
+}
+```
+
+Focus behavior:
+1. Focus moves to modal when opened
+2. Tab cycles through modal elements only
+3. Escape key closes modal
+4. Focus returns to trigger element on close
+
+### Scroll Locking
+
+Overlays prevent background scrolling:
+
+```tsx
+import { useScrollLock } from '@reshaped/headless';
+
+function CustomOverlay() {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Lock scrolling when overlay is open
+  useScrollLock(isOpen);
+  
+  return (
+    <div>
+      {/* Overlay content */}
+    </div>
+  );
+}
+```
+
+## Color Contrast
+
+Reshaped themes meet WCAG 2.1 Level AA contrast requirements:
+
+- **Normal text**: Minimum 4.5:1 contrast ratio
+- **Large text**: Minimum 3:1 contrast ratio
+- **UI components**: Minimum 3:1 contrast ratio
+
+### Checking Contrast
+
+All color tokens are designed to meet contrast requirements:
+
+```tsx
+import { View, Text } from 'reshaped';
+
+// Meets contrast requirements
+<View backgroundColor="primary">
+  <Text color="on-background-primary">
+    High contrast text
+  </Text>
+</View>
+```
+
+Color pairings are automatically calculated to ensure accessibility across light and dark modes.
+
+## Touch Targets
+
+Interactive elements meet minimum touch target sizes (44x44px):
+
+```tsx
+import { Button, Actionable } from 'reshaped';
+
+// Buttons automatically meet size requirements
+<Button size="small">Still accessible</Button>
+
+// Add touch hitbox for small custom elements
+<Actionable touchHitbox>
+  <Icon svg={IconX} size={4} />
+</Actionable>
+```
+
+## Reduced Motion
+
+Respect user's motion preferences:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .animated {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+Reshaped components automatically respect `prefers-reduced-motion`.
+
+## Testing Accessibility
+
+### Automated Testing
+
+Reshaped includes accessibility tests for all components:
+
+```tsx
+import { render } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { Button } from 'reshaped';
+
+expect.extend(toHaveNoViolations);
+
+test('Button is accessible', async () => {
+  const { container } = render(<Button>Click me</Button>);
+  const results = await axe(container);
+  expect(results).toHaveNoViolations();
+});
+```
+
+### Manual Testing
+
+Test your application with:
+
+1. **Keyboard only** - Navigate without a mouse
+2. **Screen reader** - Use NVDA, JAWS, or VoiceOver
+3. **Color contrast** - Check contrast in both color modes
+4. **Zoom** - Test at 200% zoom level
+5. **Voice control** - Test with voice navigation
+
+## Best Practices
+
+1. **Always provide labels** - Every interactive element needs a label
+2. **Maintain focus order** - Keep tab order logical and intuitive
+3. **Use semantic HTML** - Leverage native element semantics
+4. **Test with real users** - Include people with disabilities in testing
+5. **Support keyboard shortcuts** - Provide keyboard alternatives to mouse actions
+6. **Don't rely on color alone** - Use icons, text, and patterns
+7. **Provide clear feedback** - Confirm actions with appropriate announcements
+8. **Maintain contrast** - Ensure text remains readable
+
+## Resources
+
+- [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [WebAIM Resources](https://webaim.org/resources/)
+- [a11y Project Checklist](https://www.a11yproject.com/checklist/)
+
+## Related
+
+- [TypeScript](/concepts/typescript) - Type-safe accessibility attributes
+- [Responsive Design](/concepts/responsive-design) - Build accessible responsive layouts

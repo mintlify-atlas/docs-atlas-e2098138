@@ -1,0 +1,327 @@
+---
+title: Styling
+description: Learn how to style Reshaped components using CSS modules, design tokens, and custom styles
+---
+
+# Styling
+
+Reshaped provides multiple approaches to styling components, from built-in design tokens to custom CSS modules. The library is designed to work seamlessly with modern styling solutions while providing sensible defaults.
+
+## CSS Modules
+
+Reshaped components use CSS modules internally for styling. Each component has a scoped stylesheet that prevents style conflicts:
+
+```css
+/* Button.module.css */
+.root {
+  padding: calc(var(--rs-unit-x1) - var(--rs-button-border-width))
+           calc(var(--rs-p-h) - var(--rs-button-border-width));
+  border-radius: var(--rs-button-radius);
+  transition: var(--rs-duration-fast) var(--rs-easing-standard);
+  background-color: var(--rs-button-background-color);
+  color: var(--rs-button-foreground-color);
+}
+```
+
+### Custom Styles with className
+
+All components accept a `className` prop for custom styling:
+
+```tsx
+import { Button } from 'reshaped';
+import styles from './MyComponent.module.css';
+
+function MyComponent() {
+  return (
+    <Button className={styles.customButton}>
+      Click me
+    </Button>
+  );
+}
+```
+
+```css
+/* MyComponent.module.css */
+.customButton {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+```
+
+## Design Tokens
+
+Reshaped's styling system is built on design tokens implemented as CSS custom properties. These tokens are theme-aware and automatically adapt to color modes.
+
+### Typography Tokens
+
+```css
+/* Font families */
+--rs-font-family-body: Inter, -apple-system, sans-serif;
+--rs-font-family-title: Inter, -apple-system, sans-serif;
+--rs-font-family-monospace: Geist Mono, monospace;
+
+/* Font weights */
+--rs-font-weight-regular: 400;
+--rs-font-weight-medium: 500;
+--rs-font-weight-semibold: 600;
+--rs-font-weight-bold: 700;
+
+/* Font sizes and line heights */
+--rs-font-size-body-1: 1.125rem;
+--rs-line-height-body-1: 1.75rem;
+--rs-font-size-body-2: 1rem;
+--rs-line-height-body-2: 1.5rem;
+--rs-font-size-body-3: 0.875rem;
+--rs-line-height-body-3: 1.25rem;
+```
+
+### Spacing Tokens
+
+Reshaped uses a 4px base unit system:
+
+```css
+--rs-unit-base: 4px;
+--rs-unit-x1: 4px;   /* 4px */
+--rs-unit-x2: 8px;   /* 8px */
+--rs-unit-x3: 12px;  /* 12px */
+--rs-unit-x4: 16px;  /* 16px */
+--rs-unit-x5: 20px;  /* 20px */
+--rs-unit-x6: 24px;  /* 24px */
+--rs-unit-x8: 32px;  /* 32px */
+--rs-unit-x10: 40px; /* 40px */
+```
+
+Use spacing tokens in your custom styles:
+
+```css
+.container {
+  padding: var(--rs-unit-x4);
+  gap: var(--rs-unit-x2);
+  margin-bottom: var(--rs-unit-x6);
+}
+```
+
+### Color Tokens
+
+Reshaped provides semantic color tokens that adapt to the current theme and color mode:
+
+```css
+/* Background colors */
+--rs-color-background-primary: #5a58f2;
+--rs-color-background-neutral: #dfe2ea;
+--rs-color-background-critical: #e22c2c;
+--rs-color-background-positive: #118850;
+--rs-color-background-warning: #facc15;
+
+/* Foreground colors */
+--rs-color-foreground-primary: #4f4cf0;
+--rs-color-foreground-neutral: #14181f;
+--rs-color-foreground-critical: #c42525;
+
+/* Border colors */
+--rs-color-border-neutral: rgba(0, 0, 0, 0.12);
+--rs-color-border-primary: #3b38ed;
+
+/* Elevation colors */
+--rs-color-background-elevation-base: #ffffff;
+--rs-color-background-elevation-raised: #ffffff;
+--rs-color-background-elevation-overlay: #ffffff;
+```
+
+<Tip>
+Use semantic color tokens (primary, neutral, critical) instead of specific colors to ensure your custom styles work across different themes and color modes.
+</Tip>
+
+### Border Radius Tokens
+
+```css
+--rs-radius-small: 4px;
+--rs-radius-medium: 8px;
+--rs-radius-large: 12px;
+--rs-radius-circular: 9999px;
+```
+
+### Shadow Tokens
+
+```css
+--rs-shadow-raised: 0 1px 5px -4px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.05);
+--rs-shadow-overlay: 0 5px 10px rgba(0,0,0,0.05), 0 15px 25px rgba(0,0,0,0.07);
+```
+
+### Animation Tokens
+
+```css
+/* Duration */
+--rs-duration-rapid: 100ms;
+--rs-duration-fast: 200ms;
+--rs-duration-medium: 300ms;
+--rs-duration-slow: 400ms;
+
+/* Easing functions */
+--rs-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+--rs-easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
+--rs-easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
+```
+
+## Style Resolvers
+
+Reshaped uses style resolvers to handle responsive props and convert them to CSS. These resolvers are used internally by components like `View`.
+
+### Example: Width Resolver
+
+```tsx
+import { View } from 'reshaped';
+
+// Number values are multiplied by the base unit (4px)
+<View width={10} /> // width: 40px
+
+// String values are used as-is
+<View width="50%" /> // width: 50%
+<View width="200px" /> // width: 200px
+```
+
+### Responsive Style Props
+
+Many style-related props support responsive values:
+
+```tsx
+import { View } from 'reshaped';
+
+<View
+  padding={{ s: 4, m: 6, l: 8 }}
+  width={{ s: '100%', m: '50%', l: '33.33%' }}
+  direction={{ s: 'column', m: 'row' }}
+/>
+```
+
+## Component-Specific Styles
+
+### View Component
+
+The `View` component provides extensive styling props:
+
+```tsx
+import { View } from 'reshaped';
+
+function StyledContainer() {
+  return (
+    <View
+      padding={4}
+      backgroundColor="neutral-faded"
+      borderRadius="medium"
+      border
+      borderColor="neutral"
+      shadow="raised"
+    >
+      Content
+    </View>
+  );
+}
+```
+
+Available style props:
+
+- **Layout**: `direction`, `gap`, `wrap`, `align`, `justify`
+- **Sizing**: `width`, `height`, `minWidth`, `maxWidth`, `aspectRatio`
+- **Spacing**: `padding`, `paddingTop`, `paddingInline`, `bleed`
+- **Borders**: `border`, `borderColor`, `borderRadius`
+- **Positioning**: `position`, `inset`, `zIndex`
+- **Colors**: `backgroundColor`
+- **Effects**: `shadow`, `overflow`, `animated`
+
+### Button Component
+
+Buttons support size and variant styling:
+
+```tsx
+import { Button } from 'reshaped';
+
+<Button
+  variant="solid"      // solid | outline | ghost | faded
+  color="primary"      // primary | critical | positive | neutral
+  size="medium"        // small | medium | large | xlarge
+  rounded              // Fully rounded corners
+  elevated             // Add shadow
+  fullWidth            // Take full width
+/>
+```
+
+## CSS-in-JS Integration
+
+Reshaped works well with CSS-in-JS libraries. Access design tokens in your styled components:
+
+```tsx
+import styled from 'styled-components';
+
+const CustomCard = styled.div`
+  padding: var(--rs-unit-x4);
+  background: var(--rs-color-background-elevation-raised);
+  border-radius: var(--rs-radius-medium);
+  box-shadow: var(--rs-shadow-raised);
+  transition: transform var(--rs-duration-fast) var(--rs-easing-standard);
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+```
+
+## Tailwind CSS Integration
+
+Reshaped provides Tailwind CSS configuration presets. Import them in your `tailwind.config.js`:
+
+```js
+import reshapedTheme from 'reshaped/themes/reshaped/tailwind';
+
+export default {
+  presets: [reshapedTheme],
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+};
+```
+
+This allows you to use Reshaped tokens in Tailwind classes:
+
+```tsx
+<div className="p-[var(--rs-unit-x4)] bg-[var(--rs-color-background-primary)]">
+  Content
+</div>
+```
+
+## Responsive Modifiers
+
+CSS modules support responsive modifiers using the `@responsive` directive:
+
+```css
+@responsive .--size {
+  @value small {
+    --button-padding: var(--rs-unit-x2);
+    --button-font-size: var(--rs-font-size-body-3);
+  }
+  
+  @value medium {
+    --button-padding: var(--rs-unit-x3);
+    --button-font-size: var(--rs-font-size-body-3);
+  }
+  
+  @value large {
+    --button-padding: var(--rs-unit-x4);
+    --button-font-size: var(--rs-font-size-body-2);
+  }
+}
+```
+
+## Best Practices
+
+1. **Use design tokens** - Reference tokens instead of hardcoding values
+2. **Leverage semantic colors** - Use role-based colors (primary, critical) for consistency
+3. **Maintain the spacing scale** - Stick to the unit system for consistent spacing
+4. **Avoid !important** - Design token system rarely requires specificity overrides
+5. **Use className for customization** - Add custom styles via className prop
+6. **Test across themes** - Ensure custom styles work with different themes
+7. **Keep styles scoped** - Use CSS modules to avoid global style conflicts
+
+## Related
+
+- [Theming](/concepts/theming) - Customize themes and color modes
+- [Responsive Design](/concepts/responsive-design) - Build responsive layouts
+- [TypeScript](/concepts/typescript) - Type definitions for style props

@@ -1,0 +1,271 @@
+---
+title: Card
+description: Container component for grouping related content
+---
+
+The Card component provides a flexible container for grouping and displaying related content with consistent styling.
+
+## Basic Usage
+
+```jsx
+import { Card, Text } from 'reshaped';
+
+function App() {
+  return (
+    <Card>
+      <Text variant="body-2">Card content goes here</Text>
+    </Card>
+  );
+}
+```
+
+## Padding
+
+Control card padding using base unit multipliers:
+
+```jsx
+<Card padding={0}>No padding</Card>
+<Card padding={2}>Small padding</Card>
+<Card padding={4}>Default padding</Card>
+<Card padding={6}>Large padding</Card>
+```
+
+Default padding is `4` (16px with default base unit of 4px).
+
+## Responsive Padding
+
+Padding can be responsive across breakpoints:
+
+```jsx
+<Card padding={{ s: 2, m: 4, l: 6 }}>
+  <Text>Responsive padding</Text>
+</Card>
+```
+
+## Elevated Style
+
+Apply elevation for a lifted appearance:
+
+```jsx
+<Card elevated>
+  <Text>Elevated card</Text>
+</Card>
+```
+
+## Selected State
+
+Highlight selected cards:
+
+```jsx
+<Card selected>
+  <Text>Selected card</Text>
+</Card>
+```
+
+## Interactive Cards
+
+Make cards clickable:
+
+```jsx
+<Card onClick={() => console.log('clicked')}>
+  <Text>Clickable card</Text>
+</Card>
+
+<Card href="/page">
+  <Text>Link card</Text>
+</Card>
+```
+
+## Bleed Content
+
+Extend content to card edges:
+
+```jsx
+import { Card, Image, View, Text } from 'reshaped';
+
+<Card>
+  <Image
+    src="/header.jpg"
+    alt="Header"
+    attributes={{ style: { marginTop: -16, marginInline: -16 } }}
+  />
+  <View padding={4}>
+    <Text>Content below image</Text>
+  </View>
+</Card>
+
+// Or use bleed prop
+<Card bleed={4}>
+  <Image src="/header.jpg" alt="Header" />
+  <View padding={4}>
+    <Text>Content with bleed</Text>
+  </View>
+</Card>
+```
+
+## Custom Height
+
+Set a specific height for the card:
+
+```jsx
+<Card height={40}>
+  <Text>Fixed height card</Text>
+</Card>
+
+<Card height="100%">
+  <Text>Full height card</Text>
+</Card>
+```
+
+## Complete Examples
+
+### Product Card
+
+```jsx
+import { Card, Image, View, Text, Button } from 'reshaped';
+
+function ProductCard({ product }) {
+  return (
+    <Card elevated>
+      <Image
+        src={product.image}
+        alt={product.name}
+        aspectRatio={1}
+      />
+      <View gap={2} padding={4}>
+        <View gap={1}>
+          <Text variant="body-2" weight="semibold">
+            {product.name}
+          </Text>
+          <Text variant="caption-1" color="neutral-faded">
+            {product.category}
+          </Text>
+        </View>
+        <View direction="row" align="center" justify="space-between">
+          <Text variant="body-2" weight="bold">
+            ${product.price}
+          </Text>
+          <Button size="small">Add to Cart</Button>
+        </View>
+      </View>
+    </Card>
+  );
+}
+```
+
+### Stat Card
+
+```jsx
+import { Card, View, Text, Icon } from 'reshaped';
+import IconTrendUp from './icons/TrendUp';
+
+function StatCard({ title, value, change, icon }) {
+  return (
+    <Card padding={4}>
+      <View gap={3}>
+        <View direction="row" align="center" justify="space-between">
+          <Text variant="caption-1" color="neutral-faded">
+            {title}
+          </Text>
+          <Icon svg={icon} size={5} color="neutral-faded" />
+        </View>
+        <View gap={1}>
+          <Text variant="featured-2" weight="bold">
+            {value}
+          </Text>
+          <View direction="row" align="center" gap={1}>
+            <Icon svg={IconTrendUp} size={4} color="positive" />
+            <Text variant="caption-1" color="positive">
+              {change}%
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Card>
+  );
+}
+```
+
+### Interactive Card Grid
+
+```jsx
+import { Card, View, Text } from 'reshaped';
+
+function CardGrid() {
+  const [selected, setSelected] = React.useState(null);
+  
+  const items = [
+    { id: 1, title: 'Option 1', description: 'Description 1' },
+    { id: 2, title: 'Option 2', description: 'Description 2' },
+    { id: 3, title: 'Option 3', description: 'Description 3' },
+  ];
+
+  return (
+    <View gap={4}>
+      {items.map(item => (
+        <Card
+          key={item.id}
+          selected={selected === item.id}
+          onClick={() => setSelected(item.id)}
+          padding={4}
+        >
+          <View gap={1}>
+            <Text variant="body-2" weight="semibold">
+              {item.title}
+            </Text>
+            <Text variant="caption-1" color="neutral-faded">
+              {item.description}
+            </Text>
+          </View>
+        </Card>
+      ))}
+    </View>
+  );
+}
+```
+
+## Props
+
+<ParamField path="padding" type="number | responsive" default="4">
+  Component padding, base unit multiplier. Can be responsive.
+</ParamField>
+
+<ParamField path="bleed" type="number | responsive" default="undefined">
+  Remove side borders and apply negative margins, base unit multiplier. Can be responsive.
+</ParamField>
+
+<ParamField path="height" type="number | string | responsive" default="undefined">
+  Set a specific height for the card. Can be a number (base unit multiplier), string (CSS value), or responsive.
+</ParamField>
+
+<ParamField path="elevated" type="boolean" default="false">
+  Apply elevated styles to the component for a lifted appearance.
+</ParamField>
+
+<ParamField path="selected" type="boolean" default="false">
+  Highlight the component when used for an active state.
+</ParamField>
+
+<ParamField path="onClick" type="function" default="undefined">
+  Callback when the component is clicked. Turns component into a button.
+</ParamField>
+
+<ParamField path="href" type="string" default="undefined">
+  URL to navigate to when the component is clicked. Turns component into a link.
+</ParamField>
+
+<ParamField path="as" type="string" default="div">
+  Custom component tag name.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" default="undefined">
+  Node for inserting children.
+</ParamField>

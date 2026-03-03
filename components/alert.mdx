@@ -1,0 +1,151 @@
+---
+title: Alert
+description: Display contextual feedback messages with actions and icons
+---
+
+<RequestExample>
+```jsx
+import { Alert } from 'reshaped';
+import IconZap from 'reshaped/icons/Zap';
+
+function Example() {
+  return (
+    <Alert
+      color="critical"
+      icon={IconZap}
+      title="Alert title"
+      actionsSlot={
+        <>
+          <Link variant="plain" color="critical">View</Link>
+          <Link variant="plain" color="critical">Dismiss</Link>
+        </>
+      }
+    >
+      Your session will expire in 5 minutes.
+    </Alert>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Alerts display important messages to the user with optional icons, titles, and actions. They support multiple color schemes for different feedback types.
+
+## Props
+
+<ParamField path="icon" type="IconProps['svg']">
+  SVG component for the icon displayed at the start of the alert.
+</ParamField>
+
+<ParamField path="title" type="React.ReactNode">
+  Title text displayed above the main content.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Main content of the alert message.
+</ParamField>
+
+<ParamField path="actionsSlot" type="React.ReactNode">
+  Actions slot for rendering buttons and links. Automatically adds spacing between actions.
+</ParamField>
+
+<ParamField path="color" type="string" default="neutral">
+  Color scheme for the alert elements.
+  
+  Options: `"neutral"`, `"critical"`, `"warning"`, `"positive"`, `"primary"`
+</ParamField>
+
+<ParamField path="inline" type="boolean">
+  Display actions to the right of the content instead of below.
+</ParamField>
+
+<ParamField path="bleed" type="number | Responsive<number>">
+  Apply negative margin and remove side borders. Value is a base unit token multiplier.
+  
+  ```jsx
+  <Alert bleed={4}>
+  <Alert bleed={{ s: 4, m: 0 }}>
+  ```
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the root element.
+</ParamField>
+
+## Examples
+
+### Color Variants
+
+```jsx
+<Alert color="neutral" icon={IconInfo}>
+  Neutral information message
+</Alert>
+
+<Alert color="critical" icon={IconAlert}>
+  Critical error message
+</Alert>
+
+<Alert color="warning" icon={IconWarning}>
+  Warning message
+</Alert>
+
+<Alert color="positive" icon={IconCheckmark}>
+  Success message
+</Alert>
+
+<Alert color="primary" icon={IconZap}>
+  Primary information
+</Alert>
+```
+
+### With Actions
+
+```jsx
+<Alert
+  color="critical"
+  title="Confirm deletion"
+  actionsSlot={
+    <>
+      <Button color="critical" onClick={handleDelete}>
+        Delete
+      </Button>
+      <Button variant="ghost" onClick={handleCancel}>
+        Cancel
+      </Button>
+    </>
+  }
+>
+  This action cannot be undone.
+</Alert>
+```
+
+### Inline Actions
+
+```jsx
+<Alert
+  inline
+  icon={IconInfo}
+  title="Update available"
+  actionsSlot={
+    <Button variant="outline" size="small">
+      Update now
+    </Button>
+  }
+>
+  Version 2.0 is available for download.
+</Alert>
+```
+
+### Responsive Bleed
+
+```jsx
+// Remove borders on mobile, add them back on desktop
+<Alert bleed={{ s: 4, m: 0 }} color="primary">
+  Responsive alert with conditional borders
+</Alert>
+```

@@ -1,0 +1,268 @@
+---
+title: "TextField"
+description: "A text input component for collecting single-line user input"
+icon: "input-text"
+---
+
+TextField is a form input component that allows users to enter single-line text values. It supports both controlled and uncontrolled modes, with extensive customization options.
+
+## Basic usage
+
+```jsx
+import { TextField } from 'reshaped';
+
+function Example() {
+  return (
+    <TextField
+      name="username"
+      placeholder="Enter your username"
+    />
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { TextField } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState('');
+
+  return (
+    <TextField
+      name="email"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      placeholder="Enter your email"
+    />
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { TextField } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <TextField
+      name="comment"
+      defaultValue="Initial value"
+      onChange={({ name, value }) => console.log(name, value)}
+    />
+  );
+}
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, TextField } from 'reshaped';
+
+function FormExample() {
+  const [hasError, setHasError] = useState(false);
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Email address</FormControl.Label>
+      <TextField
+        name="email"
+        placeholder="you@example.com"
+      />
+      <FormControl.Helper>
+        We'll never share your email with anyone else.
+      </FormControl.Helper>
+      <FormControl.Error>
+        Please enter a valid email address.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Variants
+
+```jsx
+import { TextField } from 'reshaped';
+
+<TextField variant="outline" name="default" placeholder="Outline (default)" />
+<TextField variant="faded" name="faded" placeholder="Faded variant" />
+<TextField variant="ghost" name="ghost" placeholder="Ghost variant" />
+<TextField variant="headless" name="headless" placeholder="Headless variant" />
+```
+
+## Sizes
+
+```jsx
+import { TextField } from 'reshaped';
+
+<TextField size="small" name="small" placeholder="Small" />
+<TextField size="medium" name="medium" placeholder="Medium (default)" />
+<TextField size="large" name="large" placeholder="Large" />
+<TextField size="xlarge" name="xlarge" placeholder="Extra large" />
+```
+
+## With icons and affixes
+
+```jsx
+import { TextField } from 'reshaped';
+import IconSearch from './icons/Search';
+
+<TextField
+  name="search"
+  placeholder="Search..."
+  icon={IconSearch}
+/>
+
+<TextField
+  name="price"
+  placeholder="0.00"
+  prefix="$"
+  suffix="USD"
+/>
+```
+
+## With slots
+
+```jsx
+import { TextField, Button } from 'reshaped';
+import IconSend from './icons/Send';
+
+<TextField
+  name="message"
+  placeholder="Type a message"
+  endSlot={
+    <Button size="small" icon={IconSend} />
+  }
+/>
+```
+
+## Validation states
+
+```jsx
+import { TextField } from 'reshaped';
+
+<TextField
+  name="invalid"
+  placeholder="Invalid input"
+  hasError
+/>
+```
+
+## Accessibility
+
+TextField is built with accessibility in mind:
+
+- Uses semantic HTML input elements
+- Supports ARIA attributes via `inputAttributes`
+- Works with FormControl for proper label associations
+- Keyboard navigable and screen reader friendly
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the text field input element
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the text field
+</ParamField>
+
+<ParamField path="value" type="string">
+  Value of the text field, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default value of the text field, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text when there is no value
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large' | 'xlarge'" default="medium">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="variant" type="'outline' | 'faded' | 'ghost' | 'headless'" default="outline">
+  Component render variant
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the text field user interaction
+</ParamField>
+
+<ParamField path="focused" type="boolean">
+  Render in the focused state
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Show an error state. Automatically inherited when used inside FormControl.
+</ParamField>
+
+<ParamField path="multiline" type="boolean">
+  Enable multiline text field wrapping
+</ParamField>
+
+<ParamField path="rounded" type="boolean">
+  Change border radius to be fully rounded
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  Icon of the text field at the start position
+</ParamField>
+
+<ParamField path="endIcon" type="React.ComponentType">
+  Icon of the text field at the end position
+</ParamField>
+
+<ParamField path="startSlot" type="React.ReactNode">
+  Node for inserting content before the text field value
+</ParamField>
+
+<ParamField path="endSlot" type="React.ReactNode">
+  Node for inserting content after the text field value
+</ParamField>
+
+<ParamField path="prefix" type="React.ReactNode">
+  Node for inserting text content before the text field value
+</ParamField>
+
+<ParamField path="suffix" type="React.ReactNode">
+  Node for inserting text content after the text field value
+</ParamField>
+
+<ParamField path="startSlotPadding" type="number">
+  Padding inline end, base unit token number multiplier
+</ParamField>
+
+<ParamField path="endSlotPadding" type="number">
+  Padding inline start, base unit token number multiplier
+</ParamField>
+
+<ParamField path="onChange" type="(args: { name: string, value: string, event: Event }) => void">
+  Callback when the text field value changes
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent<HTMLInputElement>) => void">
+  Callback when the text field is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent<HTMLInputElement>) => void">
+  Callback when the text field is blurred
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input element. Use for ARIA attributes.
+</ParamField>

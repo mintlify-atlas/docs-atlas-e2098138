@@ -1,0 +1,522 @@
+---
+title: Popover
+description: Display floating content attached to a trigger element
+---
+
+<RequestExample>
+```jsx
+import { Popover, Button } from 'reshaped';
+
+function Example() {
+  return (
+    <Popover position="bottom">
+      <Popover.Trigger>
+        {(attributes) => <Button attributes={attributes}>Open Popover</Button>}
+      </Popover.Trigger>
+      
+      <Popover.Content>
+        <View gap={2} padding={4}>
+          <Text variant="body-2" weight="bold">Popover Title</Text>
+          <Text>Additional information in the popover</Text>
+          <Button size="small">Action</Button>
+        </View>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Popovers display rich content in a floating container attached to a trigger element. They're ideal for contextual information, actions, or custom interactive content.
+
+## Props
+
+<ParamField path="position" type="string">
+  Position relative to the trigger element.
+  
+  Options: `"bottom"`, `"bottom-start"`, `"bottom-end"`, `"top"`, `"top-start"`, `"top-end"`, `"start"`, `"start-top"`, `"start-bottom"`, `"end"`, `"end-top"`, `"end-bottom"`
+  
+  Default: `"bottom"`
+</ParamField>
+
+<ParamField path="active" type="boolean">
+  Controlled state for the popover visibility.
+  
+  ```jsx
+  <Popover active={isOpen} onClose={() => setIsOpen(false)}>
+  ```
+</ParamField>
+
+<ParamField path="defaultActive" type="boolean">
+  Initial active state for uncontrolled mode.
+  
+  ```jsx
+  <Popover defaultActive>
+  ```
+</ParamField>
+
+<ParamField path="triggerType" type="string">
+  Event that triggers the popover.
+  
+  Options: `"click"`, `"hover"`, `"focus"`
+  
+  Default: `"click"`
+</ParamField>
+
+<ParamField path="width" type="string">
+  Width of the popover content. Accepts CSS values or `"trigger"` to match trigger width.
+  
+  ```jsx
+  <Popover width="400px" />
+  <Popover width="trigger" />
+  ```
+</ParamField>
+
+<ParamField path="padding" type="number">
+  Padding inside the popover content. Value is a unit token multiplier.
+  
+  ```jsx
+  <Popover padding={4}>
+  ```
+</ParamField>
+
+<ParamField path="elevation" type="string">
+  Shadow elevation level for the popover.
+  
+  Options: `"raised"`, `"overlay"`
+  
+  Default: `"overlay"`
+</ParamField>
+
+<ParamField path="borderRadius" type="string">
+  Border radius for the popover.
+  
+  Options: `"small"`, `"medium"`
+</ParamField>
+
+<ParamField path="contentGap" type="number">
+  Gap between the trigger and content in pixels.
+</ParamField>
+
+<ParamField path="contentShift" type="number">
+  Shift the content on the secondary axis.
+</ParamField>
+
+<ParamField path="contentMaxHeight" type="string">
+  Maximum height for scrollable content.
+  
+  ```jsx
+  <Popover contentMaxHeight="300px">
+  ```
+</ParamField>
+
+<ParamField path="contentZIndex" type="number">
+  Custom z-index for the popover content.
+</ParamField>
+
+<ParamField path="forcePosition" type="boolean">
+  Force the specified position without fallbacks.
+</ParamField>
+
+<ParamField path="fallbackPositions" type="Position[] | false">
+  Fallback positions when content doesn't fit. Set to `false` to disable.
+  
+  ```jsx
+  <Popover fallbackPositions={['top', 'bottom-start']} />
+  <Popover fallbackPositions={false} />
+  ```
+</ParamField>
+
+<ParamField path="fallbackAdjustLayout" type="boolean">
+  Adjust size and position when fallbacks don't work.
+</ParamField>
+
+<ParamField path="disableHideAnimation" type="boolean">
+  Disable the hide animation.
+</ParamField>
+
+<ParamField path="disableCloseOnOutsideClick" type="boolean">
+  Prevent closing when clicking outside.
+</ParamField>
+
+<ParamField path="autoFocus" type="boolean" default="true">
+  Focus first focusable element when opened.
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the popover opens.
+</ParamField>
+
+<ParamField path="onClose" type="(args: { reason?: string }) => void">
+  Callback when the popover closes. Reason can be `"outside-click"`, `"escape-key"`, etc.
+</ParamField>
+
+<ParamField path="containerRef" type="React.RefObject<HTMLElement>">
+  Container element for positioning.
+</ParamField>
+
+<ParamField path="positionRef" type="React.RefObject<HTMLElement>">
+  Element to calculate position against.
+</ParamField>
+
+<ParamField path="initialFocusRef" type="React.RefObject<HTMLElement>">
+  Element to focus when opened.
+</ParamField>
+
+<ParamField path="instanceRef" type="React.Ref<PopoverInstance>">
+  Ref to access popover methods.
+  
+  ```jsx
+  const popoverRef = React.useRef();
+  
+  <Popover instanceRef={popoverRef}>
+  
+  // Later:
+  popoverRef.current.open();
+  popoverRef.current.close();
+  popoverRef.current.updatePosition();
+  ```
+</ParamField>
+
+## Subcomponents
+
+### Popover.Trigger
+
+Render function that provides attributes for the trigger element.
+
+```jsx
+<Popover.Trigger>
+  {(attributes) => <Button attributes={attributes}>Open</Button>}
+</Popover.Trigger>
+```
+
+### Popover.Content
+
+Container for the popover content.
+
+```jsx
+<Popover.Content>
+  {/* Your content */}
+</Popover.Content>
+```
+
+<ParamField path="className" type="string">
+  Additional CSS class for the content element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the content element.
+</ParamField>
+
+### Popover.Dismissible
+
+Pre-styled header with close button.
+
+```jsx
+<Popover.Dismissible closeAriaLabel="Close" onClose={handleClose}>
+  <Text variant="body-2" weight="bold">Popover Title</Text>
+</Popover.Dismissible>
+```
+
+## Examples
+
+### Basic Popover
+
+```jsx
+<Popover>
+  <Popover.Trigger>
+    {(attributes) => <Button attributes={attributes}>Info</Button>}
+  </Popover.Trigger>
+  
+  <Popover.Content>
+    <View gap={2} padding={3}>
+      <Text>Additional information here</Text>
+    </View>
+  </Popover.Content>
+</Popover>
+```
+
+### With Dismissible Header
+
+```jsx
+function InfoPopover() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <Popover active={active} onClose={() => setActive(false)}>
+      <Popover.Trigger>
+        {(attributes) => (
+          <Button attributes={attributes} onClick={() => setActive(true)}>
+            Details
+          </Button>
+        )}
+      </Popover.Trigger>
+      
+      <Popover.Content>
+        <View gap={3}>
+          <Popover.Dismissible
+            closeAriaLabel="Close"
+            onClose={() => setActive(false)}
+          >
+            <Text variant="title-6">More Information</Text>
+          </Popover.Dismissible>
+          
+          <Text>Detailed content goes here</Text>
+        </View>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### Positions
+
+```jsx
+// Bottom positions
+<Popover position="bottom-start" />
+<Popover position="bottom" />
+<Popover position="bottom-end" />
+
+// Top positions
+<Popover position="top-start" />
+<Popover position="top" />
+<Popover position="top-end" />
+
+// Side positions
+<Popover position="start" />
+<Popover position="start-top" />
+<Popover position="start-bottom" />
+<Popover position="end" />
+<Popover position="end-top" />
+<Popover position="end-bottom" />
+```
+
+### Trigger Types
+
+```jsx
+// Click (default)
+<Popover triggerType="click">
+
+// Hover
+<Popover triggerType="hover">
+
+// Focus
+<Popover triggerType="focus">
+```
+
+### Custom Width
+
+```jsx
+// Fixed width
+<Popover width="400px">
+
+// Match trigger width
+<Popover width="trigger">
+
+// Full width
+<Popover width="100%">
+```
+
+### User Profile Card
+
+```jsx
+function UserProfilePopover({ user }) {
+  return (
+    <Popover triggerType="hover" width="300px">
+      <Popover.Trigger>
+        {(attributes) => (
+          <Button variant="ghost" attributes={attributes}>
+            <View direction="row" gap={2} align="center">
+              <Image
+                src={user.avatar}
+                width="24px"
+                height="24px"
+                borderRadius="full"
+              />
+              <Text>{user.name}</Text>
+            </View>
+          </Button>
+        )}
+      </Popover.Trigger>
+      
+      <Popover.Content>
+        <View gap={3} padding={4}>
+          <View direction="row" gap={3} align="center">
+            <Image
+              src={user.avatar}
+              width="60px"
+              height="60px"
+              borderRadius="full"
+            />
+            <View.Item grow>
+              <Text variant="body-2" weight="bold">{user.name}</Text>
+              <Text variant="body-3" color="neutral-faded">{user.role}</Text>
+            </View.Item>
+          </View>
+          
+          <Text variant="body-3">{user.bio}</Text>
+          
+          <View direction="row" gap={2}>
+            <Button size="small">View Profile</Button>
+            <Button size="small" variant="outline">Message</Button>
+          </View>
+        </View>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### Form Popover
+
+```jsx
+function FilterPopover() {
+  const [filters, setFilters] = React.useState({});
+
+  return (
+    <Popover width="350px">
+      <Popover.Trigger>
+        {(attributes) => (
+          <Button attributes={attributes} icon={IconFilter}>
+            Filters
+          </Button>
+        )}
+      </Popover.Trigger>
+      
+      <Popover.Content>
+        <View gap={3} padding={4}>
+          <Text variant="body-2" weight="bold">Filter Results</Text>
+          
+          <TextField
+            label="Search"
+            value={filters.search}
+            onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+          />
+          
+          <Select
+            label="Category"
+            value={filters.category}
+            onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+          >
+            <option value="all">All Categories</option>
+            <option value="design">Design</option>
+            <option value="development">Development</option>
+          </Select>
+          
+          <View direction="row" gap={2} justify="end">
+            <Button size="small" variant="ghost" onClick={handleReset}>
+              Reset
+            </Button>
+            <Button size="small" onClick={handleApply}>
+              Apply
+            </Button>
+          </View>
+        </View>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### Color Picker
+
+```jsx
+function ColorPickerPopover({ value, onChange }) {
+  const colors = [
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+    '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
+  ];
+
+  return (
+    <Popover>
+      <Popover.Trigger>
+        {(attributes) => (
+          <Button attributes={attributes}>
+            <View
+              width="24px"
+              height="24px"
+              borderRadius="small"
+              attributes={{ style: { backgroundColor: value } }}
+            />
+          </Button>
+        )}
+      </Popover.Trigger>
+      
+      <Popover.Content>
+        <View gap={2} padding={3}>
+          <Text variant="body-3" weight="bold">Select Color</Text>
+          <Grid columns="4" gap={2}>
+            {colors.map((color) => (
+              <Button
+                key={color}
+                variant="ghost"
+                onClick={() => onChange(color)}
+              >
+                <View
+                  width="32px"
+                  height="32px"
+                  borderRadius="small"
+                  attributes={{ style: { backgroundColor: color } }}
+                />
+              </Button>
+            ))}
+          </Grid>
+        </View>
+      </Popover.Content>
+    </Popover>
+  );
+}
+```
+
+### Controlled Popover
+
+```jsx
+function ControlledPopover() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <>
+      <Popover
+        active={active}
+        onClose={() => setActive(false)}
+      >
+        <Popover.Trigger>
+          {(attributes) => (
+            <Button
+              attributes={attributes}
+              onClick={() => setActive(!active)}
+            >
+              Toggle
+            </Button>
+          )}
+        </Popover.Trigger>
+        
+        <Popover.Content>
+          <View gap={2} padding={3}>
+            <Text>Popover content</Text>
+            <Button size="small" onClick={() => setActive(false)}>
+              Close
+            </Button>
+          </View>
+        </Popover.Content>
+      </Popover>
+      
+      <Button onClick={() => setActive(!active)}>
+        External Toggle
+      </Button>
+    </>
+  );
+}
+```
+
+## Accessibility
+
+- Uses `role="dialog"` for popover content
+- Traps focus within the popover when using `triggerType="click"`
+- Pressing Escape closes the popover
+- Trigger element has `aria-expanded` and `aria-controls` attributes
+- Automatically manages focus when opening and closing
+- Returns focus to trigger when closed
+- Ensure trigger has clear affordance (button styling)

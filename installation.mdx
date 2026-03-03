@@ -1,0 +1,123 @@
+---
+title: Installation
+description: Install Reshaped in your React project using npm, yarn, or pnpm
+---
+
+# Installation
+
+Get started with Reshaped by installing it in your React project.
+
+## Requirements
+
+<Note>
+Reshaped requires **React 18 or 19** and **Node.js 22+**. Make sure your project meets these requirements before installing.
+</Note>
+
+- React 18 or 19
+- React DOM 18 or 19
+- PostCSS 8+
+- Node.js 22 or higher
+
+## Install the Package
+
+Install Reshaped using your preferred package manager:
+
+<CodeGroup>
+```bash npm
+npm install reshaped
+```
+
+```bash yarn
+yarn add reshaped
+```
+
+```bash pnpm
+pnpm add reshaped
+```
+</CodeGroup>
+
+## Peer Dependencies
+
+Reshaped requires React, React DOM, and PostCSS as peer dependencies. These are likely already in your project, but if not, install them:
+
+<CodeGroup>
+```bash npm
+npm install react react-dom postcss
+```
+
+```bash yarn
+yarn add react react-dom postcss
+```
+
+```bash pnpm
+pnpm add react react-dom postcss
+```
+</CodeGroup>
+
+## Import Styles
+
+After installation, you need to import the Reshaped CSS bundle and theme in your application root:
+
+```tsx
+import 'reshaped/bundle.css';
+import 'reshaped/themes/reshaped/theme.css';
+```
+
+<Note>
+The default theme is **reshaped**. You can also use other built-in themes like `slate` or `figma`, or create your own custom theme.
+</Note>
+
+## Available Themes
+
+Reshaped comes with three built-in themes:
+
+- **Reshaped** (default): `reshaped/themes/reshaped/theme.css`
+- **Slate**: `reshaped/themes/slate/theme.css`
+- **Figma**: `reshaped/themes/figma/theme.css`
+
+You can import multiple themes and switch between them at runtime.
+
+## TypeScript Support
+
+Reshaped is written in TypeScript and includes type definitions out of the box. No additional setup is needed for TypeScript projects.
+
+```tsx
+import { Button, type ButtonProps } from 'reshaped';
+
+const MyButton: React.FC<ButtonProps> = (props) => {
+  return <Button {...props} />;
+};
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Learn how to set up the Reshaped provider and build your first component
+  </Card>
+  <Card title="Components" icon="grid" href="https://reshaped.so/docs/components/overview">
+    Explore all available components
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Module Not Found Errors
+
+If you encounter module resolution errors, make sure:
+
+1. Your `package.json` includes the correct dependencies
+2. You've run the install command in your project directory
+3. Your bundler supports ES modules
+
+### Style Issues
+
+If components appear unstyled:
+
+1. Verify that you've imported the CSS bundle: `import 'reshaped/bundle.css'`
+2. Verify that you've imported a theme: `import 'reshaped/themes/reshaped/theme.css'`
+3. Make sure your bundler processes CSS imports
+
+<Tip>
+If you're using Next.js, import the styles in your `_app.tsx` or root layout file. For Vite projects, import them in your `main.tsx` entry file.
+</Tip>

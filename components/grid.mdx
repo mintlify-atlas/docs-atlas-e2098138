@@ -1,0 +1,227 @@
+---
+title: Grid
+description: A CSS Grid layout component for creating flexible grid-based layouts
+---
+
+Grid provides a powerful CSS Grid-based layout system with support for responsive design, grid template areas, and flexible positioning.
+
+## Import
+
+```tsx
+import { Grid } from 'reshaped';
+```
+
+## Basic Usage
+
+```tsx
+<Grid columns={3} gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Item 1</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 2</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 3</View>
+</Grid>
+```
+
+## Responsive Columns
+
+```tsx
+<Grid columns={{ s: 1, m: 2, l: 3 }} gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Item 1</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 2</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 3</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 4</View>
+</Grid>
+```
+
+## Grid.Item with Spanning
+
+```tsx
+<Grid columns={4} gap={4}>
+  <Grid.Item colSpan={2}>
+    <View padding={4} backgroundColor="primary-faded">Spans 2 columns</View>
+  </Grid.Item>
+  <View padding={4} backgroundColor="neutral-faded">Item 2</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 3</View>
+</Grid>
+```
+
+## Grid Template Areas
+
+```tsx
+<Grid
+  areas={[
+    'header header',
+    'sidebar content',
+    'footer footer'
+  ]}
+  gap={4}
+>
+  <Grid.Item area="header">
+    <View padding={4} backgroundColor="primary-faded">Header</View>
+  </Grid.Item>
+  <Grid.Item area="sidebar">
+    <View padding={4} backgroundColor="neutral-faded">Sidebar</View>
+  </Grid.Item>
+  <Grid.Item area="content">
+    <View padding={4} backgroundColor="neutral-faded">Content</View>
+  </Grid.Item>
+  <Grid.Item area="footer">
+    <View padding={4} backgroundColor="primary-faded">Footer</View>
+  </Grid.Item>
+</Grid>
+```
+
+## Custom Template Columns
+
+```tsx
+<Grid columns="200px 1fr 1fr" gap={4}>
+  <View padding={4} backgroundColor="neutral-faded">Fixed width</View>
+  <View padding={4} backgroundColor="neutral-faded">Flexible</View>
+  <View padding={4} backgroundColor="neutral-faded">Flexible</View>
+</Grid>
+```
+
+## Auto Flow
+
+```tsx
+<Grid columns={3} autoFlow="dense" gap={4}>
+  <Grid.Item colSpan={2}>
+    <View padding={4} backgroundColor="primary-faded">Wide item</View>
+  </Grid.Item>
+  <View padding={4} backgroundColor="neutral-faded">Item 2</View>
+  <View padding={4} backgroundColor="neutral-faded">Item 3</View>
+</Grid>
+```
+
+## Props
+
+### Grid Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>
+
+<ParamField path="columns" type="Responsive<number | string>">
+  Grid template columns. Number creates equal columns (e.g., 3 = "repeat(3, 1fr)"), or use CSS Grid syntax (e.g., "200px 1fr 1fr")
+</ParamField>
+
+<ParamField path="rows" type="Responsive<number | string>">
+  Grid template rows. Number creates equal rows, or use CSS Grid syntax
+</ParamField>
+
+<ParamField path="gap" type="Responsive<number>">
+  Gap between grid items, base unit token number multiplier
+</ParamField>
+
+<ParamField path="columnGap" type="Responsive<number>">
+  Horizontal gap between grid items, base unit token number multiplier
+</ParamField>
+
+<ParamField path="rowGap" type="Responsive<number>">
+  Vertical gap between grid items, base unit token number multiplier
+</ParamField>
+
+<ParamField path="align" type="Responsive<'start' | 'center' | 'end' | 'stretch' | 'baseline'>">
+  Align grid items vertically (align-items)
+</ParamField>
+
+<ParamField path="justify" type="Responsive<'start' | 'center' | 'end' | 'space-between' | 'space-around'>">
+  Justify grid items horizontally (justify-items)
+</ParamField>
+
+<ParamField path="areas" type="Responsive<string[]>">
+  Grid areas for template syntax. Each string represents a row with space-separated area names
+</ParamField>
+
+<ParamField path="autoFlow" type="Responsive<'row' | 'column' | 'dense' | 'row dense' | 'column dense'>">
+  Grid auto flow direction
+</ParamField>
+
+<ParamField path="autoColumns" type="Responsive<string>">
+  Grid auto columns size (e.g., "minmax(0, 1fr)")
+</ParamField>
+
+<ParamField path="autoRows" type="Responsive<string>">
+  Grid auto rows size (e.g., "minmax(100px, auto)")
+</ParamField>
+
+<ParamField path="width" type="Responsive<string | number>">
+  Width of the grid container, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="height" type="Responsive<string | number>">
+  Height of the grid container, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="maxWidth" type="Responsive<string | number>">
+  Maximum width of the grid container, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="as" type="keyof React.JSX.IntrinsicElements">
+  Custom root element html tag
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes">
+  Additional attributes for the root element
+</ParamField>
+
+### Grid.Item Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>
+
+<ParamField path="area" type="string">
+  Grid area name for template syntax
+</ParamField>
+
+<ParamField path="colStart" type="Responsive<number>">
+  Starting column position
+</ParamField>
+
+<ParamField path="colEnd" type="Responsive<number>">
+  Ending column position
+</ParamField>
+
+<ParamField path="colSpan" type="Responsive<number>">
+  Number of columns to span
+</ParamField>
+
+<ParamField path="rowStart" type="Responsive<number>">
+  Starting row position
+</ParamField>
+
+<ParamField path="rowEnd" type="Responsive<number>">
+  Ending row position
+</ParamField>
+
+<ParamField path="rowSpan" type="Responsive<number>">
+  Number of rows to span
+</ParamField>
+
+<ParamField path="as" type="keyof React.JSX.IntrinsicElements">
+  Custom item element html tag
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the item element
+</ParamField>
+
+<ParamField path="attributes" type="React.HTMLAttributes">
+  Additional attributes for the item element
+</ParamField>
+
+<Note>
+  When using a number for `columns`, it automatically converts to `repeat(n, 1fr)` for equal-width columns.
+</Note>
+
+<Note>
+  Grid template areas provide a visual way to define layouts. Use the same area name in multiple cells to span them.
+</Note>
+
+<Note>
+  `colSpan` and `colEnd` both control column spanning, but `colEnd` has higher priority if both are set.
+</Note>

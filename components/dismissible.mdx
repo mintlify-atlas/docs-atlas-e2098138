@@ -1,0 +1,343 @@
+---
+title: Dismissible
+description: Container with a close button for dismissible content like banners and alerts
+---
+
+The `Dismissible` component wraps content with an optional close button, commonly used for banners, alerts, notifications, or any content that users can dismiss.
+
+## Basic Usage
+
+```jsx
+import { Dismissible, Text } from 'reshaped';
+import { useState } from 'react';
+
+function Example() {
+  const [visible, setVisible] = useState(true);
+  
+  if (!visible) return null;
+  
+  return (
+    <Dismissible 
+      closeAriaLabel="Close notification"
+      onClose={() => setVisible(false)}
+    >
+      <Text>This content can be dismissed</Text>
+    </Dismissible>
+  );
+}
+```
+
+## Media Variant
+
+```jsx
+import { Dismissible, Image } from 'reshaped';
+
+function MediaDismissible() {
+  return (
+    <Dismissible 
+      variant="media"
+      closeAriaLabel="Close image"
+      onClose={() => console.log('closed')}
+    >
+      <Image src="/photo.jpg" alt="Photo" />
+    </Dismissible>
+  );
+}
+```
+
+## Without Close Button
+
+```jsx
+import { Dismissible, Text } from 'reshaped';
+
+function NoCloseButton() {
+  return (
+    <Dismissible hideCloseButton>
+      <Text>This content has no close button</Text>
+    </Dismissible>
+  );
+}
+```
+
+## Custom Alignment
+
+```jsx
+import { Dismissible, Stack, Text } from 'reshaped';
+
+function AlignedDismissible() {
+  return (
+    <Dismissible 
+      align="top"
+      closeAriaLabel="Close"
+      onClose={() => {}}
+    >
+      <Stack gap={2}>
+        <Text variant="title-6">Title</Text>
+        <Text>Long content that spans multiple lines</Text>
+      </Stack>
+    </Dismissible>
+  );
+}
+```
+
+## Props
+
+<ParamField path="closeAriaLabel" type="string" required>
+  aria-label attribute for the close button. Required unless `hideCloseButton` is true
+</ParamField>
+
+<ParamField path="hideCloseButton" type="boolean">
+  Hide the close button
+</ParamField>
+
+<ParamField path="onClose" type="() => void">
+  Callback when the component is dismissed
+</ParamField>
+
+<ParamField path="variant" type="'media'">
+  Component render variant. Use `"media"` for image/video content
+</ParamField>
+
+<ParamField path="align" type="'top' | 'center'">
+  Close button alignment. Use `"top"` for multi-line content
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="HTMLAttributes<HTMLDivElement>">
+  Additional attributes for the root element
+</ParamField>
+
+## When to Use
+
+- **Banners**: Dismissible announcement or notification banners
+- **Alerts**: Important messages that users can close
+- **Promotional Content**: Special offers or announcements
+- **Cookie Notices**: Dismissible cookie consent messages
+- **Onboarding Tips**: Tutorial hints that can be closed
+- **Image Galleries**: Full-screen images with close buttons
+
+## Composition Patterns
+
+### Notification Banner
+
+```jsx
+import { Dismissible, View, Text, Stack } from 'reshaped';
+import { useState } from 'react';
+
+function NotificationBanner({ message, type = 'info' }) {
+  const [visible, setVisible] = useState(true);
+  
+  if (!visible) return null;
+  
+  const colors = {
+    info: 'primary',
+    success: 'positive',
+    warning: 'warning',
+    error: 'critical'
+  };
+  
+  return (
+    <View 
+      backgroundColor={`${colors[type]}-faded`}
+      padding={3}
+      borderRadius="medium"
+    >
+      <Dismissible 
+        closeAriaLabel="Dismiss notification"
+        onClose={() => setVisible(false)}
+      >
+        <Text color={colors[type]}>{message}</Text>
+      </Dismissible>
+    </View>
+  );
+}
+```
+
+### Alert with Icon
+
+```jsx
+import { Dismissible, Stack, Icon, Text } from 'reshaped';
+import { Info } from './icons';
+import { useState } from 'react';
+
+function Alert({ title, message }) {
+  const [visible, setVisible] = useState(true);
+  
+  if (!visible) return null;
+  
+  return (
+    <Dismissible 
+      align="top"
+      closeAriaLabel="Close alert"
+      onClose={() => setVisible(false)}
+    >
+      <Stack direction="row" gap={3}>
+        <Icon svg={Info} color="primary" />
+        <Stack gap={1}>
+          <Text variant="body-2" weight="medium">{title}</Text>
+          <Text color="neutral">{message}</Text>
+        </Stack>
+      </Stack>
+    </Dismissible>
+  );
+}
+```
+
+### Cookie Banner
+
+```jsx
+import { Dismissible, Stack, Text, Button, View } from 'reshaped';
+import { useState } from 'react';
+
+function CookieBanner() {
+  const [visible, setVisible] = useState(true);
+  
+  if (!visible) return null;
+  
+  return (
+    <View 
+      position="fixed"
+      bottom={0}
+      left={0}
+      right={0}
+      padding={4}
+      backgroundColor="elevated"
+      borderTopWidth={1}
+      borderColor="neutral-faded"
+    >
+      <Dismissible 
+        closeAriaLabel="Decline cookies"
+        onClose={() => setVisible(false)}
+      >
+        <Stack gap={3}>
+          <Text>
+            We use cookies to improve your experience. 
+            By continuing, you accept our cookie policy.
+          </Text>
+          <Stack direction="row" gap={2}>
+            <Button onClick={() => setVisible(false)}>
+              Accept
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => setVisible(false)}
+            >
+              Learn More
+            </Button>
+          </Stack>
+        </Stack>
+      </Dismissible>
+    </View>
+  );
+}
+```
+
+### Image Overlay
+
+```jsx
+import { Dismissible, Image, View } from 'reshaped';
+import { useState } from 'react';
+
+function ImageOverlay({ src, alt }) {
+  const [visible, setVisible] = useState(true);
+  
+  if (!visible) return null;
+  
+  return (
+    <View 
+      position="fixed"
+      top={0}
+      left={0}
+      right={0}
+      bottom={0}
+      backgroundColor="rgba(0,0,0,0.9)"
+    >
+      <Dismissible 
+        variant="media"
+        closeAriaLabel="Close image"
+        onClose={() => setVisible(false)}
+      >
+        <Image src={src} alt={alt} />
+      </Dismissible>
+    </View>
+  );
+}
+```
+
+### Onboarding Tip
+
+```jsx
+import { Dismissible, View, Text, Stack } from 'reshaped';
+import { useState } from 'react';
+
+function OnboardingTip({ tip, step, totalSteps }) {
+  const [visible, setVisible] = useState(true);
+  
+  if (!visible) return null;
+  
+  return (
+    <View 
+      backgroundColor="primary"
+      padding={4}
+      borderRadius="medium"
+    >
+      <Dismissible 
+        closeAriaLabel="Dismiss tip"
+        onClose={() => setVisible(false)}
+      >
+        <Stack gap={2}>
+          <Text color="white" variant="caption-1" weight="medium">
+            TIP {step} of {totalSteps}
+          </Text>
+          <Text color="white">{tip}</Text>
+        </Stack>
+      </Dismissible>
+    </View>
+  );
+}
+```
+
+### Animated Dismissal
+
+```jsx
+import { Dismissible, Text, View } from 'reshaped';
+import { useState } from 'react';
+
+function AnimatedDismissible({ children }) {
+  const [visible, setVisible] = useState(true);
+  const [animating, setAnimating] = useState(false);
+  
+  const handleClose = () => {
+    setAnimating(true);
+    setTimeout(() => setVisible(false), 300);
+  };
+  
+  if (!visible) return null;
+  
+  return (
+    <View 
+      className={animating ? 'fade-out' : ''}
+      attributes={{
+        style: {
+          transition: 'opacity 0.3s ease-out',
+          opacity: animating ? 0 : 1
+        }
+      }}
+    >
+      <Dismissible 
+        closeAriaLabel="Close"
+        onClose={handleClose}
+      >
+        {children}
+      </Dismissible>
+    </View>
+  );
+}
+```

@@ -1,0 +1,524 @@
+---
+title: TypeScript
+description: Leverage Reshaped's comprehensive TypeScript support with type definitions, generic components, and type inference
+---
+
+# TypeScript
+
+Reshaped is built with TypeScript and provides comprehensive type definitions for all components, hooks, and utilities. The library leverages advanced TypeScript features to provide excellent developer experience and type safety.
+
+## Type Definitions
+
+All Reshaped exports are fully typed:
+
+```tsx
+import type {
+  // Components
+  ButtonProps,
+  ViewProps,
+  TextProps,
+  
+  // Utilities
+  Responsive,
+  Viewport,
+  ColorMode,
+  Theme,
+  
+  // Change handlers
+  ChangeHandler,
+} from 'reshaped';
+```
+
+## Component Props
+
+Access component prop types for your own components:
+
+```tsx
+import type { ButtonProps } from 'reshaped';
+import { Button } from 'reshaped';
+
+interface ActionButtonProps extends Omit<ButtonProps, 'onClick'> {
+  onAction: () => Promise<void>;
+}
+
+function ActionButton({ onAction, ...buttonProps }: ActionButtonProps) {
+  const [loading, setLoading] = useState(false);
+  
+  const handleClick = async () => {
+    setLoading(true);
+    await onAction();
+    setLoading(false);
+  };
+  
+  return (
+    <Button
+      {...buttonProps}
+      loading={loading}
+      onClick={handleClick}
+    />
+  );
+}
+```
+
+## Generic Components
+
+Some components support generic types for enhanced type safety.
+
+### View Component with Custom Elements
+
+```tsx
+import { View } from 'reshaped';
+import type { ViewProps } from 'reshaped';
+
+// View can be typed with the element it renders as
+function CustomLink() {
+  return (
+    <View<'a'>
+      as="a"
+      href="https://example.com"
+      attributes={{
+        target: '_blank',
+        rel: 'noopener noreferrer', // Fully typed based on <a> element
+      }}
+    >
+      Link text
+    </View>
+  );
+}
+```
+
+The `attributes` prop is typed based on the `as` prop:
+
+```tsx
+import { View } from 'reshaped';
+
+// attributes typed as HTMLButtonElement attributes
+<View as="button" attributes={{ type: 'submit' }} />
+
+// attributes typed as HTMLAnchorElement attributes  
+<View as="a" attributes={{ href: '/', target: '_blank' }} />
+
+// attributes typed as HTMLDivElement attributes (default)
+<View attributes={{ role: 'region' }} />
+```
+
+### Button with Custom Elements
+
+```tsx
+import { Button } from 'reshaped';
+import { Link } from 'react-router-dom';
+
+function LinkButton() {
+  return (
+    <Button
+      as={Link}
+      attributes={{
+        to: '/dashboard', // Typed for react-router Link
+      }}
+    >
+      Go to Dashboard
+    </Button>
+  );
+}
+```
+
+## Responsive Types
+
+The `Responsive<T>` type allows single values or viewport-specific values:
+
+```tsx
+import type { Responsive, Viewport } from 'reshaped';
+
+// Can be a single value
+const single: Responsive<number> = 4;
+
+// Or an object with viewport keys
+const multi: Responsive<number> = {
+  s: 2,
+  m: 4,
+  l: 6,
+  xl: 8,
+};
+
+// Partial viewport definitions are allowed
+const partial: Responsive<number> = {
+  s: 2,
+  l: 6, // m falls back to s, xl falls back to l
+};
+```
+
+### Creating Responsive Props
+
+```tsx
+import type { Responsive } from 'reshaped';
+import { View } from 'reshaped';
+
+interface CardProps {
+  padding: Responsive<number>;
+  columns: Responsive<1 | 2 | 3 | 4>;
+}
+
+function Card({ padding, columns }: CardProps) {
+  return (
+    <View padding={padding}>
+      {/* Content */}
+    </View>
+  );
+}
+
+// Usage - both are valid
+<Card padding={4} columns={2} />
+<Card padding={{ s: 4, m: 6 }} columns={{ s: 1, m: 2, l: 3 }} />
+```
+
+## Viewport Types
+
+```tsx
+import type { Viewport } from 'reshaped';
+
+// Viewport is a string union type
+type ViewportType = Viewport; // 's' | 'm' | 'l' | 'xl'
+
+function isDesktop(viewport: Viewport): boolean {
+  return viewport === 'l' || viewport === 'xl';
+}
+
+function isMobile(viewport: Viewport): boolean {
+  return viewport === 's';
+}
+```
+
+## Theme Types
+
+Theme and color mode types are strongly typed:
+
+```tsx
+import type { Theme, ColorMode } from 'reshaped';
+
+// Theme can be a string or array of strings
+const singleTheme: Theme = 'reshaped';
+const multiTheme: Theme = ['reshaped', 'custom'];
+
+// ColorMode is a string union
+const mode: ColorMode = 'light'; // 'light' | 'dark'
+
+interface ThemeConfig {
+  theme: Theme;
+  colorMode: ColorMode;
+}
+```
+
+## Form Types
+
+Form components provide type-safe change handlers:
+
+```tsx
+import type { ChangeHandler } from 'reshaped';
+import { TextField, Switch } from 'reshaped';
+
+// ChangeHandler is generic based on the value type
+function Form() {
+  const handleTextChange: ChangeHandler<string> = ({ name, value }) => {
+    console.log(name, value); // value is string
+  };
+  
+  const handleSwitchChange: ChangeHandler<boolean> = ({ name, checked }) => {
+    console.log(name, checked); // checked is boolean
+  };
+  
+  return (
+    <>
+      <TextField name="email" onChange={handleTextChange} />
+      <Switch name="notifications" onChange={handleSwitchChange} />
+    </>
+  );
+}
+```
+
+### Generic ChangeHandler
+
+```tsx
+import type { ChangeHandler } from 'reshaped';
+
+type ChangeHandlerArgs<Value, Event = React.ChangeEvent<HTMLInputElement>> =
+  Value extends boolean
+    ? { name: string; value?: string; checked: Value; event?: Event }
+    : { name: string; value: Value; event?: Event };
+
+// For boolean values (checkbox, switch)
+const boolHandler: ChangeHandler<boolean> = ({ name, checked, value, event }) => {
+  // checked is boolean
+  // value is string | undefined
+};
+
+// For string values (text inputs)
+const stringHandler: ChangeHandler<string> = ({ name, value, event }) => {
+  // value is string
+  // checked is not available
+};
+```
+
+## Style Types
+
+Style-related types are exported for custom components:
+
+```tsx
+import type {
+  BorderColor,
+  Radius,
+  Position,
+  Align,
+  Justify,
+} from 'reshaped';
+
+interface BoxProps {
+  borderColor?: BorderColor; // 'neutral' | 'primary' | ...
+  borderRadius?: Radius;     // 'small' | 'medium' | 'large' | ...
+  position?: Position;       // 'relative' | 'absolute' | ...
+  align?: Align;            // 'start' | 'center' | 'end' | ...
+  justify?: Justify;        // 'start' | 'center' | 'space-between' | ...
+}
+```
+
+## Ref Types
+
+Components that expose refs are properly typed:
+
+```tsx
+import { useRef } from 'react';
+import { Button } from 'reshaped';
+import type { ActionableRef } from 'reshaped';
+
+function Component() {
+  const buttonRef = useRef<ActionableRef>(null);
+  
+  const focusButton = () => {
+    buttonRef.current?.focus();
+  };
+  
+  return (
+    <>
+      <Button ref={buttonRef}>Button</Button>
+      <Button onClick={focusButton}>Focus first button</Button>
+    </>
+  );
+}
+```
+
+## Attributes Type
+
+The `attributes` prop is typed using the `Attributes<T>` utility type:
+
+```tsx
+import type { Attributes } from 'reshaped';
+import { View } from 'reshaped';
+
+interface CustomViewProps {
+  // Attributes for a div element
+  attributes?: Attributes<'div'>;
+}
+
+function CustomView({ attributes }: CustomViewProps) {
+  return (
+    <View
+      attributes={{
+        ...attributes,
+        'data-custom': 'value',
+        'aria-label': 'Custom view',
+      }}
+    />
+  );
+}
+```
+
+## Type Inference
+
+Reshaped leverages TypeScript's type inference to reduce boilerplate:
+
+```tsx
+import { View } from 'reshaped';
+
+// Element type is inferred from 'as' prop
+<View as="button" onClick={(e) => {
+  // e is typed as React.MouseEvent<HTMLButtonElement>
+  console.log(e.currentTarget); // HTMLButtonElement
+}} />
+
+<View as="a" href="/" onClick={(e) => {
+  // e is typed as React.MouseEvent<HTMLAnchorElement>
+  console.log(e.currentTarget); // HTMLAnchorElement
+}} />
+```
+
+## Utility Types
+
+### Responsive Utilities
+
+```tsx
+import type { Responsive, ResponsiveOnly } from 'reshaped';
+
+// Responsive<T> = T | ResponsiveOnly<T>
+type ResponsivePadding = Responsive<number>;
+
+// ResponsiveOnly<T> = { s?: T; m?: T; l?: T; xl?: T }
+type ViewportSizes = ResponsiveOnly<number>;
+
+const sizes: ViewportSizes = {
+  s: 2,
+  m: 4,
+  l: 6,
+};
+```
+
+### Mixin Types
+
+Style mixins for creating custom styled components:
+
+```tsx
+import type { Mixin } from 'reshaped';
+
+interface StyledBoxProps extends Mixin {
+  // Inherits all style props:
+  // align, justify, textAlign, radius, aspectRatio,
+  // borderColor, border, width, height, padding, etc.
+  customProp?: string;
+}
+```
+
+## Type Guards
+
+Create type guards for runtime checks:
+
+```tsx
+import type { Viewport, Responsive } from 'reshaped';
+
+function isResponsiveValue<T>(value: Responsive<T>): value is ResponsiveOnly<T> {
+  return typeof value === 'object' && value !== null && ('s' in value || 'm' in value);
+}
+
+function useAdaptiveValue<T>(value: Responsive<T>, viewport: Viewport): T {
+  if (!isResponsiveValue(value)) {
+    return value;
+  }
+  
+  // Type-safe access to responsive values
+  if (viewport === 'xl') return value.xl ?? value.l ?? value.m ?? value.s!;
+  if (viewport === 'l') return value.l ?? value.m ?? value.s!;
+  if (viewport === 'm') return value.m ?? value.s!;
+  return value.s!;
+}
+```
+
+## Extending Component Props
+
+Create wrapper components with additional props:
+
+```tsx
+import type { ButtonProps } from 'reshaped';
+import { Button } from 'reshaped';
+
+interface SubmitButtonProps extends ButtonProps {
+  form?: string;
+  confirmMessage?: string;
+}
+
+function SubmitButton({
+  form,
+  confirmMessage,
+  onClick,
+  ...buttonProps
+}: SubmitButtonProps) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (confirmMessage && !window.confirm(confirmMessage)) {
+      e.preventDefault();
+      return;
+    }
+    onClick?.(e);
+  };
+  
+  return (
+    <Button
+      {...buttonProps}
+      type="submit"
+      form={form}
+      onClick={handleClick}
+    />
+  );
+}
+```
+
+## Best Practices
+
+1. **Import types separately** - Use `import type` for better tree-shaking
+2. **Leverage type inference** - Let TypeScript infer types when possible
+3. **Use generic components** - Type the `as` prop for better attribute typing
+4. **Extend, don't override** - Extend component props instead of redefining
+5. **Create type guards** - Use type guards for runtime responsive value checks
+6. **Use utility types** - Leverage built-in utility types like `Responsive<T>`
+7. **Type your handlers** - Always type event handlers and change handlers
+
+## Common Patterns
+
+### Typed Custom Hook
+
+```tsx
+import { useViewport } from 'reshaped';
+import type { Viewport, Responsive } from 'reshaped';
+
+function useResponsiveValue<T>(value: Responsive<T>): T {
+  const viewport = useViewport();
+  
+  if (typeof value !== 'object' || value === null) {
+    return value;
+  }
+  
+  const responsive = value as ResponsiveOnly<T>;
+  
+  if (viewport === 'xl') return responsive.xl ?? responsive.l ?? responsive.m ?? responsive.s!;
+  if (viewport === 'l') return responsive.l ?? responsive.m ?? responsive.s!;
+  if (viewport === 'm') return responsive.m ?? responsive.s!;
+  return responsive.s!;
+}
+```
+
+### Typed Form State
+
+```tsx
+import type { ChangeHandler } from 'reshaped';
+import { TextField, Switch } from 'reshaped';
+
+interface FormState {
+  email: string;
+  notifications: boolean;
+  theme: 'light' | 'dark';
+}
+
+function TypedForm() {
+  const [state, setState] = useState<FormState>({
+    email: '',
+    notifications: true,
+    theme: 'light',
+  });
+  
+  const handleTextChange: ChangeHandler<string> = ({ name, value }) => {
+    setState(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleBoolChange: ChangeHandler<boolean> = ({ name, checked }) => {
+    setState(prev => ({ ...prev, [name]: checked }));
+  };
+  
+  return (
+    <>
+      <TextField name="email" value={state.email} onChange={handleTextChange} />
+      <Switch name="notifications" checked={state.notifications} onChange={handleBoolChange} />
+    </>
+  );
+}
+```
+
+## Related
+
+- [Theming](/concepts/theming) - Type-safe theme and color mode APIs
+- [Responsive Design](/concepts/responsive-design) - Responsive prop types
+- [Styling](/concepts/styling) - Style prop types and mixins

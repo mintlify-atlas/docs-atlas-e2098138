@@ -1,0 +1,185 @@
+---
+title: Theme
+description: Component for creating theme and color mode contexts within your application
+---
+
+The `Theme` component creates a new theme context that can override the parent theme or color mode. Use it to create themed sections within your application.
+
+## Basic Usage
+
+```jsx
+import { Theme } from 'reshaped';
+
+function App() {
+  return (
+    <Theme name="custom-theme">
+      <YourComponent />
+    </Theme>
+  );
+}
+```
+
+## Color Mode Inversion
+
+```jsx
+import { Theme } from 'reshaped';
+
+function Card() {
+  return (
+    <Theme colorMode="inverted">
+      <div>This content uses the inverted color mode</div>
+    </Theme>
+  );
+}
+```
+
+## Controlled Theme
+
+```jsx
+import { Theme } from 'reshaped';
+import { useState } from 'react';
+
+function ThemedSection() {
+  const [theme, setTheme] = useState('default');
+  
+  return (
+    <Theme name={theme}>
+      <select onChange={(e) => setTheme(e.target.value)}>
+        <option value="default">Default</option>
+        <option value="custom">Custom</option>
+      </select>
+      <Content />
+    </Theme>
+  );
+}
+```
+
+## Props
+
+<ParamField path="name" type="string | string[]">
+  Name of the theme to use, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultName" type="string | string[]">
+  Default name of the theme to use, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="colorMode" type="'light' | 'dark' | 'inverted'">
+  Color mode to use. Use `"inverted"` to invert the parent color mode
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>
+
+## When to Use
+
+- **Section Theming**: Apply different themes to specific sections of your application
+- **Color Mode Override**: Invert or change color mode for specific components
+- **Multi-tenant Applications**: Support different themes for different users or organizations
+- **Component Libraries**: Allow consumers to theme your components
+- **A/B Testing**: Test different visual themes
+
+## Composition Patterns
+
+### Inverted Color Mode Card
+
+```jsx
+import { Theme, View, Text } from 'reshaped';
+
+function InvertedCard({ children }) {
+  return (
+    <Theme colorMode="inverted">
+      <View 
+        backgroundColor="elevated" 
+        borderRadius="medium"
+        padding={4}
+      >
+        {children}
+      </View>
+    </Theme>
+  );
+}
+```
+
+### Dynamic Theme Switching
+
+```jsx
+import { Theme, useTheme } from 'reshaped';
+
+function ThemeSwitcher({ children }) {
+  const { theme, setTheme } = useTheme();
+  
+  return (
+    <div>
+      <button onClick={() => setTheme('theme-a')}>Theme A</button>
+      <button onClick={() => setTheme('theme-b')}>Theme B</button>
+      
+      <Theme name={theme}>
+        {children}
+      </Theme>
+    </div>
+  );
+}
+```
+
+### Nested Theme Contexts
+
+```jsx
+import { Theme } from 'reshaped';
+
+function App() {
+  return (
+    <Theme name="main-theme">
+      <MainContent />
+      
+      <Theme name="sidebar-theme">
+        <Sidebar />
+      </Theme>
+      
+      <Theme colorMode="inverted">
+        <Footer />
+      </Theme>
+    </Theme>
+  );
+}
+```
+
+### Multiple Themes
+
+```jsx
+import { Theme } from 'reshaped';
+
+function StyledSection() {
+  return (
+    <Theme name={['base-theme', 'brand-theme', 'seasonal-theme']}>
+      <Content />
+    </Theme>
+  );
+}
+```
+
+## Accessing Theme Context
+
+Use the `useTheme` hook to access and modify the current theme:
+
+```jsx
+import { useTheme } from 'reshaped';
+
+function ThemeInfo() {
+  const { theme, colorMode, setTheme, rootTheme } = useTheme();
+  
+  return (
+    <div>
+      <p>Current theme: {theme}</p>
+      <p>Color mode: {colorMode}</p>
+      <p>Root theme: {rootTheme}</p>
+      <button onClick={() => setTheme('new-theme')}>Change Theme</button>
+    </div>
+  );
+}
+```

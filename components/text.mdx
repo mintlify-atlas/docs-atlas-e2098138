@@ -1,0 +1,218 @@
+---
+title: Text
+description: Display text content with semantic variants and styling options
+---
+
+The Text component is a versatile typography component that supports various semantic variants, font weights, colors, and text formatting options.
+
+## Basic Usage
+
+```jsx
+import { Text } from 'reshaped';
+
+function App() {
+  return <Text variant="body-1">Hello World</Text>;
+}
+```
+
+## Variants
+
+Text supports multiple semantic variants for different use cases:
+
+### Titles
+
+```jsx
+<Text variant="title-1">Title 1</Text>
+<Text variant="title-2">Title 2</Text>
+<Text variant="title-3">Title 3</Text>
+<Text variant="title-4">Title 4</Text>
+<Text variant="title-5">Title 5</Text>
+<Text variant="title-6">Title 6</Text>
+```
+
+Title variants automatically render as semantic heading tags (h1-h6).
+
+### Featured Text
+
+```jsx
+<Text variant="featured-1">Featured 1</Text>
+<Text variant="featured-2">Featured 2</Text>
+<Text variant="featured-3">Featured 3</Text>
+```
+
+### Body Text
+
+```jsx
+<Text variant="body-1">Body 1</Text>
+<Text variant="body-2">Body 2</Text>
+<Text variant="body-3">Body 3</Text>
+```
+
+### Captions
+
+```jsx
+<Text variant="caption-1">Caption 1</Text>
+<Text variant="caption-2">Caption 2</Text>
+```
+
+## Font Weight
+
+Control the font weight of your text:
+
+```jsx
+<Text variant="body-1" weight="regular">Regular weight</Text>
+<Text variant="body-1" weight="medium">Medium weight</Text>
+<Text variant="body-1" weight="semibold">Semibold weight</Text>
+<Text variant="body-1" weight="bold">Bold weight</Text>
+<Text variant="body-1" weight="extrabold">Extrabold weight</Text>
+```
+
+## Colors
+
+Apply semantic colors to your text:
+
+```jsx
+<Text color="neutral">Neutral text</Text>
+<Text color="neutral-faded">Faded text</Text>
+<Text color="primary">Primary text</Text>
+<Text color="positive">Positive text</Text>
+<Text color="warning">Warning text</Text>
+<Text color="critical">Critical text</Text>
+<Text color="disabled">Disabled text</Text>
+```
+
+## Text Alignment
+
+```jsx
+<Text align="start">Start aligned</Text>
+<Text align="center">Center aligned</Text>
+<Text align="end">End aligned</Text>
+```
+
+## Special Formatting
+
+### Line Clamping
+
+Truncate text to a specific number of lines:
+
+```jsx
+<Text maxLines={2}>
+  This is a long text that will be truncated to two lines with an ellipsis.
+  Any content beyond the second line will be hidden from view.
+</Text>
+```
+
+### Monospace Font
+
+```jsx
+<Text monospace>const code = 'example';</Text>
+```
+
+### Numeric Text
+
+Preserve width for numeric values:
+
+```jsx
+<Text numeric>$123.45</Text>
+```
+
+### Text Decoration
+
+```jsx
+<Text decoration="line-through">Strikethrough text</Text>
+```
+
+### Text Wrapping
+
+```jsx
+<Text wrap="balance">This text will use balanced wrapping</Text>
+```
+
+## Responsive Variants
+
+Variants, weights, and alignment can be responsive:
+
+```jsx
+<Text
+  variant={{ s: 'body-2', m: 'body-1', l: 'featured-3' }}
+  weight={{ s: 'regular', l: 'semibold' }}
+  align={{ s: 'start', m: 'center' }}
+>
+  Responsive text
+</Text>
+```
+
+## Custom HTML Tag
+
+Override the default HTML tag:
+
+```jsx
+<Text as="span" variant="body-1">Inline text</Text>
+<Text as="p" variant="body-1">Paragraph text</Text>
+```
+
+## Props
+
+<ParamField path="variant" type="string | responsive" default="undefined">
+  Text render variant. Can be responsive.
+  
+  Options: `title-1`, `title-2`, `title-3`, `title-4`, `title-5`, `title-6`, `featured-1`, `featured-2`, `featured-3`, `body-1`, `body-2`, `body-3`, `caption-1`, `caption-2`
+</ParamField>
+
+<ParamField path="weight" type="string | responsive" default="undefined">
+  Text font weight. Can be responsive.
+  
+  Options: `regular`, `medium`, `semibold`, `bold`, `extrabold`
+</ParamField>
+
+<ParamField path="color" type="string" default="undefined">
+  Text color based on color tokens.
+  
+  Options: `neutral`, `neutral-faded`, `critical`, `warning`, `positive`, `primary`, `disabled`
+</ParamField>
+
+<ParamField path="align" type="string | responsive" default="undefined">
+  Text alignment. Can be responsive.
+  
+  Options: `start`, `center`, `end`
+</ParamField>
+
+<ParamField path="maxLines" type="number" default="undefined">
+  Maximum number of lines to render, used for text truncation.
+</ParamField>
+
+<ParamField path="monospace" type="boolean" default="false">
+  Render monospace font.
+</ParamField>
+
+<ParamField path="numeric" type="boolean" default="false">
+  Render as a numeric value to preserve the width of each character.
+</ParamField>
+
+<ParamField path="decoration" type="string" default="undefined">
+  CSS text decoration style.
+  
+  Options: `line-through`
+</ParamField>
+
+<ParamField path="wrap" type="string" default="undefined">
+  CSS wrapping style.
+  
+  Options: `balance`
+</ParamField>
+
+<ParamField path="as" type="string" default="div or h1-h6">
+  Render as a different HTML tag. Title variants default to h1-h6.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" default="undefined">
+  Node for inserting children.
+</ParamField>

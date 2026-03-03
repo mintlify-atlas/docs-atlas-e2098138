@@ -1,0 +1,361 @@
+---
+title: ToggleButtonGroup
+description: Group of toggle buttons for single or multiple selections
+---
+
+The `ToggleButtonGroup` component manages a group of toggle buttons with coordinated state, supporting both single and multiple selection modes.
+
+## Basic Usage
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+import { useState } from 'react';
+
+function Example() {
+  const [value, setValue] = useState(['option1']);
+  
+  return (
+    <ToggleButtonGroup 
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    >
+      <ToggleButton value="option1">Option 1</ToggleButton>
+      <ToggleButton value="option2">Option 2</ToggleButton>
+      <ToggleButton value="option3">Option 3</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```
+
+## Single Selection Mode
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+import { useState } from 'react';
+
+function SingleSelect() {
+  const [value, setValue] = useState(['day']);
+  
+  return (
+    <ToggleButtonGroup
+      selectionMode="single"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    >
+      <ToggleButton value="day">Day</ToggleButton>
+      <ToggleButton value="week">Week</ToggleButton>
+      <ToggleButton value="month">Month</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```
+
+## Multiple Selection Mode
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+import { useState } from 'react';
+
+function MultiSelect() {
+  const [value, setValue] = useState(['email']);
+  
+  return (
+    <ToggleButtonGroup
+      selectionMode="multiple"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    >
+      <ToggleButton value="email">Email</ToggleButton>
+      <ToggleButton value="sms">SMS</ToggleButton>
+      <ToggleButton value="push">Push</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```
+
+## With Custom Styling
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+
+function StyledGroup() {
+  return (
+    <ToggleButtonGroup
+      defaultValue={['active']}
+      color="neutral"
+      selectedColor="primary"
+      selectedVariant="solid"
+    >
+      <ToggleButton value="active">Active</ToggleButton>
+      <ToggleButton value="pending">Pending</ToggleButton>
+      <ToggleButton value="archived">Archived</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```
+
+## Props
+
+### ToggleButtonGroup
+
+<ParamField path="value" type="string[]">
+  Selected values in the group, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultValue" type="string[]">
+  Default selected values in the group, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="selectionMode" type="'single' | 'multiple'" default="single">
+  Selection mode for the toggle button group. In single mode, only one button can be selected at a time
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: string[], event: Event }) => void">
+  Callback when the toggle button group value changes
+</ParamField>
+
+<ParamField path="color" type="'primary' | 'critical' | 'positive' | 'neutral'" default="neutral">
+  Component color scheme applied to each button
+</ParamField>
+
+<ParamField path="selectedColor" type="'primary' | 'critical' | 'positive' | 'neutral'" default="neutral">
+  Component color scheme for the selected button
+</ParamField>
+
+<ParamField path="selectedVariant" type="'solid' | 'outline' | 'ghost' | 'faded'">
+  Component variant for the selected button
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  ToggleButton components
+</ParamField>
+
+Inherits layout props from `ButtonGroup` component (gap, direction, etc.).
+
+### ToggleButton (within Group)
+
+<ParamField path="value" type="string" required>
+  Value of the toggle button used for group selection
+</ParamField>
+
+See [ToggleButton](/components/toggle-button) for all other props.
+
+## When to Use
+
+- **View Modes**: Switch between different content views (grid, list, etc.)
+- **Time Periods**: Select time ranges (day, week, month, year)
+- **Filters**: Apply multiple or single filter criteria
+- **Tabs**: Create tab-like navigation with selection state
+- **Settings**: Toggle between mutually exclusive options
+- **Sorting Options**: Select sort order or criteria
+
+## Composition Patterns
+
+### View Mode Selector
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+import { Grid, List, Columns } from './icons';
+import { useState } from 'react';
+
+function ViewSelector({ onViewChange }) {
+  const [view, setView] = useState(['grid']);
+  
+  const handleChange = ({ value }) => {
+    setView(value);
+    onViewChange(value[0]);
+  };
+  
+  return (
+    <ToggleButtonGroup
+      selectionMode="single"
+      value={view}
+      onChange={handleChange}
+    >
+      <ToggleButton 
+        value="grid" 
+        icon={Grid}
+        attributes={{ 'aria-label': 'Grid view' }}
+      />
+      <ToggleButton 
+        value="list" 
+        icon={List}
+        attributes={{ 'aria-label': 'List view' }}
+      />
+      <ToggleButton 
+        value="columns" 
+        icon={Columns}
+        attributes={{ 'aria-label': 'Column view' }}
+      />
+    </ToggleButtonGroup>
+  );
+}
+```
+
+### Time Period Selector
+
+```jsx
+import { ToggleButtonGroup, ToggleButton, Stack, Text } from 'reshaped';
+import { useState } from 'react';
+
+function TimePeriodSelector() {
+  const [period, setPeriod] = useState(['week']);
+  
+  return (
+    <Stack gap={2}>
+      <Text variant="title-6" weight="medium">Select Time Period</Text>
+      <ToggleButtonGroup
+        selectionMode="single"
+        value={period}
+        onChange={({ value }) => setPeriod(value)}
+        selectedColor="primary"
+      >
+        <ToggleButton value="day">Day</ToggleButton>
+        <ToggleButton value="week">Week</ToggleButton>
+        <ToggleButton value="month">Month</ToggleButton>
+        <ToggleButton value="year">Year</ToggleButton>
+      </ToggleButtonGroup>
+    </Stack>
+  );
+}
+```
+
+### Multi-Select Filters
+
+```jsx
+import { ToggleButtonGroup, ToggleButton, Stack, Text } from 'reshaped';
+import { useState } from 'react';
+
+function StatusFilter() {
+  const [statuses, setStatuses] = useState(['active']);
+  
+  return (
+    <Stack gap={2}>
+      <Text variant="body-2" weight="medium">Filter by Status</Text>
+      <ToggleButtonGroup
+        selectionMode="multiple"
+        value={statuses}
+        onChange={({ value }) => setStatuses(value)}
+      >
+        <ToggleButton value="active">Active</ToggleButton>
+        <ToggleButton value="pending">Pending</ToggleButton>
+        <ToggleButton value="completed">Completed</ToggleButton>
+        <ToggleButton value="archived">Archived</ToggleButton>
+      </ToggleButtonGroup>
+      <Text variant="caption-1" color="neutral">
+        {statuses.length} status{statuses.length !== 1 ? 'es' : ''} selected
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Text Alignment Toolbar
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from './icons';
+import { useState } from 'react';
+
+function AlignmentToolbar() {
+  const [align, setAlign] = useState(['left']);
+  
+  return (
+    <ToggleButtonGroup
+      selectionMode="single"
+      value={align}
+      onChange={({ value }) => setAlign(value)}
+      size="small"
+    >
+      <ToggleButton 
+        value="left" 
+        icon={AlignLeft}
+        attributes={{ 'aria-label': 'Align left' }}
+      />
+      <ToggleButton 
+        value="center" 
+        icon={AlignCenter}
+        attributes={{ 'aria-label': 'Align center' }}
+      />
+      <ToggleButton 
+        value="right" 
+        icon={AlignRight}
+        attributes={{ 'aria-label': 'Align right' }}
+      />
+      <ToggleButton 
+        value="justify" 
+        icon={AlignJustify}
+        attributes={{ 'aria-label': 'Justify' }}
+      />
+    </ToggleButtonGroup>
+  );
+}
+```
+
+### Uncontrolled Mode
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+
+function UncontrolledGroup() {
+  return (
+    <ToggleButtonGroup
+      defaultValue={['option1']}
+      onChange={({ value }) => console.log('Selected:', value)}
+    >
+      <ToggleButton value="option1">Option 1</ToggleButton>
+      <ToggleButton value="option2">Option 2</ToggleButton>
+      <ToggleButton value="option3">Option 3</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```
+
+### Vertical Layout
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+import { useState } from 'react';
+
+function VerticalGroup() {
+  const [value, setValue] = useState(['small']);
+  
+  return (
+    <ToggleButtonGroup
+      direction="column"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      selectionMode="single"
+    >
+      <ToggleButton value="small" fullWidth>Small</ToggleButton>
+      <ToggleButton value="medium" fullWidth>Medium</ToggleButton>
+      <ToggleButton value="large" fullWidth>Large</ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```
+
+### With Disabled Options
+
+```jsx
+import { ToggleButtonGroup, ToggleButton } from 'reshaped';
+import { useState } from 'react';
+
+function GroupWithDisabled() {
+  const [value, setValue] = useState(['basic']);
+  
+  return (
+    <ToggleButtonGroup
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      selectionMode="single"
+    >
+      <ToggleButton value="basic">Basic</ToggleButton>
+      <ToggleButton value="pro">Pro</ToggleButton>
+      <ToggleButton value="enterprise" disabled>
+        Enterprise (Coming Soon)
+      </ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```

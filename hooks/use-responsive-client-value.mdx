@@ -1,0 +1,212 @@
+---
+title: useResponsiveClientValue
+description: Resolve responsive prop values on the client side
+---
+
+The `useResponsiveClientValue` hook resolves responsive prop values based on the current viewport size. Use it when you need to access the resolved value of a responsive prop in your component logic.
+
+## Import
+
+```tsx
+import { useResponsiveClientValue } from 'reshaped';
+```
+
+## Usage
+
+```tsx
+import { useResponsiveClientValue } from 'reshaped';
+
+function ResponsiveComponent() {
+  const columns = useResponsiveClientValue({ s: 1, m: 2, l: 3, xl: 4 });
+
+  return <div>Current columns: {columns}</div>;
+}
+```
+
+## Parameters
+
+<ParamField path="value" type="T | { s?: T; m?: T; l?: T; xl?: T }" required>
+  A static value or a responsive object with viewport-specific values. The responsive object supports the following breakpoints:
+  - `s` - Small viewport (mobile)
+  - `m` - Medium viewport (tablet)
+  - `l` - Large viewport (desktop)
+  - `xl` - Extra large viewport (wide desktop)
+</ParamField>
+
+## Return Value
+
+<ResponseField name="value" type="T | undefined">
+  The resolved value for the current viewport. Returns `undefined` during server-side rendering and until the viewport is detected on the client.
+</ResponseField>
+
+## How It Works
+
+The hook resolves responsive values using the following fallback logic:
+
+- **XL viewport**: Uses `xl`, falling back to `l`, then `m`, then `s`
+- **L viewport**: Uses `l`, falling back to `m`, then `s`
+- **M viewport**: Uses `m`, falling back to `s`
+- **S viewport**: Uses `s`
+
+## Examples
+
+### Responsive Column Count
+
+```tsx
+import { useResponsiveClientValue, Grid } from 'reshaped';
+
+function ResponsiveGrid({ children }) {
+  const columns = useResponsiveClientValue({
+    s: 1,
+    m: 2,
+    l: 3,
+    xl: 4,
+  });
+
+  return (
+    <div>
+      <p>Displaying {columns} columns</p>
+      <Grid columns={columns}>{children}</Grid>
+    </div>
+  );
+}
+```
+
+### Conditional Rendering Based on Viewport
+
+```tsx
+import { useResponsiveClientValue, View } from 'reshaped';
+
+function AdaptiveLayout({ sidebar, content }) {
+  const layout = useResponsiveClientValue({
+    s: 'stacked',
+    m: 'stacked',
+    l: 'sidebar',
+    xl: 'sidebar',
+  });
+
+  if (layout === 'stacked') {
+    return (
+      <View direction="column">
+        {content}
+        {sidebar}
+      </View>
+    );
+  }
+
+  return (
+    <View direction="row">
+      {sidebar}
+      {content}
+    </View>
+  );
+}
+```
+
+### Dynamic Spacing
+
+```tsx
+import { useResponsiveClientValue, View } from 'reshaped';
+
+function DynamicSpacing({ children }) {
+  const gap = useResponsiveClientValue({
+    s: 2,
+    m: 4,
+    l: 6,
+    xl: 8,
+  });
+
+  return (
+    <View gap={gap}>
+      {children}
+      <p>Using gap size: {gap}</p>
+    </View>
+  );
+}
+```
+
+### Responsive Image Size
+
+```tsx
+import { useResponsiveClientValue } from 'reshaped';
+
+function ResponsiveImage({ src, alt }) {
+  const size = useResponsiveClientValue({
+    s: 200,
+    m: 400,
+    l: 600,
+    xl: 800,
+  });
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      width={size}
+      height={size}
+      style={{ maxWidth: '100%', height: 'auto' }}
+    />
+  );
+}
+```
+
+### Static Value Passthrough
+
+```tsx
+import { useResponsiveClientValue } from 'reshaped';
+
+function StaticOrResponsive({ value }) {
+  // If value is not a responsive object, it's returned as-is
+  const resolved = useResponsiveClientValue(value);
+
+  return <div>Value: {resolved}</div>;
+}
+
+// Usage:
+<StaticOrResponsive value={5} /> // Returns 5
+<StaticOrResponsive value={{ s: 2, l: 5 }} /> // Returns 2 or 5 based on viewport
+```
+
+### Responsive Feature Flags
+
+```tsx
+import { useResponsiveClientValue } from 'reshaped';
+
+function FeatureToggle() {
+  const showAdvancedFeatures = useResponsiveClientValue({
+    s: false,
+    m: false,
+    l: true,
+    xl: true,
+  });
+
+  return (
+    <div>
+      {showAdvancedFeatures ? (
+        <AdvancedToolbar />
+      ) : (
+        <SimpleToolbar />
+      )}
+    </div>
+  );
+}
+```
+
+## TypeScript
+
+```tsx
+type Viewport = 's' | 'm' | 'l' | 'xl';
+type ResponsiveOnly<T> = { [key in Viewport]?: T };
+type Responsive<T> = T | ResponsiveOnly<T>;
+
+function useResponsiveClientValue<T>(value: Responsive<T>): T | undefined;
+```
+
+## Notes
+
+- This hook is client-side only and returns `undefined` during SSR
+- The hook automatically subscribes to viewport changes
+- Values cascade from larger to smaller breakpoints (e.g., if `xl` is not defined, it uses `l`)
+- If you pass a non-responsive value (not an object with breakpoint keys), it's returned as-is
+- The hook uses Reshaped's viewport detection system, which is consistent with responsive props in components
+- For SSR-compatible responsive behavior, use responsive props directly on components instead

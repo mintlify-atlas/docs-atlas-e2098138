@@ -1,0 +1,345 @@
+---
+title: HiddenVisually
+description: Utility component that hides content visually while keeping it accessible to screen readers
+---
+
+The `HiddenVisually` component hides content from visual display while keeping it accessible to assistive technologies like screen readers. This is essential for providing context that sighted users can infer visually.
+
+## Basic Usage
+
+```jsx
+import { HiddenVisually, Button } from 'reshaped';
+import { Search } from './icons';
+
+function Example() {
+  return (
+    <Button icon={Search}>
+      <HiddenVisually>Search</HiddenVisually>
+    </Button>
+  );
+}
+```
+
+## Skip Navigation Link
+
+```jsx
+import { HiddenVisually, Actionable } from 'reshaped';
+
+function SkipNav() {
+  return (
+    <HiddenVisually>
+      <Actionable href="#main-content">
+        Skip to main content
+      </Actionable>
+    </HiddenVisually>
+  );
+}
+```
+
+## Form Labels
+
+```jsx
+import { HiddenVisually, TextField } from 'reshaped';
+import { Search } from './icons';
+
+function SearchField() {
+  return (
+    <div>
+      <HiddenVisually as="label" htmlFor="search">
+        Search
+      </HiddenVisually>
+      <TextField
+        id="search"
+        placeholder="Search..."
+        icon={Search}
+      />
+    </div>
+  );
+}
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children - content that should be hidden visually but accessible to screen readers
+</ParamField>
+
+## When to Use
+
+- **Icon-Only Buttons**: Provide text alternatives for icon buttons
+- **Skip Links**: Create skip navigation links for keyboard users
+- **Form Labels**: Add labels to inputs that have visual context but no explicit label
+- **Loading States**: Announce loading states to screen readers
+- **Dynamic Content**: Announce dynamic content changes
+- **Navigation Context**: Provide additional context for navigation items
+
+## Composition Patterns
+
+### Icon Button with Label
+
+```jsx
+import { HiddenVisually, Button } from 'reshaped';
+import { Close, Edit, Delete, Share } from './icons';
+
+function IconButton({ icon, label, onClick }) {
+  return (
+    <Button icon={icon} onClick={onClick}>
+      <HiddenVisually>{label}</HiddenVisually>
+    </Button>
+  );
+}
+
+// Usage
+<IconButton icon={Close} label="Close dialog" onClick={() => {}} />
+<IconButton icon={Edit} label="Edit item" onClick={() => {}} />
+<IconButton icon={Delete} label="Delete item" onClick={() => {}} />
+<IconButton icon={Share} label="Share" onClick={() => {}} />
+```
+
+### Skip Navigation Links
+
+```jsx
+import { HiddenVisually, Stack, Actionable } from 'reshaped';
+
+function SkipLinks() {
+  return (
+    <HiddenVisually>
+      <Stack gap={2}>
+        <Actionable href="#main-content">
+          Skip to main content
+        </Actionable>
+        <Actionable href="#navigation">
+          Skip to navigation
+        </Actionable>
+        <Actionable href="#footer">
+          Skip to footer
+        </Actionable>
+      </Stack>
+    </HiddenVisually>
+  );
+}
+
+function Layout() {
+  return (
+    <>
+      <SkipLinks />
+      <nav id="navigation">{/* ... */}</nav>
+      <main id="main-content">{/* ... */}</main>
+      <footer id="footer">{/* ... */}</footer>
+    </>
+  );
+}
+```
+
+### Loading Announcement
+
+```jsx
+import { HiddenVisually, Spinner, Stack } from 'reshaped';
+
+function LoadingState({ message = "Loading..." }) {
+  return (
+    <Stack align="center" gap={2}>
+      <Spinner />
+      <HiddenVisually role="status">
+        {message}
+      </HiddenVisually>
+    </Stack>
+  );
+}
+```
+
+### Data Table Headers
+
+```jsx
+import { HiddenVisually, View, Stack, Text, Button } from 'reshaped';
+import { Edit, Delete } from './icons';
+
+function DataTable({ rows }) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>
+            <HiddenVisually>Actions</HiddenVisually>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr key={row.id}>
+            <td>{row.name}</td>
+            <td>{row.email}</td>
+            <td>
+              <Stack direction="row" gap={1}>
+                <Button icon={Edit} size="small">
+                  <HiddenVisually>Edit {row.name}</HiddenVisually>
+                </Button>
+                <Button icon={Delete} size="small" color="critical">
+                  <HiddenVisually>Delete {row.name}</HiddenVisually>
+                </Button>
+              </Stack>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+```
+
+### Form Field with Visual Context
+
+```jsx
+import { HiddenVisually, TextField, Stack, Text } from 'reshaped';
+import { Search, User, Mail } from './icons';
+
+function SearchForm() {
+  return (
+    <Stack gap={3}>
+      <Stack gap={1}>
+        <Text variant="title-6">Find Users</Text>
+        <HiddenVisually as="label" htmlFor="user-search">
+          Search for users by name or email
+        </HiddenVisually>
+        <TextField
+          id="user-search"
+          placeholder="Type to search..."
+          icon={Search}
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+### Status Indicators
+
+```jsx
+import { HiddenVisually, View, Text, Stack } from 'reshaped';
+
+function StatusBadge({ status, label }) {
+  const colors = {
+    online: 'positive',
+    offline: 'neutral',
+    busy: 'warning',
+    error: 'critical'
+  };
+  
+  return (
+    <Stack direction="row" gap={2} align="center">
+      <View
+        width={2}
+        height={2}
+        borderRadius="full"
+        backgroundColor={colors[status]}
+      />
+      <Text>{label}</Text>
+      <HiddenVisually>Status: {status}</HiddenVisually>
+    </Stack>
+  );
+}
+
+// Usage
+<StatusBadge status="online" label="John Doe" />
+<StatusBadge status="busy" label="Jane Smith" />
+```
+
+### Navigation with Context
+
+```jsx
+import { HiddenVisually, Stack, Actionable, Icon, Text } from 'reshaped';
+import { Home, Settings, User, Notifications } from './icons';
+
+function Navigation({ unreadCount }) {
+  return (
+    <nav>
+      <Stack gap={1}>
+        <Actionable href="/">
+          <Stack direction="row" gap={2} align="center">
+            <Icon svg={Home} />
+            <Text>Home</Text>
+          </Stack>
+        </Actionable>
+        
+        <Actionable href="/notifications">
+          <Stack direction="row" gap={2} align="center">
+            <Icon svg={Notifications} />
+            <Text>Notifications</Text>
+            {unreadCount > 0 && (
+              <>
+                <View
+                  padding={1}
+                  paddingInline={2}
+                  backgroundColor="critical"
+                  borderRadius="full"
+                >
+                  <Text color="white" variant="caption-1">
+                    {unreadCount}
+                  </Text>
+                </View>
+                <HiddenVisually>
+                  {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
+                </HiddenVisually>
+              </>
+            )}
+          </Stack>
+        </Actionable>
+        
+        <Actionable href="/settings">
+          <Stack direction="row" gap={2} align="center">
+            <Icon svg={Settings} />
+            <Text>Settings</Text>
+          </Stack>
+        </Actionable>
+      </Stack>
+    </nav>
+  );
+}
+```
+
+### Live Region Announcements
+
+```jsx
+import { HiddenVisually } from 'reshaped';
+import { useState, useEffect } from 'react';
+
+function LiveAnnouncements({ message }) {
+  const [announcement, setAnnouncement] = useState('');
+  
+  useEffect(() => {
+    if (message) {
+      setAnnouncement(message);
+      // Clear after announcement
+      const timer = setTimeout(() => setAnnouncement(''), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+  
+  return (
+    <HiddenVisually role="status" aria-live="polite" aria-atomic="true">
+      {announcement}
+    </HiddenVisually>
+  );
+}
+
+// Usage in a form
+function FormWithAnnouncements() {
+  const [message, setMessage] = useState('');
+  const [saved, setSaved] = useState(false);
+  
+  const handleSave = () => {
+    setSaved(true);
+    setMessage('Your changes have been saved successfully');
+  };
+  
+  return (
+    <div>
+      {/* Form fields */}
+      <Button onClick={handleSave}>Save</Button>
+      <LiveAnnouncements message={message} />
+    </div>
+  );
+}
+```

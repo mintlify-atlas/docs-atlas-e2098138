@@ -1,0 +1,294 @@
+---
+title: useHotkeys
+description: Register keyboard shortcuts for your application
+---
+
+The `useHotkeys` hook allows you to register keyboard shortcuts (hotkeys) that trigger callbacks when pressed. Use it to add keyboard navigation and shortcuts to your application.
+
+## Import
+
+```tsx
+import { useHotkeys } from 'reshaped';
+```
+
+## Usage
+
+```tsx
+import { useHotkeys } from 'reshaped';
+
+function SaveButton() {
+  const handleSave = () => {
+    console.log('Saving...');
+  };
+
+  useHotkeys({ 'mod+s': handleSave });
+
+  return <button>Save</button>;
+}
+```
+
+## Parameters
+
+<ParamField path="hotkeys" type="Record<string, (e?: KeyboardEvent) => void | null>" required>
+  An object mapping hotkey combinations to callback functions. Use `null` to temporarily disable a hotkey without removing it.
+
+  Hotkey format:
+  - Single keys: `'a'`, `'enter'`, `'escape'`
+  - Combinations: `'mod+s'`, `'shift+enter'`, `'ctrl+alt+delete'`
+  - Multiple triggers: `'mod+s, ctrl+s'` (comma-separated)
+
+  Special keys:
+  - `mod` - Maps to `Cmd` on Mac, `Ctrl` on Windows/Linux
+  - `shift`, `ctrl`, `alt`, `meta` - Modifier keys
+</ParamField>
+
+<ParamField path="deps" type="unknown[]" default="[]">
+  Dependency array for the hotkey registration. The hotkeys will re-register when dependencies change.
+</ParamField>
+
+<ParamField path="options" type="object">
+  Optional configuration object:
+
+  <ParamField path="options.ref" type="RefObject<HTMLElement>">
+    Element ref to scope the hotkeys to. Hotkeys will only trigger when this element or its children are focused.
+  </ParamField>
+
+  <ParamField path="options.disabled" type="boolean">
+    When `true`, temporarily disables the hotkeys without unregistering them.
+  </ParamField>
+
+  <ParamField path="options.preventDefault" type="boolean">
+    When `true`, prevents the default browser behavior for the hotkey.
+  </ParamField>
+</ParamField>
+
+## Return Value
+
+<ResponseField name="ref" type="RefObject<HTMLElement>">
+  A ref object that can be attached to an element to scope the hotkeys. Only needed if you didn't pass a custom ref in options.
+</ResponseField>
+
+<ResponseField name="checkHotkeyState" type="(key: string) => boolean">
+  Function to check if a specific key is currently pressed.
+</ResponseField>
+
+## Examples
+
+### Basic Save Shortcut
+
+```tsx
+import { useHotkeys, Button } from 'reshaped';
+
+function Editor() {
+  const [content, setContent] = useState('');
+
+  const handleSave = () => {
+    console.log('Saving:', content);
+  };
+
+  useHotkeys({ 'mod+s': handleSave });
+
+  return (
+    <div>
+      <textarea
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
+      <Button onClick={handleSave}>Save (Cmd/Ctrl+S)</Button>
+    </div>
+  );
+}
+```
+
+### Multiple Hotkeys
+
+```tsx
+import { useHotkeys } from 'reshaped';
+
+function TextEditor() {
+  const handleBold = () => console.log('Bold');
+  const handleItalic = () => console.log('Italic');
+  const handleUnderline = () => console.log('Underline');
+
+  useHotkeys({
+    'mod+b': handleBold,
+    'mod+i': handleItalic,
+    'mod+u': handleUnderline,
+  });
+
+  return <div>Press Cmd/Ctrl+B/I/U for formatting</div>;
+}
+```
+
+### Scoped Hotkeys
+
+```tsx
+import { useHotkeys } from 'reshaped';
+
+function ScopedInput() {
+  const { ref } = useHotkeys({
+    'enter': () => console.log('Enter pressed in input'),
+    'escape': () => console.log('Escape pressed in input'),
+  });
+
+  return (
+    <div>
+      <input ref={ref} placeholder="Hotkeys work only here" />
+      <input placeholder="Hotkeys don't work here" />
+    </div>
+  );
+}
+```
+
+### Conditional Hotkeys
+
+```tsx
+import { useHotkeys, Button } from 'reshaped';
+
+function ConditionalHotkeys() {
+  const [enabled, setEnabled] = useState(true);
+
+  useHotkeys(
+    { 'mod+k': () => console.log('Hotkey triggered') },
+    [],
+    { disabled: !enabled }
+  );
+
+  return (
+    <Button onClick={() => setEnabled(!enabled)}>
+      {enabled ? 'Disable' : 'Enable'} Hotkeys
+    </Button>
+  );
+}
+```
+
+### Prevent Default Behavior
+
+```tsx
+import { useHotkeys } from 'reshaped';
+
+function PreventDefault() {
+  useHotkeys(
+    { 'mod+s': () => console.log('Custom save') },
+    [],
+    { preventDefault: true } // Prevents browser's save dialog
+  );
+
+  return <div>Press Cmd/Ctrl+S</div>;
+}
+```
+
+### Multiple Trigger Keys
+
+```tsx
+import { useHotkeys } from 'reshaped';
+
+function MultiTrigger() {
+  const handleSearch = () => console.log('Search');
+
+  // Both Cmd+K and Ctrl+K will trigger the callback
+  useHotkeys({
+    'mod+k, ctrl+k': handleSearch,
+  });
+
+  return <div>Press Cmd/Ctrl+K to search</div>;
+}
+```
+
+### Custom Ref Scope
+
+```tsx
+import { useHotkeys } from 'reshaped';
+import { useRef } from 'react';
+
+function CustomRefScope() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useHotkeys(
+    {
+      'escape': () => console.log('Escape in container'),
+    },
+    [],
+    { ref: containerRef }
+  );
+
+  return (
+    <div ref={containerRef} tabIndex={0}>
+      Focus this container and press Escape
+    </div>
+  );
+}
+```
+
+### Navigation Shortcuts
+
+```tsx
+import { useHotkeys } from 'reshaped';
+import { useRouter } from 'next/router';
+
+function Navigation() {
+  const router = useRouter();
+
+  useHotkeys({
+    'g h': () => router.push('/'),
+    'g p': () => router.push('/profile'),
+    'g s': () => router.push('/settings'),
+  });
+
+  return <div>Press G+H for home, G+P for profile, G+S for settings</div>;
+}
+```
+
+### Check Key State
+
+```tsx
+import { useHotkeys } from 'reshaped';
+
+function KeyStateChecker() {
+  const { checkHotkeyState } = useHotkeys({});
+
+  const handleClick = () => {
+    if (checkHotkeyState('shift')) {
+      console.log('Shift-click detected');
+    } else {
+      console.log('Normal click');
+    }
+  };
+
+  return <button onClick={handleClick}>Click me (try with Shift)</button>;
+}
+```
+
+## TypeScript
+
+```tsx
+type Hotkeys = Record<string, ((e?: KeyboardEvent) => void) | null>;
+
+type HotkeyOptions = {
+  ref?: React.RefObject<HTMLElement | null>;
+  disabled?: boolean;
+  preventDefault?: boolean;
+};
+
+type UseHotkeysReturn<Element extends HTMLElement> = {
+  ref: React.RefObject<Element>;
+  checkHotkeyState: (key: string) => boolean;
+};
+
+function useHotkeys<Element extends HTMLElement = HTMLElement>(
+  hotkeys: Hotkeys,
+  deps?: unknown[],
+  options?: HotkeyOptions
+): UseHotkeysReturn<Element>;
+```
+
+## Notes
+
+- The `mod` key automatically maps to `Cmd` on macOS and `Ctrl` on Windows/Linux
+- Hotkeys are case-insensitive
+- Whitespace in hotkey strings is ignored (except for the space key itself)
+- Multiple hotkeys can be separated by commas: `'mod+s, ctrl+s'`
+- Key combinations should be joined with `+`: `'shift+ctrl+a'`
+- The hook automatically cleans up event listeners when unmounted
+- Set a callback to `null` to temporarily disable a specific hotkey
+- Use `preventDefault: true` to prevent default browser behavior

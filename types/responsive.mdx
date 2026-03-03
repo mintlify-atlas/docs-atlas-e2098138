@@ -1,0 +1,203 @@
+---
+title: Responsive
+description: Type definition for responsive values in Reshaped
+---
+
+The `Responsive` type enables you to define values that adapt to different viewport sizes in Reshaped components.
+
+## Type Definition
+
+```typescript
+export type Viewport = "s" | "m" | "l" | "xl";
+export type ResponsiveOnly<T> = { [key in Viewport]?: T };
+export type Responsive<T> = T | ResponsiveOnly<T>;
+```
+
+Source: `packages/reshaped/src/types/global.ts:3-5`
+
+## Overview
+
+The `Responsive` type allows you to provide either:
+- A single value that applies to all viewports
+- An object mapping viewport sizes to specific values
+
+This pattern is used throughout Reshaped components to enable responsive design without media queries.
+
+## Viewport Breakpoints
+
+Reshaped defines four viewport sizes:
+
+| Viewport | Size | Description |
+|----------|------|-------------|
+| `s` | < 660px | Small devices (mobile) |
+| `m` | ≥ 660px | Medium devices (tablets) |
+| `l` | ≥ 900px | Large devices (desktop) |
+| `xl` | ≥ 1280px | Extra large devices (wide desktop) |
+
+These breakpoints are configurable in theme definitions at `packages/reshaped/src/themes/_generator/definitions/figma.ts:199-203`.
+
+## Usage
+
+### Single Value
+
+Provide a single value that applies to all viewports:
+
+```tsx
+import { View } from "reshaped";
+
+export default function Example() {
+  return (
+    <View padding={4}>
+      Content with consistent padding
+    </View>
+  );
+}
+```
+
+### Responsive Object
+
+Provide different values for different viewport sizes:
+
+```tsx
+import { View } from "reshaped";
+
+export default function Example() {
+  return (
+    <View 
+      padding={{ s: 2, m: 4, l: 6, xl: 8 }}
+      direction={{ s: "column", m: "row" }}
+    >
+      Content with responsive padding and direction
+    </View>
+  );
+}
+```
+
+### Partial Responsive Values
+
+You can specify values for only some viewports. Missing viewports will use the next smallest defined value:
+
+```tsx
+import { View, Text } from "reshaped";
+
+export default function Example() {
+  return (
+    <View gap={{ s: 2, l: 4 }}>
+      <Text variant={{ s: "body-1", m: "featured-2" }}>
+        This text is body-1 on small screens,
+        featured-2 on medium and larger screens
+      </Text>
+    </View>
+  );
+}
+```
+
+## Common Patterns
+
+### Mobile-First Approach
+
+<Steps>
+  <Step title="Start with mobile layout">
+    Define the mobile experience first with the smallest viewport or single value:
+    
+    ```tsx
+    <View direction="column" gap={2}>
+      <Card>Mobile card 1</Card>
+      <Card>Mobile card 2</Card>
+    </View>
+    ```
+  </Step>
+  
+  <Step title="Add tablet and desktop layouts">
+    Layer on larger viewport specifications:
+    
+    ```tsx
+    <View 
+      direction={{ s: "column", m: "row" }} 
+      gap={{ s: 2, m: 4 }}
+    >
+      <Card>Stacked on mobile, side-by-side on tablet+</Card>
+      <Card>With responsive gaps</Card>
+    </View>
+    ```
+  </Step>
+</Steps>
+
+### Conditional Rendering
+
+Combine with the `Hidden` component for viewport-specific visibility:
+
+```tsx
+import { View, Hidden, Button } from "reshaped";
+
+export default function Example() {
+  return (
+    <View>
+      <Hidden hide={{ s: false, m: true }}>
+        <Button>Mobile only</Button>
+      </Hidden>
+      
+      <Hidden hide={{ s: true, m: false }}>
+        <Button>Desktop only</Button>
+      </Hidden>
+    </View>
+  );
+}
+```
+
+## Props with Responsive Support
+
+Many Reshaped component props support responsive values:
+
+- Layout: `padding`, `gap`, `direction`, `align`, `justify`
+- Sizing: `width`, `height`, `maxWidth`, `maxHeight`
+- Display: `hide` (Hidden component)
+- Typography: `variant`, `size`
+- Grid: `columns`, `gapX`, `gapY`
+
+Check individual component documentation to see which props support responsive values.
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use sparingly for performance">
+    While responsive values are powerful, excessive use can impact bundle size. Use them strategically for key layout changes.
+  </Accordion>
+  
+  <Accordion title="Maintain consistency">
+    Use the same breakpoints across your application for predictable behavior. Consider defining responsive value constants.
+  </Accordion>
+  
+  <Accordion title="Test across viewports">
+    Always test your responsive layouts on actual devices or using browser dev tools to ensure smooth transitions.
+  </Accordion>
+  
+  <Accordion title="Consider content first">
+    Choose breakpoints based on when your content needs to reflow, not arbitrary device sizes.
+  </Accordion>
+</AccordionGroup>
+
+## TypeScript Support
+
+The `Responsive` type provides full TypeScript autocomplete and type checking:
+
+```tsx
+import { Responsive } from "reshaped";
+
+// Type-safe responsive prop
+const padding: Responsive<number> = { s: 2, m: 4, l: 6 };
+
+// Single value is also valid
+const gap: Responsive<number> = 4;
+
+// TypeScript will catch invalid viewport keys
+const invalid: Responsive<number> = { 
+  small: 2  // Error: 'small' is not a valid viewport
+};
+```
+
+## Related Resources
+
+- [View Component](/components/view) - Primary layout component with responsive props
+- [Hidden Component](/components/hidden) - Control visibility across viewports
+- [Grid Component](/components/grid) - Responsive grid layouts

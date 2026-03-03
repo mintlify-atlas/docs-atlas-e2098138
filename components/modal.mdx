@@ -1,0 +1,433 @@
+---
+title: Modal
+description: Display overlay dialogs that demand user attention
+---
+
+<RequestExample>
+```jsx
+import { Modal, Button, Dismissible } from 'reshaped';
+
+function Example() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setActive(true)}>Open Modal</Button>
+      
+      <Modal
+        active={active}
+        onClose={() => setActive(false)}
+        position="center"
+      >
+        <View gap={3}>
+          <Dismissible
+            onClose={() => setActive(false)}
+            closeAriaLabel="Close modal"
+          >
+            <Modal.Title>Modal Title</Modal.Title>
+            <Modal.Subtitle>Optional subtitle</Modal.Subtitle>
+          </Dismissible>
+          
+          <Text>Modal content goes here</Text>
+          
+          <View direction="row" gap={2}>
+            <Button onClick={() => setActive(false)}>Cancel</Button>
+            <Button color="primary" onClick={handleConfirm}>
+              Confirm
+            </Button>
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Modals are overlay dialogs that require user interaction. They block access to the underlying page until dismissed.
+
+## Props
+
+<ParamField path="active" type="boolean">
+  Controls the visibility of the modal. Use with `onClose` for controlled state.
+  
+  ```jsx
+  <Modal active={isOpen} onClose={() => setIsOpen(false)}>
+  ```
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Content of the modal.
+</ParamField>
+
+<ParamField path="position" type="string | Responsive<string>">
+  Position of the modal on screen.
+  
+  Options: `"center"`, `"end"`, `"bottom"`, `"start"`, `"full-screen"`
+  
+  ```jsx
+  <Modal position="center" />
+  <Modal position={{ s: 'full-screen', m: 'center' }} />
+  ```
+</ParamField>
+
+<ParamField path="size" type="string | Responsive<string>">
+  Size of the modal. Accepts CSS values or `"auto"`.
+  
+  ```jsx
+  <Modal size="600px" />
+  <Modal size={{ s: 'auto', m: '800px' }} />
+  ```
+</ParamField>
+
+<ParamField path="padding" type="number | Responsive<number>">
+  Padding inside the modal. Value is a unit token multiplier.
+  
+  ```jsx
+  <Modal padding={6} />
+  <Modal padding={{ s: 4, m: 6 }} />
+  ```
+</ParamField>
+
+<ParamField path="overflow" type="'visible'">
+  Remove overflow clipping from modal content.
+  
+  ```jsx
+  <Modal overflow="visible">
+  ```
+</ParamField>
+
+<ParamField path="onClose" type="(args: { reason: string }) => void">
+  Callback when the modal is closed. Reason can be:
+  - `"overlay-click"`: User clicked outside
+  - `"escape-key"`: User pressed Escape
+  - `"drag"`: User swiped to close on touch devices
+  
+  ```jsx
+  <Modal
+    onClose={({ reason }) => {
+      console.log('Closed via:', reason);
+      setActive(false);
+    }}
+  />
+  ```
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the modal opens.
+</ParamField>
+
+<ParamField path="onAfterOpen" type="() => void">
+  Callback after the open animation completes.
+</ParamField>
+
+<ParamField path="onAfterClose" type="() => void">
+  Callback after the close animation completes.
+</ParamField>
+
+<ParamField path="transparentOverlay" type="boolean">
+  Make the overlay transparent. Doesn't lock scroll.
+</ParamField>
+
+<ParamField path="blurredOverlay" type="boolean">
+  Apply blur effect to the overlay.
+</ParamField>
+
+<ParamField path="disableSwipeGesture" type="boolean">
+  Disable swipe-to-close gesture on touch devices.
+</ParamField>
+
+<ParamField path="disableCloseOnOutsideClick" type="boolean">
+  Prevent closing when clicking outside the modal.
+</ParamField>
+
+<ParamField path="autoFocus" type="boolean" default="true">
+  Focus the first focusable element when opened. When false, focuses the container.
+</ParamField>
+
+<ParamField path="ariaLabel" type="string">
+  Accessible label when there's no visible title.
+  
+  ```jsx
+  <Modal ariaLabel="Confirm deletion">
+  ```
+</ParamField>
+
+<ParamField path="containerRef" type="React.RefObject<HTMLElement>">
+  Container element to render the modal within.
+</ParamField>
+
+<ParamField path="contained" type="boolean">
+  Contain the modal within the container bounds.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the modal element.
+</ParamField>
+
+<ParamField path="overlayClassName" type="string">
+  Additional CSS class for the overlay element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the modal element.
+</ParamField>
+
+## Subcomponents
+
+### Modal.Title
+
+```jsx
+<Modal.Title>Modal title text</Modal.Title>
+```
+
+### Modal.Subtitle
+
+```jsx
+<Modal.Subtitle>Optional subtitle</Modal.Subtitle>
+```
+
+## Examples
+
+### Basic Modal
+
+```jsx
+function BasicModal() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setActive(true)}>Open</Button>
+      
+      <Modal active={active} onClose={() => setActive(false)}>
+        <View gap={3}>
+          <Text variant="title-5">Confirm action</Text>
+          <Text>Are you sure you want to continue?</Text>
+          
+          <View direction="row" gap={2} justify="end">
+            <Button variant="ghost" onClick={() => setActive(false)}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={handleConfirm}>
+              Confirm
+            </Button>
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
+}
+```
+
+### With Title and Dismissible
+
+```jsx
+<Modal active={active} onClose={handleClose}>
+  <View gap={3}>
+    <Dismissible onClose={handleClose} closeAriaLabel="Close">
+      <Modal.Title>Settings</Modal.Title>
+      <Modal.Subtitle>Manage your preferences</Modal.Subtitle>
+    </Dismissible>
+    
+    {/* Content */}
+  </View>
+</Modal>
+```
+
+### Positions
+
+```jsx
+// Center (default)
+<Modal position="center" />
+
+// Bottom drawer
+<Modal position="bottom" />
+
+// Side panel
+<Modal position="end" />
+<Modal position="start" />
+
+// Full screen
+<Modal position="full-screen" />
+
+// Responsive
+<Modal position={{ s: 'full-screen', m: 'center' }} />
+```
+
+### Custom Sizes
+
+```jsx
+// Fixed width
+<Modal size="600px" position="center" />
+
+// Responsive width
+<Modal size={{ s: 'auto', m: '800px' }} />
+
+// For bottom position, size controls height
+<Modal position="bottom" size="400px" />
+```
+
+### Form Modal
+
+```jsx
+function FormModal() {
+  const [active, setActive] = React.useState(false);
+  const [formData, setFormData] = React.useState({});
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle form submission
+    setActive(false);
+  };
+
+  return (
+    <Modal active={active} onClose={() => setActive(false)}>
+      <form onSubmit={handleSubmit}>
+        <View gap={4}>
+          <Dismissible onClose={() => setActive(false)} closeAriaLabel="Close">
+            <Modal.Title>New Item</Modal.Title>
+          </Dismissible>
+          
+          <TextField
+            name="name"
+            label="Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+          
+          <TextArea
+            name="description"
+            label="Description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          />
+          
+          <View direction="row" gap={2} justify="end">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setActive(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" color="primary">
+              Create
+            </Button>
+          </View>
+        </View>
+      </form>
+    </Modal>
+  );
+}
+```
+
+### Confirmation Dialog
+
+```jsx
+function DeleteConfirmation({ itemName, onConfirm, onCancel, active }) {
+  return (
+    <Modal
+      active={active}
+      onClose={onCancel}
+      disableCloseOnOutsideClick
+      size="400px"
+    >
+      <View gap={3}>
+        <View gap={2}>
+          <Text variant="title-5" color="critical">
+            Delete {itemName}?
+          </Text>
+          <Text>
+            This action cannot be undone. All data associated with this item
+            will be permanently deleted.
+          </Text>
+        </View>
+        
+        <View direction="row" gap={2} justify="end">
+          <Button variant="ghost" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button color="critical" onClick={onConfirm}>
+            Delete
+          </Button>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+```
+
+### Overlay Styles
+
+```jsx
+// Transparent overlay (doesn't lock scroll)
+<Modal transparentOverlay>
+
+// Blurred overlay
+<Modal blurredOverlay>
+```
+
+### Prevent Close
+
+```jsx
+// Disable outside click to close
+<Modal disableCloseOnOutsideClick>
+
+// Disable swipe gesture on mobile
+<Modal disableSwipeGesture>
+
+// Handle close attempt
+<Modal
+  onClose={({ reason }) => {
+    if (reason === 'escape-key' && hasUnsavedChanges) {
+      showConfirmation();
+    } else {
+      setActive(false);
+    }
+  }}
+/>
+```
+
+### Nested Modals
+
+```jsx
+function NestedModals() {
+  const [primaryOpen, setPrimaryOpen] = React.useState(false);
+  const [secondaryOpen, setSecondaryOpen] = React.useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setPrimaryOpen(true)}>Open Primary</Button>
+      
+      <Modal active={primaryOpen} onClose={() => setPrimaryOpen(false)}>
+        <View gap={3}>
+          <Modal.Title>Primary Modal</Modal.Title>
+          <Button onClick={() => setSecondaryOpen(true)}>
+            Open Secondary Modal
+          </Button>
+        </View>
+      </Modal>
+      
+      <Modal active={secondaryOpen} onClose={() => setSecondaryOpen(false)}>
+        <View gap={3}>
+          <Modal.Title>Secondary Modal</Modal.Title>
+          <Text>This modal is on top of the primary modal</Text>
+        </View>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Accessibility
+
+- Traps focus within the modal when open
+- Pressing Escape closes the modal
+- Focuses first interactive element by default (customize with `autoFocus`)
+- Uses `role="dialog"` and `aria-modal="true"`
+- Provide `ariaLabel` when there's no visible title
+- Restores focus to trigger element when closed
+- Prevents body scroll when active
+- Announces modal open/close to screen readers

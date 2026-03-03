@@ -1,0 +1,537 @@
+---
+title: Flyout
+description: Low-level component for building custom floating content
+---
+
+<RequestExample>
+```jsx
+import { Flyout, Button } from 'reshaped';
+
+function Example() {
+  return (
+    <Flyout position="bottom-start">
+      <Flyout.Trigger>
+        {(attributes) => <Button attributes={attributes}>Open Flyout</Button>}
+      </Flyout.Trigger>
+      
+      <Flyout.Content>
+        <View padding={4} backgroundColor="neutral" borderRadius="medium">
+          <Text>Custom flyout content</Text>
+        </View>
+      </Flyout.Content>
+    </Flyout>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Flyout is a low-level component for building custom floating content. It handles positioning, animations, and interactions. Use Popover, DropdownMenu, or Tooltip for common use cases.
+
+## Props
+
+<ParamField path="position" type="string">
+  Position relative to the trigger element.
+  
+  Options: `"bottom"`, `"bottom-start"`, `"bottom-end"`, `"top"`, `"top-start"`, `"top-end"`, `"start"`, `"start-top"`, `"start-bottom"`, `"end"`, `"end-top"`, `"end-bottom"`
+  
+  Default: `"bottom"`
+</ParamField>
+
+<ParamField path="active" type="boolean">
+  Controlled state for flyout visibility.
+</ParamField>
+
+<ParamField path="defaultActive" type="boolean">
+  Initial active state for uncontrolled mode.
+</ParamField>
+
+<ParamField path="triggerType" type="string">
+  Event that triggers the flyout.
+  
+  Options: `"click"`, `"hover"`, `"focus"`
+  
+  Default: `"click"`
+</ParamField>
+
+<ParamField path="width" type="string">
+  Width of the flyout. Accepts CSS values or `"trigger"` to match trigger width.
+  
+  ```jsx
+  <Flyout width="400px" />
+  <Flyout width="trigger" />
+  ```
+</ParamField>
+
+<ParamField path="forcePosition" type="boolean">
+  Force the specified position without fallbacks.
+</ParamField>
+
+<ParamField path="fallbackPositions" type="Position[] | false">
+  Fallback positions when content doesn't fit. Set to `false` to disable.
+  
+  ```jsx
+  <Flyout fallbackPositions={['top', 'bottom-start']} />
+  <Flyout fallbackPositions={false} />
+  ```
+</ParamField>
+
+<ParamField path="fallbackAdjustLayout" type="boolean">
+  Adjust size and position when fallbacks don't work.
+</ParamField>
+
+<ParamField path="fallbackMinHeight" type="string">
+  Minimum height when adjusting layout.
+</ParamField>
+
+<ParamField path="trapFocusMode" type="string | false">
+  Focus trap behavior and keyboard shortcuts.
+  
+  Options: `"dialog"`, `"action-menu"`, `"selection-menu"`, `false`
+  
+  ```jsx
+  <Flyout trapFocusMode="dialog" /> {/* Trap focus like a modal */}
+  <Flyout trapFocusMode={false} /> {/* No focus trap */}
+  ```
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the flyout.
+</ParamField>
+
+<ParamField path="disableHideAnimation" type="boolean">
+  Disable the hide animation.
+</ParamField>
+
+<ParamField path="disableContentHover" type="boolean">
+  Ignore content hover events (for `triggerType="hover"`).
+</ParamField>
+
+<ParamField path="disableCloseOnOutsideClick" type="boolean">
+  Prevent closing when clicking outside.
+</ParamField>
+
+<ParamField path="autoFocus" type="boolean" default="true">
+  Focus first focusable element when opened.
+</ParamField>
+
+<ParamField path="contentGap" type="number">
+  Gap between trigger and content in pixels.
+</ParamField>
+
+<ParamField path="contentShift" type="number">
+  Shift the content on the secondary axis.
+</ParamField>
+
+<ParamField path="contentMaxHeight" type="string">
+  Maximum height for scrollable content.
+</ParamField>
+
+<ParamField path="contentMaxWidth" type="string">
+  Maximum width for the content.
+</ParamField>
+
+<ParamField path="contentZIndex" type="number">
+  Custom z-index for the content.
+</ParamField>
+
+<ParamField path="contentClassName" type="string">
+  Additional CSS class for the content element.
+</ParamField>
+
+<ParamField path="contentAttributes" type="Attributes<'div'>">
+  Additional HTML attributes for the content element.
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the flyout opens.
+</ParamField>
+
+<ParamField path="onClose" type="(args: { reason?: string }) => void">
+  Callback when the flyout closes.
+  
+  Reasons: `"escape-key"`, `"outside-click"`, `"item-selection"`, `"close-button"`
+</ParamField>
+
+<ParamField path="groupTimeouts" type="boolean">
+  Remove display delay if another flyout is already active.
+</ParamField>
+
+<ParamField path="originCoordinates" type="Coordinates">
+  Position coordinates when there's no trigger element.
+  
+  ```jsx
+  <Flyout originCoordinates={{ x: 100, y: 200 }}>
+  ```
+</ParamField>
+
+<ParamField path="containerRef" type="React.RefObject<HTMLElement>">
+  Container element for positioning.
+</ParamField>
+
+<ParamField path="positionRef" type="React.RefObject<HTMLElement>">
+  Element to calculate position against.
+</ParamField>
+
+<ParamField path="initialFocusRef" type="React.RefObject<HTMLElement>">
+  Element to focus when opened.
+</ParamField>
+
+<ParamField path="instanceRef" type="React.Ref<FlyoutInstance>">
+  Ref to access flyout methods.
+  
+  ```jsx
+  const flyoutRef = React.useRef();
+  
+  // Methods:
+  flyoutRef.current.open();
+  flyoutRef.current.close();
+  flyoutRef.current.updatePosition();
+  ```
+</ParamField>
+
+## Subcomponents
+
+### Flyout.Trigger
+
+Render function that provides attributes for the trigger element.
+
+```jsx
+<Flyout.Trigger>
+  {(attributes) => <button attributes={attributes}>Trigger</button>}
+</Flyout.Trigger>
+```
+
+### Flyout.Content
+
+Container for the flyout content.
+
+```jsx
+<Flyout.Content>
+  {/* Your custom content */}
+</Flyout.Content>
+```
+
+<ParamField path="className" type="string">
+  Additional CSS class for the content element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the content element.
+</ParamField>
+
+## Examples
+
+### Basic Flyout
+
+```jsx
+<Flyout>
+  <Flyout.Trigger>
+    {(attributes) => <Button attributes={attributes}>Open</Button>}
+  </Flyout.Trigger>
+  
+  <Flyout.Content>
+    <View padding={3} backgroundColor="neutral" borderRadius="medium">
+      <Text>Flyout content</Text>
+    </View>
+  </Flyout.Content>
+</Flyout>
+```
+
+### Custom Color Picker
+
+```jsx
+function ColorPicker({ value, onChange }) {
+  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A'];
+
+  return (
+    <Flyout>
+      <Flyout.Trigger>
+        {(attributes) => (
+          <Button attributes={attributes}>
+            <View
+              width="20px"
+              height="20px"
+              borderRadius="small"
+              attributes={{ style: { backgroundColor: value } }}
+            />
+          </Button>
+        )}
+      </Flyout.Trigger>
+      
+      <Flyout.Content>
+        <View
+          padding={2}
+          backgroundColor="neutral"
+          borderRadius="medium"
+          elevation="overlay"
+        >
+          <Grid columns="4" gap={1}>
+            {colors.map((color) => (
+              <Button
+                key={color}
+                variant="ghost"
+                size="small"
+                onClick={() => onChange(color)}
+              >
+                <View
+                  width="32px"
+                  height="32px"
+                  borderRadius="small"
+                  attributes={{ style: { backgroundColor: color } }}
+                />
+              </Button>
+            ))}
+          </Grid>
+        </View>
+      </Flyout.Content>
+    </Flyout>
+  );
+}
+```
+
+### Emoji Picker
+
+```jsx
+function EmojiPicker({ onSelect }) {
+  const emojis = ['😀', '😂', '😍', '🎉', '👍', '❤️', '🔥', '✨'];
+
+  return (
+    <Flyout>
+      <Flyout.Trigger>
+        {(attributes) => (
+          <Button attributes={attributes} icon={IconSmile}>
+            Add Reaction
+          </Button>
+        )}
+      </Flyout.Trigger>
+      
+      <Flyout.Content>
+        <View
+          padding={2}
+          backgroundColor="neutral"
+          borderRadius="medium"
+          elevation="overlay"
+        >
+          <View direction="row" gap={1}>
+            {emojis.map((emoji) => (
+              <Button
+                key={emoji}
+                variant="ghost"
+                onClick={() => {
+                  onSelect(emoji);
+                }}
+              >
+                <Text variant="title-5">{emoji}</Text>
+              </Button>
+            ))}
+          </View>
+        </View>
+      </Flyout.Content>
+    </Flyout>
+  );
+}
+```
+
+### Date Range Picker
+
+```jsx
+function DateRangePicker({ startDate, endDate, onChange }) {
+  return (
+    <Flyout width="600px">
+      <Flyout.Trigger>
+        {(attributes) => (
+          <Button attributes={attributes} icon={IconCalendar}>
+            {startDate && endDate
+              ? `${formatDate(startDate)} - ${formatDate(endDate)}`
+              : 'Select dates'}
+          </Button>
+        )}
+      </Flyout.Trigger>
+      
+      <Flyout.Content>
+        <View
+          padding={4}
+          backgroundColor="neutral"
+          borderRadius="medium"
+          elevation="overlay"
+        >
+          <View direction="row" gap={3}>
+            <Calendar
+              value={startDate}
+              onChange={(date) => onChange({ start: date, end: endDate })}
+            />
+            <Calendar
+              value={endDate}
+              onChange={(date) => onChange({ start: startDate, end: date })}
+            />
+          </View>
+        </View>
+      </Flyout.Content>
+    </Flyout>
+  );
+}
+```
+
+### Search with Results
+
+```jsx
+function SearchFlyout() {
+  const [query, setQuery] = React.useState('');
+  const [results, setResults] = React.useState([]);
+
+  return (
+    <Flyout
+      triggerType="focus"
+      width="trigger"
+      disableContentHover={false}
+    >
+      <Flyout.Trigger>
+        {(attributes) => (
+          <TextField
+            attributes={attributes}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              // Fetch results...
+            }}
+            placeholder="Search..."
+          />
+        )}
+      </Flyout.Trigger>
+      
+      <Flyout.Content>
+        <View
+          backgroundColor="neutral"
+          borderRadius="medium"
+          elevation="overlay"
+          contentMaxHeight="400px"
+        >
+          <ScrollArea>
+            <View gap={1} padding={2}>
+              {results.map((result) => (
+                <Button
+                  key={result.id}
+                  variant="ghost"
+                  onClick={() => handleSelect(result)}
+                >
+                  <View direction="row" gap={2} align="center">
+                    <Icon svg={result.icon} />
+                    <Text>{result.title}</Text>
+                  </View>
+                </Button>
+              ))}
+            </View>
+          </ScrollArea>
+        </View>
+      </Flyout.Content>
+    </Flyout>
+  );
+}
+```
+
+### Trigger Types
+
+```jsx
+// Click (default)
+<Flyout triggerType="click">
+
+// Hover
+<Flyout triggerType="hover">
+
+// Focus
+<Flyout triggerType="focus">
+```
+
+### Controlled Flyout
+
+```jsx
+function ControlledFlyout() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <Flyout
+      active={active}
+      onClose={() => setActive(false)}
+    >
+      <Flyout.Trigger>
+        {(attributes) => (
+          <Button
+            attributes={attributes}
+            onClick={() => setActive(!active)}
+          >
+            Toggle
+          </Button>
+        )}
+      </Flyout.Trigger>
+      
+      <Flyout.Content>
+        <View padding={3}>
+          <Text>Content</Text>
+        </View>
+      </Flyout.Content>
+    </Flyout>
+  );
+}
+```
+
+### Without Trigger (Coordinates)
+
+```jsx
+function ContextualFlyout({ x, y, active, onClose }) {
+  return (
+    <Flyout
+      active={active}
+      onClose={onClose}
+      originCoordinates={{ x, y }}
+    >
+      <Flyout.Content>
+        <View padding={3} backgroundColor="neutral" borderRadius="medium">
+          <Text>Content at {x}, {y}</Text>
+        </View>
+      </Flyout.Content>
+    </Flyout>
+  );
+}
+```
+
+## useFlyout Hook
+
+Access flyout context for advanced use cases:
+
+```jsx
+import { useFlyout } from 'reshaped';
+
+function CustomFlyoutContent() {
+  const flyout = useFlyout();
+
+  return (
+    <Button onClick={() => flyout.close()}>
+      Close Flyout
+    </Button>
+  );
+}
+```
+
+## When to Use
+
+Use Flyout for:
+- Custom floating UI that doesn't fit Popover/DropdownMenu/Tooltip patterns
+- Building domain-specific components (date pickers, color pickers, etc.)
+- Advanced positioning requirements
+
+Don't use Flyout for:
+- Standard menus (use DropdownMenu)
+- Simple tooltips (use Tooltip)
+- Form popovers (use Popover)
+- Modal dialogs (use Modal)
+
+## Accessibility
+
+- Provide appropriate ARIA attributes via `contentAttributes`
+- Set `trapFocusMode` based on your content type
+- Ensure keyboard accessibility for trigger elements
+- Use semantic HTML for content
+- Test with screen readers
+- Consider providing keyboard shortcuts

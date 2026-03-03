@@ -1,0 +1,288 @@
+---
+title: "FileUpload"
+description: "A file input component with drag and drop support"
+icon: "cloud-arrow-up"
+---
+
+FileUpload is a form component that allows users to select files through clicking or drag and drop. It provides visual feedback and supports multiple file selection.
+
+## Basic usage
+
+```jsx
+import { FileUpload } from 'reshaped';
+
+function Example() {
+  return (
+    <FileUpload
+      name="files"
+      onChange={({ value }) => console.log(value)}
+    >
+      <FileUpload.Trigger>
+        Click to upload or drag and drop
+      </FileUpload.Trigger>
+    </FileUpload>
+  );
+}
+```
+
+## With custom content
+
+```jsx
+import { FileUpload, View, Text, Button } from 'reshaped';
+import IconUpload from './icons/Upload';
+
+function CustomContent() {
+  return (
+    <FileUpload
+      name="documents"
+      onChange={({ value }) => console.log(value)}
+    >
+      <View gap={3} align="center" padding={6}>
+        <IconUpload size={32} />
+        <View gap={1} align="center">
+          <Text weight="medium">Upload your files</Text>
+          <Text variant="body-2" color="neutral-faded">
+            Click or drag files here
+          </Text>
+        </View>
+        <Button>Select files</Button>
+      </View>
+    </FileUpload>
+  );
+}
+```
+
+## Render function with state
+
+```jsx
+import { FileUpload, View, Text } from 'reshaped';
+
+function StateExample() {
+  return (
+    <FileUpload name="files">
+      {({ highlighted }) => (
+        <View
+          padding={6}
+          align="center"
+          borderColor={highlighted ? 'primary' : 'neutral-faded'}
+        >
+          <Text>
+            {highlighted ? 'Drop files here' : 'Drag files here'}
+          </Text>
+        </View>
+      )}
+    </FileUpload>
+  );
+}
+```
+
+## Multiple files
+
+```jsx
+import { FileUpload, Text } from 'reshaped';
+import { useState } from 'react';
+
+function MultipleExample() {
+  const [files, setFiles] = useState([]);
+
+  return (
+    <>
+      <FileUpload
+        name="files"
+        onChange={({ value }) => setFiles(value)}
+        inputAttributes={{ multiple: true }}
+      >
+        <FileUpload.Trigger>
+          Select multiple files
+        </FileUpload.Trigger>
+      </FileUpload>
+      
+      {files.length > 0 && (
+        <Text variant="body-2">
+          {files.length} file(s) selected
+        </Text>
+      )}
+    </>
+  );
+}
+```
+
+## With file type restrictions
+
+```jsx
+import { FileUpload } from 'reshaped';
+
+<FileUpload
+  name="images"
+  inputAttributes={{ accept: 'image/*' }}
+>
+  <FileUpload.Trigger>
+    Upload images only
+  </FileUpload.Trigger>
+</FileUpload>
+```
+
+## Inline variant
+
+```jsx
+import { FileUpload, Button } from 'reshaped';
+import IconUpload from './icons/Upload';
+
+<FileUpload
+  name="files"
+  variant="headless"
+  inline
+>
+  <Button icon={IconUpload}>
+    Upload file
+  </Button>
+</FileUpload>
+```
+
+## With file list
+
+```jsx
+import { FileUpload, View, Text, Button } from 'reshaped';
+import { useState } from 'react';
+
+function FileListExample() {
+  const [files, setFiles] = useState([]);
+
+  return (
+    <View gap={4}>
+      <FileUpload
+        name="documents"
+        onChange={({ value }) => setFiles(value)}
+        inputAttributes={{ multiple: true }}
+      >
+        <FileUpload.Trigger>
+          Select files to upload
+        </FileUpload.Trigger>
+      </FileUpload>
+      
+      {files.length > 0 && (
+        <View gap={2}>
+          <Text weight="medium">Selected files:</Text>
+          <View gap={1}>
+            {Array.from(files).map((file, index) => (
+              <View key={index} direction="row" justify="space-between">
+                <Text variant="body-2">{file.name}</Text>
+                <Text variant="body-2" color="neutral-faded">
+                  {(file.size / 1024).toFixed(1)} KB
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+    </View>
+  );
+}
+```
+
+## With validation
+
+```jsx
+import { FormControl, FileUpload, View, Text } from 'reshaped';
+import { useState } from 'react';
+
+function ValidationExample() {
+  const [files, setFiles] = useState([]);
+  const hasError = files.length === 0;
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Upload resume</FormControl.Label>
+      <FileUpload
+        name="resume"
+        onChange={({ value }) => setFiles(value)}
+        inputAttributes={{ accept: '.pdf,.doc,.docx' }}
+      >
+        <View padding={6} align="center">
+          <Text>Click to upload or drag and drop</Text>
+          <Text variant="body-2" color="neutral-faded">
+            PDF, DOC, or DOCX (max 5MB)
+          </Text>
+        </View>
+      </FileUpload>
+      <FormControl.Error>
+        Please upload your resume.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Disabled state
+
+```jsx
+import { FileUpload } from 'reshaped';
+
+<FileUpload name="files" disabled>
+  <FileUpload.Trigger>
+    Upload disabled
+  </FileUpload.Trigger>
+</FileUpload>
+```
+
+## Accessibility
+
+FileUpload follows accessibility best practices:
+
+- Uses semantic HTML file input
+- Keyboard accessible (Tab to focus, Enter/Space to open file dialog)
+- Screen reader announces file input purpose
+- Drag and drop is progressive enhancement
+- Works with FormControl for proper label associations
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the input element
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the file upload input
+</ParamField>
+
+<ParamField path="variant" type="'outline' | 'headless'" default="outline">
+  Component variant. Headless variant is useful for rendering custom triggers like a Button.
+</ParamField>
+
+<ParamField path="inline" type="boolean">
+  Change component to render inline making it more compact
+</ParamField>
+
+<ParamField path="height" type="string | number">
+  Component height, literal css value or unit token multiplier
+</ParamField>
+
+<ParamField path="onChange" type="(args: { name: string, value: File[], event: Event }) => void">
+  Callback when the component value is changed
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode | (args: { highlighted: boolean }) => React.ReactNode">
+  Node for inserting children, can be a render function that receives component state
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input element. Use for file type restrictions (accept) and multiple file selection.
+</ParamField>
+
+## Sub-components
+
+### FileUpload.Trigger
+
+A simple trigger component for file selection.
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>

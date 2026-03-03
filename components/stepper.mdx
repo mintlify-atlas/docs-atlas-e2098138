@@ -1,0 +1,319 @@
+---
+title: Stepper
+description: Component for displaying progress through a multi-step process
+---
+
+The Stepper component visualizes progress through a numbered sequence of steps. It's commonly used for multi-step forms, onboarding flows, and guided processes.
+
+## Basic Usage
+
+```jsx
+import { Stepper } from 'reshaped';
+
+function App() {
+  return (
+    <Stepper activeId="2">
+      <Stepper.Item id="1" title="Account" completed />
+      <Stepper.Item id="2" title="Profile" />
+      <Stepper.Item id="3" title="Preferences" />
+    </Stepper>
+  );
+}
+```
+
+## Direction
+
+Display the stepper horizontally or vertically:
+
+### Horizontal (Default)
+
+```jsx
+<Stepper direction="row" activeId="2">
+  <Stepper.Item id="1" title="Step 1" completed />
+  <Stepper.Item id="2" title="Step 2" />
+  <Stepper.Item id="3" title="Step 3" />
+</Stepper>
+```
+
+### Vertical
+
+```jsx
+<Stepper direction="column" activeId="2">
+  <Stepper.Item id="1" title="Account Setup" subtitle="Create your account" completed />
+  <Stepper.Item id="2" title="Profile Information" subtitle="Tell us about yourself" />
+  <Stepper.Item id="3" title="Confirmation" subtitle="Review and submit" />
+</Stepper>
+```
+
+## With Content
+
+In vertical mode, you can add content to the active step:
+
+```jsx
+<Stepper direction="column" activeId="2">
+  <Stepper.Item
+    id="1"
+    title="Account"
+    subtitle="Basic account details"
+    completed
+  />
+  <Stepper.Item
+    id="2"
+    title="Profile"
+    subtitle="Personal information"
+  >
+    <View gap={3}>
+      <TextField label="Full Name" />
+      <TextField label="Email" />
+      <Button>Continue</Button>
+    </View>
+  </Stepper.Item>
+  <Stepper.Item
+    id="3"
+    title="Preferences"
+    subtitle="Customize your experience"
+  />
+</Stepper>
+```
+
+## Label Display
+
+Control how labels are displayed:
+
+```jsx
+{/* Always show labels */}
+<Stepper activeId="2" labelDisplay="inline">
+  <Stepper.Item id="1" title="Step 1" completed />
+  <Stepper.Item id="2" title="Step 2" />
+  <Stepper.Item id="3" title="Step 3" />
+</Stepper>
+
+{/* Hide labels on small screens */}
+<Stepper activeId="2" labelDisplay={{ s: 'hidden', m: 'inline' }}>
+  <Stepper.Item id="1" title="Step 1" completed />
+  <Stepper.Item id="2" title="Step 2" />
+  <Stepper.Item id="3" title="Step 3" />
+</Stepper>
+```
+
+## Custom Gap
+
+Adjust spacing between steps:
+
+```jsx
+<Stepper activeId="2" gap={5}>
+  <Stepper.Item id="1" title="Step 1" completed />
+  <Stepper.Item id="2" title="Step 2" />
+  <Stepper.Item id="3" title="Step 3" />
+</Stepper>
+```
+
+## Step States
+
+### Completed Steps
+
+Mark steps as completed with a checkmark:
+
+```jsx
+<Stepper activeId="3">
+  <Stepper.Item id="1" title="Registration" completed />
+  <Stepper.Item id="2" title="Verification" completed />
+  <Stepper.Item id="3" title="Setup" />
+</Stepper>
+```
+
+### Active Step
+
+The active step is highlighted:
+
+```jsx
+<Stepper activeId="2">
+  <Stepper.Item id="1" title="Step 1" completed />
+  <Stepper.Item id="2" title="Step 2" /> {/* Active */}
+  <Stepper.Item id="3" title="Step 3" />
+</Stepper>
+```
+
+## Multi-Step Form Example
+
+```jsx
+import { Stepper, Button, TextField, View } from 'reshaped';
+import { useState } from 'react';
+
+function MultiStepForm() {
+  const [activeStep, setActiveStep] = useState('1');
+  const [completedSteps, setCompletedSteps] = useState([]);
+  
+  const handleNext = () => {
+    setCompletedSteps([...completedSteps, activeStep]);
+    setActiveStep((parseInt(activeStep) + 1).toString());
+  };
+  
+  const handleBack = () => {
+    setActiveStep((parseInt(activeStep) - 1).toString());
+  };
+  
+  return (
+    <View gap={6}>
+      <Stepper activeId={activeStep}>
+        <Stepper.Item
+          id="1"
+          title="Account"
+          subtitle="Basic information"
+          completed={completedSteps.includes('1')}
+        />
+        <Stepper.Item
+          id="2"
+          title="Profile"
+          subtitle="Personal details"
+          completed={completedSteps.includes('2')}
+        />
+        <Stepper.Item
+          id="3"
+          title="Review"
+          subtitle="Confirm details"
+          completed={completedSteps.includes('3')}
+        />
+      </Stepper>
+      
+      <View gap={4}>
+        {activeStep === '1' && (
+          <View gap={3}>
+            <TextField label="Email" />
+            <TextField label="Password" type="password" />
+          </View>
+        )}
+        
+        {activeStep === '2' && (
+          <View gap={3}>
+            <TextField label="Full Name" />
+            <TextField label="Phone" />
+          </View>
+        )}
+        
+        {activeStep === '3' && (
+          <View gap={3}>
+            <Text>Review your information</Text>
+          </View>
+        )}
+        
+        <View direction="row" gap={2}>
+          {activeStep !== '1' && (
+            <Button variant="outline" onClick={handleBack}>
+              Back
+            </Button>
+          )}
+          <Button onClick={handleNext}>
+            {activeStep === '3' ? 'Submit' : 'Continue'}
+          </Button>
+        </View>
+      </View>
+    </View>
+  );
+}
+```
+
+## Onboarding Flow Example
+
+```jsx
+function OnboardingFlow() {
+  const [currentStep, setCurrentStep] = useState('welcome');
+  
+  return (
+    <Stepper direction="column" activeId={currentStep}>
+      <Stepper.Item
+        id="welcome"
+        title="Welcome"
+        subtitle="Get started with our platform"
+        completed={isStepCompleted('welcome')}
+      >
+        <View gap={3}>
+          <Text>Welcome to our platform!</Text>
+          <Button onClick={() => setCurrentStep('setup')}>
+            Get Started
+          </Button>
+        </View>
+      </Stepper.Item>
+      
+      <Stepper.Item
+        id="setup"
+        title="Setup"
+        subtitle="Configure your preferences"
+        completed={isStepCompleted('setup')}
+      >
+        <SetupForm onComplete={() => setCurrentStep('complete')} />
+      </Stepper.Item>
+      
+      <Stepper.Item
+        id="complete"
+        title="Complete"
+        subtitle="You're all set!"
+      >
+        <CompleteMessage />
+      </Stepper.Item>
+    </Stepper>
+  );
+}
+```
+
+## Props
+
+### Stepper
+
+<ParamField path="activeId" type="string | number">
+  Id of the item to display as active
+</ParamField>
+
+<ParamField path="direction" type="'row' | 'column'" default="row">
+  Direction of the stepper
+</ParamField>
+
+<ParamField path="labelDisplay" type="'inline' | 'hidden'">
+  Display variant for the item label (responsive)
+</ParamField>
+
+<ParamField path="gap" type="number" default="3">
+  Gap between items (responsive)
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Stepper items
+</ParamField>
+
+### Stepper.Item
+
+<ParamField path="id" type="string">
+  Id of the item, used for selecting the active item
+</ParamField>
+
+<ParamField path="title" type="React.ReactNode">
+  Title of the item
+</ParamField>
+
+<ParamField path="subtitle" type="React.ReactNode">
+  Subtitle of the item
+</ParamField>
+
+<ParamField path="completed" type="boolean" default="false">
+  Indicate that the item is completed (shows checkmark icon)
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Content to display when the item is active (only in column direction)
+</ParamField>

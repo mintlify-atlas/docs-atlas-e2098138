@@ -1,0 +1,432 @@
+---
+title: ContextMenu
+description: Display context menus triggered by right-click
+---
+
+<RequestExample>
+```jsx
+import { ContextMenu } from 'reshaped';
+import IconEdit from 'reshaped/icons/Edit';
+import IconTrash from 'reshaped/icons/Trash';
+
+function Example() {
+  return (
+    <ContextMenu>
+      <ContextMenu.Trigger>
+        {(attributes) => (
+          <View
+            attributes={attributes}
+            padding={4}
+            borderRadius="medium"
+            backgroundColor="neutral-faded"
+          >
+            <Text>Right-click me</Text>
+          </View>
+        )}
+      </ContextMenu.Trigger>
+      
+      <ContextMenu.Content>
+        <DropdownMenu.Item icon={IconEdit} onClick={handleEdit}>
+          Edit
+        </DropdownMenu.Item>
+        <DropdownMenu.Item icon={IconTrash} color="critical" onClick={handleDelete}>
+          Delete
+        </DropdownMenu.Item>
+      </ContextMenu.Content>
+    </ContextMenu>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+ContextMenu displays a menu when users right-click (or long-press on touch devices) on an element. It uses the same menu items as DropdownMenu.
+
+## Props
+
+ContextMenu supports the same positioning and behavior props as DropdownMenu.
+
+<ParamField path="position" type="string">
+  Position relative to the click coordinates.
+  
+  Options: Same as DropdownMenu
+  
+  Default: `"bottom-start"`
+</ParamField>
+
+<ParamField path="width" type="string">
+  Width of the menu.
+  
+  ```jsx
+  <ContextMenu width="250px" />
+  ```
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the menu opens.
+</ParamField>
+
+<ParamField path="onClose" type="(args: { reason?: string }) => void">
+  Callback when the menu closes.
+</ParamField>
+
+All other DropdownMenu props are also supported.
+
+## Subcomponents
+
+### ContextMenu.Trigger
+
+Render function that provides attributes for the trigger element.
+
+```jsx
+<ContextMenu.Trigger>
+  {(attributes) => <div attributes={attributes}>Content</div>}
+</ContextMenu.Trigger>
+```
+
+### ContextMenu.Content
+
+Uses the same content structure as DropdownMenu. All DropdownMenu subcomponents work:
+- `DropdownMenu.Item`
+- `DropdownMenu.Section`
+- `DropdownMenu.SubMenu`
+- `DropdownMenu.SubTrigger`
+
+```jsx
+<ContextMenu.Content>
+  <DropdownMenu.Item>Action 1</DropdownMenu.Item>
+  <DropdownMenu.Item>Action 2</DropdownMenu.Item>
+</ContextMenu.Content>
+```
+
+## Examples
+
+### Basic Context Menu
+
+```jsx
+import { ContextMenu } from 'reshaped';
+import IconCopy from 'reshaped/icons/Copy';
+import IconCut from 'reshaped/icons/Cut';
+import IconPaste from 'reshaped/icons/Paste';
+
+function TextEditor() {
+  return (
+    <ContextMenu>
+      <ContextMenu.Trigger>
+        {(attributes) => (
+          <TextArea
+            attributes={attributes}
+            rows={10}
+            placeholder="Right-click for options"
+          />
+        )}
+      </ContextMenu.Trigger>
+      
+      <ContextMenu.Content>
+        <DropdownMenu.Item icon={IconCut} onClick={handleCut}>
+          Cut
+        </DropdownMenu.Item>
+        <DropdownMenu.Item icon={IconCopy} onClick={handleCopy}>
+          Copy
+        </DropdownMenu.Item>
+        <DropdownMenu.Item icon={IconPaste} onClick={handlePaste}>
+          Paste
+        </DropdownMenu.Item>
+      </ContextMenu.Content>
+    </ContextMenu>
+  );
+}
+```
+
+### Image Context Menu
+
+```jsx
+function ImageWithContextMenu({ src, alt }) {
+  return (
+    <ContextMenu>
+      <ContextMenu.Trigger>
+        {(attributes) => (
+          <Image
+            src={src}
+            alt={alt}
+            attributes={attributes}
+            borderRadius="medium"
+          />
+        )}
+      </ContextMenu.Trigger>
+      
+      <ContextMenu.Content>
+        <DropdownMenu.Item icon={IconDownload} onClick={handleDownload}>
+          Download Image
+        </DropdownMenu.Item>
+        <DropdownMenu.Item icon={IconCopy} onClick={handleCopyLink}>
+          Copy Image Link
+        </DropdownMenu.Item>
+        <DropdownMenu.Item icon={IconExternalLink} onClick={handleOpenNew}>
+          Open in New Tab
+        </DropdownMenu.Item>
+        <DropdownMenu.Section>
+          <DropdownMenu.Item icon={IconEdit} onClick={handleEdit}>
+            Edit Image
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconTrash} color="critical" onClick={handleDelete}>
+            Delete Image
+          </DropdownMenu.Item>
+        </DropdownMenu.Section>
+      </ContextMenu.Content>
+    </ContextMenu>
+  );
+}
+```
+
+### File Manager
+
+```jsx
+function FileItem({ file }) {
+  return (
+    <ContextMenu>
+      <ContextMenu.Trigger>
+        {(attributes) => (
+          <View
+            attributes={attributes}
+            direction="row"
+            gap={2}
+            align="center"
+            padding={3}
+            borderRadius="medium"
+            attributes={{
+              ...attributes,
+              tabIndex: 0,
+            }}
+          >
+            <Icon svg={getFileIcon(file.type)} />
+            <Text>{file.name}</Text>
+          </View>
+        )}
+      </ContextMenu.Trigger>
+      
+      <ContextMenu.Content>
+        <DropdownMenu.Item icon={IconEye} onClick={() => handlePreview(file)}>
+          Quick Look
+        </DropdownMenu.Item>
+        <DropdownMenu.Item icon={IconDownload} onClick={() => handleDownload(file)}>
+          Download
+        </DropdownMenu.Item>
+        <DropdownMenu.Section>
+          <DropdownMenu.Item icon={IconEdit} onClick={() => handleRename(file)}>
+            Rename
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconCopy} onClick={() => handleDuplicate(file)}>
+            Duplicate
+          </DropdownMenu.Item>
+        </DropdownMenu.Section>
+        <DropdownMenu.Section>
+          <DropdownMenu.SubMenu>
+            <DropdownMenu.SubTrigger icon={IconFolder}>
+              Move to
+            </DropdownMenu.SubTrigger>
+            <DropdownMenu.Content>
+              <DropdownMenu.Item>Documents</DropdownMenu.Item>
+              <DropdownMenu.Item>Downloads</DropdownMenu.Item>
+              <DropdownMenu.Item>Desktop</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.SubMenu>
+        </DropdownMenu.Section>
+        <DropdownMenu.Section>
+          <DropdownMenu.Item icon={IconTrash} color="critical" onClick={() => handleDelete(file)}>
+            Delete
+          </DropdownMenu.Item>
+        </DropdownMenu.Section>
+      </ContextMenu.Content>
+    </ContextMenu>
+  );
+}
+```
+
+### Table Row Context Menu
+
+```jsx
+function DataTable({ rows }) {
+  return (
+    <Table>
+      <Table.Head>
+        <Table.Row>
+          <Table.Cell>Name</Table.Cell>
+          <Table.Cell>Status</Table.Cell>
+          <Table.Cell>Date</Table.Cell>
+        </Table.Row>
+      </Table.Head>
+      <Table.Body>
+        {rows.map((row) => (
+          <ContextMenu key={row.id}>
+            <ContextMenu.Trigger>
+              {(attributes) => (
+                <Table.Row attributes={attributes}>
+                  <Table.Cell>{row.name}</Table.Cell>
+                  <Table.Cell>{row.status}</Table.Cell>
+                  <Table.Cell>{row.date}</Table.Cell>
+                </Table.Row>
+              )}
+            </ContextMenu.Trigger>
+            
+            <ContextMenu.Content>
+              <DropdownMenu.Item onClick={() => handleView(row)}>
+                View Details
+              </DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => handleEdit(row)}>
+                Edit
+              </DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => handleDuplicate(row)}>
+                Duplicate
+              </DropdownMenu.Item>
+              <DropdownMenu.Section>
+                <DropdownMenu.Item color="critical" onClick={() => handleDelete(row)}>
+                  Delete
+                </DropdownMenu.Item>
+              </DropdownMenu.Section>
+            </ContextMenu.Content>
+          </ContextMenu>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+}
+```
+
+### Canvas Context Menu
+
+```jsx
+function DesignCanvas() {
+  const [menuPosition, setMenuPosition] = React.useState(null);
+
+  return (
+    <ContextMenu>
+      <ContextMenu.Trigger>
+        {(attributes) => (
+          <View
+            attributes={attributes}
+            height="600px"
+            backgroundColor="neutral-faded"
+            borderRadius="medium"
+            align="center"
+            justify="center"
+          >
+            <Text color="neutral-faded">Right-click on canvas</Text>
+          </View>
+        )}
+      </ContextMenu.Trigger>
+      
+      <ContextMenu.Content>
+        <DropdownMenu.Section>
+          <DropdownMenu.Item icon={IconSquare}>Add Rectangle</DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconCircle}>Add Circle</DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconType}>Add Text</DropdownMenu.Item>
+        </DropdownMenu.Section>
+        <DropdownMenu.Section>
+          <DropdownMenu.Item icon={IconCopy}>Paste</DropdownMenu.Item>
+        </DropdownMenu.Section>
+        <DropdownMenu.Section>
+          <DropdownMenu.SubMenu>
+            <DropdownMenu.SubTrigger icon={IconLayers}>
+              Arrange
+            </DropdownMenu.SubTrigger>
+            <DropdownMenu.Content>
+              <DropdownMenu.Item>Bring to Front</DropdownMenu.Item>
+              <DropdownMenu.Item>Send to Back</DropdownMenu.Item>
+              <DropdownMenu.Item>Bring Forward</DropdownMenu.Item>
+              <DropdownMenu.Item>Send Backward</DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.SubMenu>
+        </DropdownMenu.Section>
+      </ContextMenu.Content>
+    </ContextMenu>
+  );
+}
+```
+
+### Card with Context Menu
+
+```jsx
+function ProjectCard({ project }) {
+  return (
+    <ContextMenu>
+      <ContextMenu.Trigger>
+        {(attributes) => (
+          <View
+            attributes={attributes}
+            gap={3}
+            padding={4}
+            borderRadius="medium"
+            backgroundColor="neutral-faded"
+          >
+            <Image
+              src={project.thumbnail}
+              aspectRatio={16/9}
+              borderRadius="medium"
+            />
+            <View gap={1}>
+              <Text variant="body-2" weight="bold">{project.name}</Text>
+              <Text variant="body-3" color="neutral-faded">
+                {project.description}
+              </Text>
+            </View>
+          </View>
+        )}
+      </ContextMenu.Trigger>
+      
+      <ContextMenu.Content>
+        <DropdownMenu.Item icon={IconEye} onClick={() => handleOpen(project)}>
+          Open Project
+        </DropdownMenu.Item>
+        <DropdownMenu.Item icon={IconExternalLink} onClick={() => handleOpenNewWindow(project)}>
+          Open in New Window
+        </DropdownMenu.Item>
+        <DropdownMenu.Section>
+          <DropdownMenu.Item icon={IconEdit} onClick={() => handleRename(project)}>
+            Rename
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconCopy} onClick={() => handleDuplicate(project)}>
+            Duplicate
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconShare} onClick={() => handleShare(project)}>
+            Share
+          </DropdownMenu.Item>
+        </DropdownMenu.Section>
+        <DropdownMenu.Section>
+          <DropdownMenu.Item icon={IconArchive} onClick={() => handleArchive(project)}>
+            Archive
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconTrash} color="critical" onClick={() => handleDelete(project)}>
+            Delete
+          </DropdownMenu.Item>
+        </DropdownMenu.Section>
+      </ContextMenu.Content>
+    </ContextMenu>
+  );
+}
+```
+
+## Keyboard Navigation
+
+Same as DropdownMenu:
+- **Arrow Up/Down**: Navigate between items
+- **Enter/Space**: Activate focused item
+- **Escape**: Close menu
+- **Arrow Right**: Open submenu
+- **Arrow Left**: Close submenu
+
+## Touch Devices
+
+On touch devices:
+- Long press triggers the context menu
+- Menu appears at the touch point
+- Tap outside to close
+
+## Accessibility
+
+- Uses the same accessible menu pattern as DropdownMenu
+- Trigger element should be keyboard accessible
+- Consider providing alternative access methods (e.g., action buttons) for users who can't right-click
+- Announce menu opening to screen readers
+- Support keyboard shortcuts as alternatives to context menu actions

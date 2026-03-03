@@ -1,0 +1,282 @@
+---
+title: Skeleton
+description: Display loading placeholders while content is being fetched
+---
+
+<RequestExample>
+```jsx
+import { Skeleton } from 'reshaped';
+
+function Example() {
+  return (
+    <View gap={3}>
+      <Skeleton width="100%" height="200px" borderRadius="medium" />
+      <Skeleton width="80%" height="24px" />
+      <Skeleton width="60%" height="24px" />
+    </View>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Skeleton components create placeholder loading states that match your content's layout, providing visual feedback while data loads.
+
+## Props
+
+<ParamField path="width" type="string | number">
+  Width of the skeleton. Accepts CSS values or View width values.
+  
+  ```jsx
+  <Skeleton width="100%" />
+  <Skeleton width="300px" />
+  <Skeleton width={16} /> {/* token-based */}
+  ```
+</ParamField>
+
+<ParamField path="height" type="string | number">
+  Height of the skeleton. Accepts CSS values or View height values.
+  
+  ```jsx
+  <Skeleton height="100px" />
+  <Skeleton height={24} /> {/* token-based */}
+  ```
+</ParamField>
+
+<ParamField path="borderRadius" type="string">
+  Border radius matching View borderRadius options.
+  
+  Options: `"small"`, `"medium"`, `"large"`, `"full"`
+  
+  ```jsx
+  <Skeleton borderRadius="medium" />
+  <Skeleton borderRadius="full" /> {/* circular */}
+  ```
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the root element.
+</ParamField>
+
+## Examples
+
+### Basic Text Skeleton
+
+```jsx
+<View gap={2}>
+  <Skeleton width="100%" height="24px" />
+  <Skeleton width="90%" height="24px" />
+  <Skeleton width="75%" height="24px" />
+</View>
+```
+
+### Card Skeleton
+
+```jsx
+<View gap={3} padding={4} backgroundColor="neutral-faded" borderRadius="medium">
+  <Skeleton width="100%" height="200px" borderRadius="medium" />
+  <Skeleton width="60%" height="28px" />
+  <Skeleton width="100%" height="20px" />
+  <Skeleton width="100%" height="20px" />
+  <Skeleton width="40%" height="20px" />
+</View>
+```
+
+### Profile Skeleton
+
+```jsx
+<View direction="row" gap={3} align="center">
+  <Skeleton width="60px" height="60px" borderRadius="full" />
+  <View.Item grow>
+    <View gap={2}>
+      <Skeleton width="150px" height="20px" />
+      <Skeleton width="200px" height="16px" />
+    </View>
+  </View.Item>
+</View>
+```
+
+### List Skeleton
+
+```jsx
+function ListSkeleton({ items = 5 }) {
+  return (
+    <View gap={3}>
+      {Array.from({ length: items }, (_, i) => (
+        <View key={i} direction="row" gap={3} align="center">
+          <Skeleton width="40px" height="40px" borderRadius="medium" />
+          <View.Item grow>
+            <View gap={1}>
+              <Skeleton width="70%" height="18px" />
+              <Skeleton width="50%" height="14px" />
+            </View>
+          </View.Item>
+        </View>
+      ))}
+    </View>
+  );
+}
+```
+
+### Table Skeleton
+
+```jsx
+<View gap={2}>
+  {Array.from({ length: 4 }, (_, i) => (
+    <View key={i} direction="row" gap={2} align="center">
+      <View.Item grow>
+        <Skeleton width="100%" height="40px" />
+      </View.Item>
+      <View.Item grow>
+        <Skeleton width="100%" height="40px" />
+      </View.Item>
+      <View.Item grow>
+        <Skeleton width="100%" height="40px" />
+      </View.Item>
+    </View>
+  ))}
+</View>
+```
+
+### Dashboard Skeleton
+
+```jsx
+function DashboardSkeleton() {
+  return (
+    <View gap={4}>
+      {/* Header */}
+      <View direction="row" gap={3} justify="space-between" align="center">
+        <Skeleton width="200px" height="32px" />
+        <Skeleton width="120px" height="40px" borderRadius="medium" />
+      </View>
+
+      {/* Stats Cards */}
+      <View direction="row" gap={3}>
+        {[1, 2, 3].map((i) => (
+          <View.Item key={i} grow>
+            <View
+              gap={2}
+              padding={4}
+              backgroundColor="neutral-faded"
+              borderRadius="medium"
+            >
+              <Skeleton width="60%" height="16px" />
+              <Skeleton width="80px" height="32px" />
+            </View>
+          </View.Item>
+        ))}
+      </View>
+
+      {/* Chart */}
+      <Skeleton width="100%" height="300px" borderRadius="medium" />
+
+      {/* Table */}
+      <ListSkeleton items={5} />
+    </View>
+  );
+}
+```
+
+### Conditional Rendering
+
+```jsx
+function UserProfile({ userId }) {
+  const { data, loading } = useUser(userId);
+
+  if (loading) {
+    return (
+      <View gap={3}>
+        <View direction="row" gap={3} align="center">
+          <Skeleton width="80px" height="80px" borderRadius="full" />
+          <View.Item grow>
+            <View gap={2}>
+              <Skeleton width="200px" height="24px" />
+              <Skeleton width="300px" height="18px" />
+            </View>
+          </View.Item>
+        </View>
+        <Skeleton width="100%" height="200px" borderRadius="medium" />
+      </View>
+    );
+  }
+
+  return (
+    <View gap={3}>
+      <View direction="row" gap={3} align="center">
+        <Image
+          src={data.avatar}
+          width="80px"
+          height="80px"
+          borderRadius="full"
+        />
+        <View.Item grow>
+          <Text variant="title-5">{data.name}</Text>
+          <Text variant="body-3">{data.email}</Text>
+        </View.Item>
+      </View>
+      <View>{data.bio}</View>
+    </View>
+  );
+}
+```
+
+### Image Skeleton
+
+```jsx
+function ImageWithSkeleton({ src, alt }) {
+  const [loaded, setLoaded] = React.useState(false);
+
+  return (
+    <View position="relative">
+      {!loaded && (
+        <Skeleton width="100%" height="400px" borderRadius="medium" />
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        onLoad={() => setLoaded(true)}
+        attributes={{
+          style: { display: loaded ? 'block' : 'none' },
+        }}
+      />
+    </View>
+  );
+}
+```
+
+### Responsive Skeleton
+
+```jsx
+<View gap={3}>
+  <Skeleton
+    width={{ s: '100%', m: '50%' }}
+    height={{ s: '200px', m: '300px' }}
+    borderRadius="medium"
+  />
+  <Skeleton
+    width={{ s: '100%', m: '70%' }}
+    height="24px"
+  />
+</View>
+```
+
+## Best Practices
+
+- Match skeleton dimensions to your actual content layout
+- Use multiple skeletons to represent complex layouts
+- Apply the same border radius as your content components
+- Consider animation duration for better perceived performance
+- Show skeletons immediately while data loads
+- Avoid showing skeletons for very fast requests (< 300ms)
+
+## Accessibility
+
+- Skeletons have `aria-busy="true"` and `aria-live="polite"` attributes
+- Screen readers announce loading state changes
+- Ensure adequate contrast between skeleton and background
+- Don't rely solely on skeletons for loading indication

@@ -1,0 +1,316 @@
+---
+title: Toast
+description: Display temporary notifications with the useToast hook
+---
+
+<RequestExample>
+```jsx
+import { useToast, ToastProvider } from 'reshaped';
+import { Button } from 'reshaped';
+import IconCheckmark from 'reshaped/icons/Checkmark';
+
+function Example() {
+  const toast = useToast();
+
+  const handleSuccess = () => {
+    const id = toast.show({
+      color: 'positive',
+      icon: IconCheckmark,
+      title: 'Success',
+      text: 'Your changes have been saved',
+      actionsSlot: [
+        <Button onClick={() => toast.hide(id)}>Undo</Button>,
+        <Button onClick={() => toast.hide(id)}>Dismiss</Button>,
+      ],
+      timeout: 'long',
+    });
+  };
+
+  return <Button onClick={handleSuccess}>Save changes</Button>;
+}
+
+// Wrap your app with ToastProvider
+function App() {
+  return (
+    <ToastProvider>
+      <Example />
+    </ToastProvider>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Toasts display temporary notifications that appear on screen. Use the `useToast` hook to show and hide toasts programmatically. The `ToastProvider` must wrap your application.
+
+## Setup
+
+```jsx
+import { ToastProvider } from 'reshaped';
+
+function App() {
+  return (
+    <ToastProvider options={{
+      'bottom-end': {
+        width: '400px',
+        expanded: true,
+      },
+    }}>
+      {/* Your app */}
+    </ToastProvider>
+  );
+}
+```
+
+## useToast Hook
+
+The `useToast` hook returns methods for managing toasts:
+
+```jsx
+const toast = useToast();
+
+// Show a toast (returns the toast ID)
+const id = toast.show({ text: 'Hello' });
+
+// Hide a specific toast
+toast.hide(id);
+
+// Get the provider ID
+toast.id;
+```
+
+### toast.show(props)
+
+Shows a toast and returns its unique ID.
+
+<ParamField path="size" type="string" default="small">
+  Toast size.
+  
+  Options: `"small"`, `"medium"`, `"large"`
+</ParamField>
+
+<ParamField path="icon" type="IconProps['svg']">
+  Icon displayed at the start of the toast.
+</ParamField>
+
+<ParamField path="startSlot" type="React.ReactNode">
+  Custom content at the start position (overrides icon).
+</ParamField>
+
+<ParamField path="title" type="React.ReactNode">
+  Title text for the toast.
+</ParamField>
+
+<ParamField path="text" type="React.ReactNode">
+  Main text content for the toast.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Custom content for the toast body.
+</ParamField>
+
+<ParamField path="actionsSlot" type="React.ReactNode">
+  Actions displayed after the toast content.
+</ParamField>
+
+<ParamField path="color" type="string" default="inverted">
+  Color scheme for the toast.
+  
+  Options: `"neutral"`, `"primary"`, `"critical"`, `"positive"`, `"warning"`, `"inverted"`
+</ParamField>
+
+<ParamField path="timeout" type="'short' | 'long' | number">
+  How long before the toast auto-hides. Use `0` for persistent toasts.
+  - `"short"`: ~3 seconds
+  - `"long"`: ~7 seconds
+  - `number`: Custom milliseconds
+  - `0`: Never auto-hide
+</ParamField>
+
+<ParamField path="position" type="string" default="bottom-end">
+  Screen position for the toast.
+  
+  Options: `"top"`, `"top-start"`, `"top-end"`, `"bottom"`, `"bottom-start"`, `"bottom-end"`
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the toast element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the toast element.
+</ParamField>
+
+### toast.hide(id)
+
+Hides a toast by its ID.
+
+```jsx
+const id = toast.show({ text: 'Processing...' });
+
+// Later...
+toast.hide(id);
+```
+
+## ToastProvider Props
+
+<ParamField path="children" type="React.ReactNode">
+  Your application content.
+</ParamField>
+
+<ParamField path="options" type="Record<Position, RegionOptions>">
+  Configuration for each toast position region.
+  
+  ```jsx
+  <ToastProvider
+    options={{
+      'bottom-start': {
+        width: '500px',
+        expanded: true,
+      },
+    }}
+  >
+  ```
+  
+  Each region accepts:
+  - `width`: Custom width for toasts in this region
+  - `expanded`: Always show toast stack expanded
+</ParamField>
+
+## Examples
+
+### Basic Toast
+
+```jsx
+const toast = useToast();
+
+toast.show({
+  text: 'Item added to cart',
+});
+```
+
+### Toast with Actions
+
+```jsx
+const toast = useToast();
+
+const id = toast.show({
+  title: 'File deleted',
+  text: 'example.pdf has been moved to trash',
+  color: 'neutral',
+  timeout: 'long',
+  actionsSlot: [
+    <Button onClick={() => {
+      undoDelete();
+      toast.hide(id);
+    }}>
+      Undo
+    </Button>,
+  ],
+});
+```
+
+### Status Toasts
+
+```jsx
+// Success
+toast.show({
+  color: 'positive',
+  icon: IconCheckmark,
+  text: 'Changes saved successfully',
+});
+
+// Error
+toast.show({
+  color: 'critical',
+  icon: IconAlert,
+  title: 'Error',
+  text: 'Failed to save changes',
+  timeout: 0, // Don't auto-hide errors
+});
+
+// Warning
+toast.show({
+  color: 'warning',
+  icon: IconWarning,
+  text: 'Your session will expire soon',
+});
+```
+
+### Custom Content
+
+```jsx
+toast.show({
+  children: (
+    <View gap={3} direction="row">
+      <Image
+        src="/product.jpg"
+        height="60px"
+        aspectRatio={1}
+        borderRadius="medium"
+      />
+      <View.Item grow>
+        <Text variant="body-2" weight="bold">
+          New product available
+        </Text>
+        <Text variant="body-3">
+          Check out our latest release
+        </Text>
+      </View.Item>
+    </View>
+  ),
+  color: 'neutral',
+  position: 'bottom-start',
+  timeout: 0,
+});
+```
+
+### Position Examples
+
+```jsx
+// Top positions
+toast.show({ text: 'Top', position: 'top' });
+toast.show({ text: 'Top start', position: 'top-start' });
+toast.show({ text: 'Top end', position: 'top-end' });
+
+// Bottom positions (default)
+toast.show({ text: 'Bottom', position: 'bottom' });
+toast.show({ text: 'Bottom start', position: 'bottom-start' });
+toast.show({ text: 'Bottom end', position: 'bottom-end' });
+```
+
+### Timeout Control
+
+```jsx
+// Quick notification
+toast.show({
+  text: 'Copied!',
+  timeout: 'short', // ~3 seconds
+});
+
+// Important message
+toast.show({
+  text: 'Update available',
+  timeout: 'long', // ~7 seconds
+});
+
+// Persistent (requires user action)
+toast.show({
+  text: 'Action required',
+  timeout: 0, // Never auto-hide
+});
+
+// Custom duration
+toast.show({
+  text: 'Custom timing',
+  timeout: 5000, // 5 seconds
+});
+```
+
+## Accessibility
+
+- Toasts are announced to screen readers via ARIA live regions
+- Persistent toasts (timeout: 0) are focusable for keyboard users
+- Use appropriate color schemes for different message types
+- Provide actions for persistent toasts so users can dismiss them

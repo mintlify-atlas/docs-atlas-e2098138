@@ -1,0 +1,300 @@
+---
+title: ActionBar
+description: Floating action bar positioned at screen edges for persistent actions
+---
+
+The `ActionBar` component creates a positioned action bar that can be placed at various positions on the screen. It's commonly used for sticky toolbars, floating action buttons, or persistent controls.
+
+## Basic Usage
+
+```jsx
+import { ActionBar, Button } from 'reshaped';
+
+function Example() {
+  return (
+    <ActionBar>
+      <Button>Primary Action</Button>
+      <Button variant="outline">Cancel</Button>
+    </ActionBar>
+  );
+}
+```
+
+## Positioned at Top
+
+```jsx
+import { ActionBar, Button } from 'reshaped';
+
+function TopBar() {
+  return (
+    <ActionBar position="top">
+      <Button>Save</Button>
+    </ActionBar>
+  );
+}
+```
+
+## With Elevation
+
+```jsx
+import { ActionBar, Button } from 'reshaped';
+
+function ElevatedBar() {
+  return (
+    <ActionBar elevated position="bottom">
+      <Button fullWidth>Complete</Button>
+    </ActionBar>
+  );
+}
+```
+
+## Custom Position
+
+```jsx
+import { ActionBar, Button } from 'reshaped';
+
+function CustomPosition() {
+  return (
+    <ActionBar 
+      position="bottom-end"
+      offset={6}
+      positionType="fixed"
+    >
+      <Button>Help</Button>
+    </ActionBar>
+  );
+}
+```
+
+## Props
+
+<ParamField path="active" type="boolean" default="true">
+  Show or hide the component
+</ParamField>
+
+<ParamField path="position" type="'top' | 'top-end' | 'top-start' | 'bottom' | 'bottom-start' | 'bottom-end'" default="bottom">
+  Position based on the container bounds
+</ParamField>
+
+<ParamField path="positionType" type="'relative' | 'absolute' | 'fixed'">
+  CSS position style. Defaults to `absolute` when offset is provided, `relative` for full-width positions, otherwise `absolute`
+</ParamField>
+
+<ParamField path="offset" type="number | { s?: number, m?: number, l?: number }">
+  Offset from the container bounds. Defaults to `4` for absolute positioning, `undefined` for relative
+</ParamField>
+
+<ParamField path="elevated" type="boolean">
+  Display above the content with elevated shadow and background
+</ParamField>
+
+<ParamField path="padding" type="number | { s?: number, m?: number, l?: number }">
+  Padding for all sides
+</ParamField>
+
+<ParamField path="paddingBlock" type="number | { s?: number, m?: number, l?: number }" default="3">
+  Vertical padding
+</ParamField>
+
+<ParamField path="paddingInline" type="number | { s?: number, m?: number, l?: number }" default="4">
+  Horizontal padding
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting the content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="HTMLAttributes<HTMLDivElement>">
+  Additional attributes for the root element
+</ParamField>
+
+## When to Use
+
+- **Form Actions**: Persistent save/cancel buttons for forms
+- **Floating Action Buttons**: Mobile-style FABs for primary actions
+- **Sticky Toolbars**: Keep important actions visible while scrolling
+- **Modal Actions**: Action buttons in modal dialogs
+- **Wizard Navigation**: Next/back buttons in multi-step flows
+- **Mobile Navigation**: Bottom navigation bars
+
+## Composition Patterns
+
+### Form Action Bar
+
+```jsx
+import { ActionBar, Button, Stack } from 'reshaped';
+
+function FormActions({ onSave, onCancel, isSaving }) {
+  return (
+    <ActionBar elevated position="bottom">
+      <Stack direction="row" gap={2} align="center" justify="end">
+        <Button 
+          variant="ghost" 
+          onClick={onCancel}
+          disabled={isSaving}
+        >
+          Cancel
+        </Button>
+        <Button 
+          onClick={onSave}
+          loading={isSaving}
+        >
+          Save Changes
+        </Button>
+      </Stack>
+    </ActionBar>
+  );
+}
+```
+
+### Mobile Bottom Navigation
+
+```jsx
+import { ActionBar, Button, Stack } from 'reshaped';
+import { Home, Search, Profile } from './icons';
+
+function BottomNav({ activeTab, onTabChange }) {
+  return (
+    <ActionBar 
+      position="bottom"
+      positionType="fixed"
+      elevated
+    >
+      <Stack direction="row" gap={2} justify="space-around">
+        <Button
+          icon={Home}
+          variant={activeTab === 'home' ? 'solid' : 'ghost'}
+          onClick={() => onTabChange('home')}
+        />
+        <Button
+          icon={Search}
+          variant={activeTab === 'search' ? 'solid' : 'ghost'}
+          onClick={() => onTabChange('search')}
+        />
+        <Button
+          icon={Profile}
+          variant={activeTab === 'profile' ? 'solid' : 'ghost'}
+          onClick={() => onTabChange('profile')}
+        />
+      </Stack>
+    </ActionBar>
+  );
+}
+```
+
+### Floating Action Button
+
+```jsx
+import { ActionBar, Button } from 'reshaped';
+import { Plus } from './icons';
+
+function FAB({ onClick }) {
+  return (
+    <ActionBar 
+      position="bottom-end"
+      offset={4}
+      positionType="fixed"
+    >
+      <Button
+        icon={Plus}
+        color="primary"
+        size="large"
+        rounded
+        onClick={onClick}
+        attributes={{ 'aria-label': 'Add new item' }}
+      />
+    </ActionBar>
+  );
+}
+```
+
+### Conditional Action Bar
+
+```jsx
+import { ActionBar, Button, Stack } from 'reshaped';
+import { useState } from 'react';
+
+function ConditionalActions() {
+  const [hasChanges, setHasChanges] = useState(false);
+  
+  return (
+    <div>
+      <textarea onChange={() => setHasChanges(true)} />
+      
+      <ActionBar active={hasChanges} elevated>
+        <Stack direction="row" gap={2} justify="end">
+          <Button 
+            variant="ghost" 
+            onClick={() => setHasChanges(false)}
+          >
+            Discard
+          </Button>
+          <Button onClick={() => setHasChanges(false)}>
+            Save
+          </Button>
+        </Stack>
+      </ActionBar>
+    </div>
+  );
+}
+```
+
+### Top Notification Bar
+
+```jsx
+import { ActionBar, Text, Button, Stack } from 'reshaped';
+
+function NotificationBar({ message, onDismiss }) {
+  return (
+    <ActionBar 
+      position="top"
+      elevated
+      paddingBlock={2}
+    >
+      <Stack direction="row" gap={3} align="center" justify="space-between">
+        <Text variant="body-2">{message}</Text>
+        <Button 
+          variant="ghost" 
+          size="small"
+          onClick={onDismiss}
+        >
+          Dismiss
+        </Button>
+      </Stack>
+    </ActionBar>
+  );
+}
+```
+
+### Responsive Action Bar
+
+```jsx
+import { ActionBar, Button, Stack } from 'reshaped';
+
+function ResponsiveActions() {
+  return (
+    <ActionBar 
+      offset={{ s: 2, m: 4, l: 6 }}
+      paddingInline={{ s: 2, m: 4, l: 6 }}
+    >
+      <Stack 
+        direction={{ s: 'column', m: 'row' }}
+        gap={2}
+        align="stretch"
+      >
+        <Button fullWidth={{ s: true, m: false }}>Primary</Button>
+        <Button 
+          variant="outline"
+          fullWidth={{ s: true, m: false }}
+        >
+          Secondary
+        </Button>
+      </Stack>
+    </ActionBar>
+  );
+}
+```

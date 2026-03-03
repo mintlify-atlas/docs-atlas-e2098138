@@ -1,0 +1,519 @@
+---
+title: Creating Custom Themes
+description: Learn how to create and configure custom themes for your Reshaped application
+---
+
+Reshaped's theming system allows you to create fully custom themes by overriding design tokens, or extend existing themes with your brand colors.
+
+## Overview
+
+Custom themes in Reshaped are defined in a `reshaped.config.ts` file and compiled to CSS using the Reshaped CLI. This approach provides:
+
+- Type-safe theme configuration
+- Automatic color generation
+- CSS variable output
+- Support for light and dark modes
+- Theme fragments for reusability
+
+## Quick Start
+
+<Steps>
+  <Step title="Create configuration file">
+    Create `reshaped.config.ts` in your project root:
+    
+    ```typescript
+    import type { ReshapedConfig } from "reshaped";
+    
+    const config: ReshapedConfig = {
+      themes: {
+        custom: {
+          color: {
+            backgroundPrimary: { hex: "#6366F1", hexDark: "#818CF8" },
+            foregroundPrimary: { hex: "#4F46E5", hexDark: "#A5B4FC" },
+          },
+        },
+      },
+    };
+    
+    export default config;
+    ```
+  </Step>
+  
+  <Step title="Generate theme CSS">
+    Run the Reshaped CLI to generate theme files:
+    
+    ```bash
+    npx reshaped theme
+    ```
+    
+    This creates theme files in `./themes/custom/`:
+    - `theme.css` - Main theme file
+    - `theme.json` - Theme tokens as JSON
+    - `tailwind.css` - Tailwind utilities (if applicable)
+  </Step>
+  
+  <Step title="Import and use the theme">
+    Import the generated CSS and apply the theme:
+    
+    ```tsx
+    import { Reshaped } from "reshaped";
+    import "reshaped/themes/reshaped/theme.css"; // Base theme
+    import "./themes/custom/theme.css";          // Your custom theme
+    
+    export default function App() {
+      return (
+        <Reshaped theme="custom" defaultColorMode="light">
+          {/* Your app */}
+        </Reshaped>
+      );
+    }
+    ```
+  </Step>
+</Steps>
+
+## Theme Configuration
+
+### Color Tokens
+
+Colors are the most commonly customized tokens. Reshaped provides semantic color tokens that adapt to light and dark modes:
+
+```typescript
+const config: ReshapedConfig = {
+  themes: {
+    custom: {
+      color: {
+        // Primary colors
+        backgroundPrimary: { hex: "#6366F1", hexDark: "#818CF8" },
+        backgroundPrimaryFaded: { hex: "#EEF2FF", hexDark: "#312E81" },
+        foregroundPrimary: { hex: "#4F46E5", hexDark: "#A5B4FC" },
+        borderPrimary: { hex: "#6366F1", hexDark: "#818CF8" },
+        
+        // Status colors
+        backgroundPositive: { hex: "#10B981", hexDark: "#34D399" },
+        foregroundPositive: { hex: "#059669", hexDark: "#6EE7B7" },
+        
+        backgroundCritical: { hex: "#EF4444", hexDark: "#F87171" },
+        foregroundCritical: { hex: "#DC2626", hexDark: "#FCA5A5" },
+        
+        backgroundWarning: { hex: "#F59E0B", hexDark: "#FBBF24" },
+        foregroundWarning: { hex: "#D97706", hexDark: "#FCD34D" },
+        
+        // Neutral colors
+        backgroundNeutral: { hex: "#E5E7EB", hexDark: "#374151" },
+        foregroundNeutral: { hex: "#111827", hexDark: "#F9FAFB" },
+        
+        // Page backgrounds
+        backgroundPage: { hex: "#FFFFFF", hexDark: "#0F172A" },
+        backgroundPageFaded: { hex: "#F9FAFB", hexDark: "#1E293B" },
+      },
+    },
+  },
+};
+```
+
+See complete color token reference at `packages/reshaped/src/themes/_generator/tokens/color/color.types.ts:5-43`.
+
+### Typography
+
+Customize fonts for your brand:
+
+```typescript
+const config: ReshapedConfig = {
+  themes: {
+    custom: {
+      fontFamily: {
+        title: { 
+          family: "'Playfair Display', Georgia, serif" 
+        },
+        body: { 
+          family: "'Inter', -apple-system, sans-serif" 
+        },
+        monospace: { 
+          family: "'Fira Code', 'Courier New', monospace" 
+        },
+      },
+      
+      fontWeight: {
+        regular: { weight: 400 },
+        medium: { weight: 500 },
+        semibold: { weight: 600 },
+        bold: { weight: 700 },
+      },
+      
+      font: {
+        title1: {
+          fontSize: { px: 72 },
+          lineHeight: { px: 80 },
+          fontWeightToken: "bold",
+          fontFamilyToken: "title",
+        },
+        body1: {
+          fontSize: { px: 16 },
+          lineHeight: { px: 24 },
+          fontFamilyToken: "body",
+        },
+      },
+    },
+  },
+};
+```
+
+Reference: `packages/reshaped/src/themes/_generator/definitions/figma.ts:4-102`
+
+### Spacing and Layout
+
+Adjust spacing scale and border radius:
+
+```typescript
+const config: ReshapedConfig = {
+  themes: {
+    custom: {
+      unit: {
+        base: { px: 4 },           // Base spacing unit
+        radiusSmall: { px: 6 },    // Small border radius
+        radiusMedium: { px: 12 },  // Medium border radius
+        radiusLarge: { px: 16 },   // Large border radius
+      },
+    },
+  },
+};
+```
+
+### Shadows and Elevation
+
+Customize shadow styles:
+
+```typescript
+const config: ReshapedConfig = {
+  themes: {
+    custom: {
+      shadow: {
+        raised: [
+          {
+            offsetX: 0,
+            offsetY: 2,
+            blurRadius: 4,
+            colorToken: "black",
+            opacity: 0.1,
+          },
+        ],
+        overlay: [
+          {
+            offsetX: 0,
+            offsetY: 8,
+            blurRadius: 16,
+            colorToken: "black",
+            opacity: 0.15,
+          },
+        ],
+      },
+    },
+  },
+};
+```
+
+### Animation
+
+Customize transition durations and easing:
+
+```typescript
+const config: ReshapedConfig = {
+  themes: {
+    custom: {
+      duration: {
+        rapid: { ms: 150 },
+        fast: { ms: 250 },
+        medium: { ms: 350 },
+        slow: { ms: 500 },
+      },
+      
+      easing: {
+        standard: { x1: 0.4, y1: 0, x2: 0.2, y2: 1 },  // ease-in-out
+        accelerate: { x1: 0.4, y1: 0, x2: 1, y2: 1 },  // ease-in
+        decelerate: { x1: 0, y1: 0, x2: 0.2, y2: 1 },  // ease-out
+      },
+    },
+  },
+};
+```
+
+## Extending Existing Themes
+
+Build on top of Reshaped's built-in themes:
+
+```typescript
+import reshapedTheme from "reshaped/themes/_generator/definitions/reshaped";
+import type { ReshapedConfig } from "reshaped";
+
+const config: ReshapedConfig = {
+  themes: {
+    custom: {
+      // Spread the base theme
+      ...reshapedTheme,
+      
+      // Override specific tokens
+      color: {
+        ...reshapedTheme.color,
+        backgroundPrimary: { hex: "#8B5CF6", hexDark: "#A78BFA" },
+        foregroundPrimary: { hex: "#7C3AED", hexDark: "#C4B5FD" },
+      },
+      
+      fontFamily: {
+        ...reshapedTheme.fontFamily,
+        body: { family: "'Atkinson Hyperlegible', sans-serif" },
+      },
+    },
+  },
+};
+
+export default config;
+```
+
+## Color Formats
+
+Reshaped supports two color formats:
+
+<Tabs>
+  <Tab title="HEX (Default)">
+    ```typescript
+    color: {
+      backgroundPrimary: {
+        hex: "#6366F1",      // Light mode
+        hexDark: "#818CF8",  // Dark mode
+      },
+    }
+    ```
+    
+    - Universal browser support
+    - Familiar format
+    - Simple to use
+  </Tab>
+  
+  <Tab title="OKLCH">
+    ```typescript
+    color: {
+      backgroundPrimary: {
+        oklch: { l: 0.6, c: 0.24, h: 264 },     // Light mode
+        oklchDark: { l: 0.75, c: 0.18, h: 264 }, // Dark mode
+      },
+    }
+    ```
+    
+    - Perceptually uniform
+    - Better color interpolation
+    - Requires modern browsers
+  </Tab>
+</Tabs>
+
+<Info>
+  Set the output format globally in `themeOptions.colorOutputFormat`. See [ReshapedConfig](/types/reshaped-config) for details.
+</Info>
+
+## Automatic Color Generation
+
+Generate a full color palette from a single primary color:
+
+```typescript
+import { generateThemeColors } from "reshaped/themes";
+import type { ReshapedConfig } from "reshaped";
+
+const config: ReshapedConfig = {
+  themes: {
+    brand: {
+      color: generateThemeColors({
+        primary: "#6366F1",  // Your brand color
+        // Optionally override other hues
+        positive: "#10B981",
+        critical: "#EF4444",
+      }),
+    },
+  },
+};
+```
+
+This generates all semantic color tokens automatically. See example at `packages/reshaped/src/tests/themes.stories.tsx:125-130`.
+
+## Theme Options
+
+Configure global theming behavior:
+
+```typescript
+const config: ReshapedConfig = {
+  themes: {
+    custom: {
+      // ... theme definition
+    },
+  },
+  
+  themeOptions: {
+    // Color output format
+    colorOutputFormat: "oklch",  // or "hex"
+    
+    // Contrast algorithm
+    colorContrastAlgorithm: "wcag",  // or "apca"
+    
+    // Generate "on" colors for these hues
+    generateOnColorsFor: ["primary", "positive", "critical"],
+    
+    // Manual "on" color values
+    onColorValues: {
+      primary: {
+        hexLight: "#FFFFFF",
+        hexDark: "#000000",
+      },
+    },
+  },
+};
+```
+
+See [ReshapedConfig](/types/reshaped-config) for detailed options.
+
+## Multiple Themes
+
+Define multiple themes for different contexts:
+
+```typescript
+const config: ReshapedConfig = {
+  themes: {
+    light: {
+      color: {
+        backgroundPrimary: { hex: "#3B82F6" },
+        backgroundPage: { hex: "#FFFFFF" },
+      },
+    },
+    
+    dark: {
+      color: {
+        backgroundPrimary: { hex: "#60A5FA" },
+        backgroundPage: { hex: "#0F172A" },
+      },
+    },
+    
+    highContrast: {
+      color: {
+        backgroundPrimary: { hex: "#000000" },
+        foregroundPrimary: { hex: "#FFFFFF" },
+        backgroundPage: { hex: "#FFFFFF" },
+      },
+    },
+  },
+};
+```
+
+Switch between themes at runtime:
+
+```tsx
+import { useState } from "react";
+import { Reshaped, Button } from "reshaped";
+
+export default function App() {
+  const [theme, setTheme] = useState("light");
+  
+  return (
+    <Reshaped theme={theme}>
+      <Button onClick={() => setTheme(
+        theme === "light" ? "dark" : "light"
+      )}>
+        Switch theme
+      </Button>
+    </Reshaped>
+  );
+}
+```
+
+## Runtime Theme Generation
+
+Generate themes dynamically at runtime:
+
+```tsx
+import { getThemeCSS, generateThemeColors } from "reshaped/themes";
+import { Theme } from "reshaped";
+
+export default function DynamicTheme({ brandColor }: { brandColor: string }) {
+  const themeCSS = getThemeCSS(
+    "dynamic",
+    {
+      color: generateThemeColors({ primary: brandColor }),
+    },
+    {
+      colorContrastAlgorithm: "wcag",
+    }
+  );
+  
+  return (
+    <>
+      <style>{themeCSS}</style>
+      <Theme name="dynamic">
+        {/* Content with dynamic theme */}
+      </Theme>
+    </>
+  );
+}
+```
+
+See runtime example at `packages/reshaped/src/tests/themes.stories.tsx:46-109`.
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start with a base theme" icon="layer-group">
+    Extend Reshaped's built-in themes rather than defining everything from scratch.
+  </Card>
+  
+  <Card title="Use semantic colors" icon="tags">
+    Stick to semantic color tokens (primary, positive, critical) rather than literal names (blue, green, red).
+  </Card>
+  
+  <Card title="Test both modes" icon="moon">
+    Always define and test both light and dark mode colors for accessibility.
+  </Card>
+  
+  <Card title="Consider accessibility" icon="universal-access">
+    Ensure sufficient contrast ratios. Use WCAG or APCA algorithms to validate.
+  </Card>
+  
+  <Card title="Keep it consistent" icon="equals">
+    Use the same spacing scale and design patterns across your theme.
+  </Card>
+  
+  <Card title="Document decisions" icon="book">
+    Add comments to your config explaining color choices and token purposes.
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Theme not applying">
+    Ensure you:
+    
+    1. Generated the theme with `npx reshaped theme`
+    2. Imported the CSS file
+    3. Set the `theme` prop on `<Reshaped>`
+    4. Used the correct theme name
+  </Accordion>
+  
+  <Accordion title="Colors look wrong">
+    Check:
+    
+    - Color mode (light/dark) matches your design
+    - Both `hex` and `hexDark` values are defined
+    - CSS file is imported after base theme
+    - Browser supports OKLCH if using that format
+  </Accordion>
+  
+  <Accordion title="TypeScript errors">
+    Ensure:
+    
+    - Config file exports `ReshapedConfig` type
+    - Token names match expected types
+    - Values use correct format (hex string or oklch object)
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+- [ReshapedConfig Type](/types/reshaped-config) - Complete configuration reference
+- [Theme Fragments](/guides/theme-fragments) - Reusable theme pieces
+- [Figma Integration](/guides/figma-integration) - Using themes with Figma
+- [ColorMode Type](/types/color-mode) - Color mode configuration

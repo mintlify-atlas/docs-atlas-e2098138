@@ -1,0 +1,470 @@
+---
+title: 'Reshaped Config'
+description: 'Configuration file format for custom themes'
+---
+
+## Overview
+
+The Reshaped configuration file defines custom themes and theme fragments that are compiled by the CLI into CSS, JSON, and Tailwind configurations.
+
+## File Location
+
+Place the configuration file in your project root:
+
+- `reshaped.config.js` (ES Module)
+- `reshaped.config.cjs` (CommonJS)
+- `reshaped.config.ts` (TypeScript)
+
+The CLI automatically searches for these files in order.
+
+## Configuration Type
+
+```ts
+import type { ReshapedConfig } from 'reshaped';
+
+const config: ReshapedConfig = {
+  themes: { /* ... */ },
+  themeFragments: { /* ... */ },
+  themeOptions: { /* ... */ },
+};
+
+export default config;
+```
+
+## Configuration Options
+
+<ParamField path="themes" type="Record<string, ThemeDefinition>">
+  Full theme definitions. Each theme is merged with the base Reshaped theme and can override any design tokens.
+</ParamField>
+
+<ParamField path="themeFragments" type="Record<string, ThemeDefinition>">
+  Partial theme definitions for composition. Fragments only include the tokens you define and are not merged with the base theme.
+</ParamField>
+
+<ParamField path="themeOptions" type="ThemeOptions">
+  Global options for theme generation.
+</ParamField>
+
+## Theme Options
+
+<ParamField path="themeOptions.colorOutputFormat" type="'oklch' | 'hex'" default="'oklch'">
+  Output format for color values in generated CSS.
+  - `oklch` - Modern perceptually uniform color space
+  - `hex` - Traditional hexadecimal format
+</ParamField>
+
+<ParamField path="themeOptions.colorContrastAlgorithm" type="'wcag' | 'apca'" default="'wcag'">
+  Algorithm for calculating color contrast ratios.
+  - `wcag` - WCAG 2.1 contrast algorithm
+  - `apca` - Advanced Perceptual Contrast Algorithm (WCAG 3.0 draft)
+</ParamField>
+
+<ParamField path="themeOptions.generateOnColorsFor" type="string[]">
+  List of color token names to automatically generate "on" colors for. The "on" color is the text color that provides sufficient contrast against the background.
+</ParamField>
+
+<ParamField path="themeOptions.onColorValues" type="Record<Hue, ColorValue>">
+  Custom values for generated "on" colors. Allows manual control over the automatically generated accessible text colors.
+</ParamField>
+
+## Theme Definition
+
+A theme definition contains design tokens organized by category:
+
+```ts
+type ThemeDefinition = {
+  color?: Record<string, ColorToken>;
+  unit?: Record<string, UnitToken>;
+  radius?: Record<string, RadiusToken>;
+  fontFamily?: Record<string, FontFamilyToken>;
+  fontWeight?: Record<string, FontWeightToken>;
+  font?: Record<string, FontToken>;
+  shadow?: Record<string, ShadowToken>;
+  duration?: Record<string, DurationToken>;
+  easing?: Record<string, EasingToken>;
+  viewport?: Record<string, ViewportToken>;
+  zIndex?: Record<string, ZIndexToken>;
+};
+```
+
+## Color Tokens
+
+Define colors using hex or OKLCH values:
+
+```js
+color: {
+  // Hex format
+  backgroundPrimary: { hex: '#0066ff' },
+  
+  // OKLCH format
+  backgroundSecondary: {
+    oklch: { l: 0.45, c: 0.31, h: 264.05 },
+  },
+  
+  // With color modes (light/dark)
+  backgroundAdaptive: {
+    light: { hex: '#ffffff' },
+    dark: { hex: '#000000' },
+  },
+}
+```
+
+### Color Token Names
+
+Reshaped uses semantic color token names:
+
+**Background Colors:**
+- `backgroundPrimary`, `backgroundSecondary`, `backgroundTertiary`
+- `backgroundNeutral`, `backgroundPositive`, `backgroundCritical`, `backgroundWarning`
+
+**Foreground Colors:**
+- `foregroundPrimary`, `foregroundSecondary`, `foregroundTertiary`
+- `foregroundNeutral`, `foregroundPositive`, `foregroundCritical`, `foregroundWarning`
+
+**Border Colors:**
+- `borderDefault`, `borderSelected`, `borderFocus`
+
+**On Colors** (auto-generated or custom):
+- `onBackgroundPrimary`, `onBackgroundSecondary`, etc.
+
+## Unit Tokens
+
+Define spacing units:
+
+```js
+unit: {
+  base: { rem: 0.25 }, // 4px base unit
+  x1: { rem: 0.25 },   // 4px
+  x2: { rem: 0.5 },    // 8px
+  x4: { rem: 1 },      // 16px
+  x8: { rem: 2 },      // 32px
+}
+```
+
+## Radius Tokens
+
+Define border radius values:
+
+```js
+radius: {
+  small: { rem: 0.25 },  // 4px
+  medium: { rem: 0.5 },  // 8px
+  large: { rem: 1 },     // 16px
+  full: { percent: 50 }, // 50%
+}
+```
+
+## Font Tokens
+
+### Font Family
+
+```js
+fontFamily: {
+  sans: { value: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto' },
+  mono: { value: 'Menlo, Monaco, "Courier New", monospace' },
+}
+```
+
+### Font Weight
+
+```js
+fontWeight: {
+  regular: { value: 400 },
+  medium: { value: 500 },
+  bold: { value: 700 },
+}
+```
+
+### Font Size & Line Height
+
+```js
+font: {
+  bodySmall: {
+    fontSize: { rem: 0.875 },
+    lineHeight: { rem: 1.25 },
+    letterSpacing: { em: 0 },
+  },
+  bodyMedium: {
+    fontSize: { rem: 1 },
+    lineHeight: { rem: 1.5 },
+    letterSpacing: { em: 0 },
+  },
+}
+```
+
+## Shadow Tokens
+
+```js
+shadow: {
+  shadowSmall: {
+    value: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+  },
+  shadowMedium: {
+    value: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+  },
+}
+```
+
+## Animation Tokens
+
+### Duration
+
+```js
+duration: {
+  fast: { ms: 150 },
+  normal: { ms: 250 },
+  slow: { ms: 350 },
+}
+```
+
+### Easing
+
+```js
+easing: {
+  standard: { value: 'cubic-bezier(0.4, 0.0, 0.2, 1)' },
+  accelerate: { value: 'cubic-bezier(0.4, 0.0, 1, 1)' },
+  decelerate: { value: 'cubic-bezier(0.0, 0.0, 0.2, 1)' },
+}
+```
+
+## Viewport Tokens
+
+Define responsive breakpoints:
+
+```js
+viewport: {
+  m: { minPx: 600 },
+  l: { minPx: 1024 },
+  xl: { minPx: 1440 },
+}
+// Note: 's' (small) viewport is always 0px and doesn't need to be defined
+```
+
+## Examples
+
+### Minimal Theme
+
+```js reshaped.config.js
+export default {
+  themes: {
+    brand: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+        backgroundPrimaryHighlighted: { hex: '#0052cc' },
+      },
+    },
+  },
+};
+```
+
+### Complete Theme
+
+```js reshaped.config.js
+export default {
+  themes: {
+    custom: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+        backgroundSecondary: { hex: '#f5f5f5' },
+        foregroundPrimary: { hex: '#1a1a1a' },
+        borderDefault: { hex: '#e0e0e0' },
+      },
+      unit: {
+        base: { rem: 0.25 },
+      },
+      radius: {
+        small: { rem: 0.25 },
+        medium: { rem: 0.5 },
+        large: { rem: 1 },
+      },
+      fontFamily: {
+        sans: { value: 'Inter, system-ui, sans-serif' },
+      },
+      fontWeight: {
+        regular: { value: 400 },
+        medium: { value: 500 },
+        bold: { value: 700 },
+      },
+    },
+  },
+};
+```
+
+### Light & Dark Themes
+
+```js reshaped.config.js
+export default {
+  themes: {
+    light: {
+      color: {
+        backgroundPrimary: { hex: '#ffffff' },
+        foregroundPrimary: { hex: '#000000' },
+        borderDefault: { hex: '#e0e0e0' },
+      },
+    },
+    dark: {
+      color: {
+        backgroundPrimary: { hex: '#1a1a1a' },
+        foregroundPrimary: { hex: '#ffffff' },
+        borderDefault: { hex: '#404040' },
+      },
+    },
+  },
+};
+```
+
+### Theme with Fragments
+
+```js reshaped.config.js
+export default {
+  themes: {
+    base: {
+      color: {
+        backgroundPrimary: { hex: '#ffffff' },
+        foregroundPrimary: { hex: '#000000' },
+      },
+    },
+  },
+  themeFragments: {
+    // Partial override for brand colors
+    brand: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+        onBackgroundPrimary: { hex: '#ffffff' },
+      },
+    },
+    // Partial override for seasonal theme
+    holiday: {
+      color: {
+        backgroundPrimary: { hex: '#c41e3a' },
+        backgroundSecondary: { hex: '#165b33' },
+      },
+    },
+  },
+};
+```
+
+### Theme with Auto-Generated On Colors
+
+```js reshaped.config.js
+export default {
+  themes: {
+    accessible: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+        backgroundCritical: { hex: '#dc2626' },
+      },
+    },
+  },
+  themeOptions: {
+    colorOutputFormat: 'oklch',
+    colorContrastAlgorithm: 'wcag',
+    generateOnColorsFor: ['backgroundPrimary', 'backgroundCritical'],
+  },
+};
+```
+
+### Theme with Custom On Colors
+
+```js reshaped.config.js
+export default {
+  themes: {
+    custom: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+      },
+    },
+  },
+  themeOptions: {
+    onColorValues: {
+      blue: {
+        hexLight: '#ffffff',
+        hexDark: '#000000',
+      },
+    },
+  },
+};
+```
+
+### TypeScript Configuration
+
+```ts reshaped.config.ts
+import type { ReshapedConfig } from 'reshaped';
+
+const config: ReshapedConfig = {
+  themes: {
+    brand: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+      },
+    },
+  },
+  themeOptions: {
+    colorOutputFormat: 'oklch',
+    colorContrastAlgorithm: 'apca',
+  },
+};
+
+export default config;
+```
+
+## Built-in Themes
+
+Reshaped includes three built-in theme definitions:
+
+### Reshaped (Default)
+
+The default Reshaped theme with carefully crafted design tokens.
+
+### Figma
+
+A theme matching Figma's design system colors.
+
+### Slate
+
+A neutral theme with slate gray tones.
+
+Example using built-in definitions:
+
+```ts reshaped.config.ts
+import reshapedDefinition from 'reshaped/src/themes/_generator/definitions/reshaped';
+import figmaDefinition from 'reshaped/src/themes/_generator/definitions/figma';
+import type { ReshapedConfig } from 'reshaped';
+
+const config: ReshapedConfig = {
+  themes: {
+    reshaped: reshapedDefinition,
+    figma: figmaDefinition,
+  },
+};
+
+export default config;
+```
+
+## Token Reference
+
+Full type definition (from `src/types/config.ts`):
+
+```ts
+export type ReshapedConfig = {
+  themes?: Record<string, PassedThemeDefinition>;
+  themeFragments?: Record<string, PassedThemeDefinition>;
+  themeOptions?: {
+    colorOutputFormat?: 'oklch' | 'hex';
+    colorContrastAlgorithm?: 'wcag' | 'apca';
+    generateOnColorsFor?: string[];
+    onColorValues?: {
+      [key in Hue]?:
+        | { hexDark: HexColor; hexLight: HexColor }
+        | { oklchDark: OklchColor; oklchLight: OklchColor };
+    };
+  };
+};
+```
+
+## Related
+
+- [theming Command](/cli/theming-command)
+- [CLI Overview](/cli/overview)
+- [PostCSS Configuration](/configuration/postcss)
+- [Tailwind Configuration](/configuration/tailwind)

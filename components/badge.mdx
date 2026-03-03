@@ -1,0 +1,224 @@
+---
+title: Badge
+description: Display status, labels, or small pieces of information
+---
+
+The Badge component is used to highlight an item's status, label, or category with color-coded visual indicators.
+
+## Basic Usage
+
+```jsx
+import { Badge } from 'reshaped';
+
+function App() {
+  return <Badge>New</Badge>;
+}
+```
+
+## Variants
+
+Badges come in three visual styles:
+
+```jsx
+<Badge variant="solid">Solid</Badge>
+<Badge variant="faded">Faded</Badge>
+<Badge variant="outline">Outline</Badge>
+```
+
+## Colors
+
+Apply semantic colors to badges:
+
+```jsx
+<Badge color="neutral">Neutral</Badge>
+<Badge color="primary">Primary</Badge>
+<Badge color="positive">Positive</Badge>
+<Badge color="warning">Warning</Badge>
+<Badge color="critical">Critical</Badge>
+```
+
+## Sizes
+
+```jsx
+<Badge size="small">Small</Badge>
+<Badge size="medium">Medium</Badge>
+<Badge size="large">Large</Badge>
+```
+
+## With Icons
+
+Add icons to badges for additional context:
+
+```jsx
+import { Badge } from 'reshaped';
+import IconStar from './icons/Star';
+
+<Badge icon={IconStar}>Favorite</Badge>
+<Badge endIcon={IconStar}>End Icon</Badge>
+<Badge icon={IconStar} endIcon={IconStar}>Both</Badge>
+```
+
+## Rounded Badge
+
+Create fully rounded badges:
+
+```jsx
+<Badge rounded>Rounded</Badge>
+<Badge rounded size="small">42</Badge>
+```
+
+## Empty Badge
+
+Use for notification indicators:
+
+```jsx
+<Badge color="critical" rounded />
+```
+
+## Interactive Badges
+
+Badges can be clickable:
+
+```jsx
+<Badge onClick={() => console.log('clicked')}>Clickable</Badge>
+<Badge href="/page">Link Badge</Badge>
+```
+
+## Dismissible Badges
+
+Allow users to dismiss badges:
+
+```jsx
+<Badge
+  onDismiss={() => console.log('dismissed')}
+  dismissAriaLabel="Dismiss badge"
+>
+  Dismissible
+</Badge>
+```
+
+## Highlighted State
+
+Highlight active or selected badges:
+
+```jsx
+<Badge highlighted>Active</Badge>
+<Badge color="primary" highlighted>Primary Active</Badge>
+```
+
+## Hidden State
+
+Transition badges to hidden state:
+
+```jsx
+<Badge hidden>Hidden Badge</Badge>
+```
+
+## Complete Example
+
+Here's a comprehensive example showing badges in a tag list:
+
+```jsx
+import { Badge, View } from 'reshaped';
+import IconTag from './icons/Tag';
+
+function TagList() {
+  const [tags, setTags] = React.useState([
+    { id: 1, label: 'Design', color: 'primary' },
+    { id: 2, label: 'Development', color: 'positive' },
+    { id: 3, label: 'Marketing', color: 'warning' },
+  ]);
+
+  const removeTag = (id) => {
+    setTags(tags.filter(tag => tag.id !== id));
+  };
+
+  return (
+    <View direction="row" gap={2} wrap>
+      {tags.map(tag => (
+        <Badge
+          key={tag.id}
+          color={tag.color}
+          icon={IconTag}
+          onDismiss={() => removeTag(tag.id)}
+          dismissAriaLabel={`Remove ${tag.label} tag`}
+        >
+          {tag.label}
+        </Badge>
+      ))}
+    </View>
+  );
+}
+```
+
+## Props
+
+<ParamField path="color" type="string" default="neutral">
+  Component color scheme.
+  
+  Options: `neutral`, `critical`, `warning`, `positive`, `primary`
+</ParamField>
+
+<ParamField path="variant" type="string" default="solid">
+  Component render variant.
+  
+  Options: `solid`, `faded`, `outline`
+</ParamField>
+
+<ParamField path="size" type="string" default="medium">
+  Component size.
+  
+  Options: `small`, `medium`, `large`
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType" default="undefined">
+  SVG component for the icon.
+</ParamField>
+
+<ParamField path="endIcon" type="React.ComponentType" default="undefined">
+  SVG component for the end position icon.
+</ParamField>
+
+<ParamField path="rounded" type="boolean" default="false">
+  Change border radius to fully rounded corners.
+</ParamField>
+
+<ParamField path="highlighted" type="boolean" default="false">
+  Highlight the component when used for an active state.
+</ParamField>
+
+<ParamField path="hidden" type="boolean" default="false">
+  Transition the component to hidden state.
+</ParamField>
+
+<ParamField path="onClick" type="function" default="undefined">
+  Callback when the badge is clicked. Makes the badge interactive.
+</ParamField>
+
+<ParamField path="href" type="string" default="undefined">
+  URL to navigate to when clicked. Turns the badge into a link.
+</ParamField>
+
+<ParamField path="onDismiss" type="function" default="undefined">
+  Callback triggered when the dismiss button is pressed. When provided, a dismiss button is shown.
+</ParamField>
+
+<ParamField path="dismissAriaLabel" type="string" required={"when onDismiss is provided"}>
+  Aria label for the dismiss button.
+</ParamField>
+
+<ParamField path="as" type="string" default="undefined">
+  Custom component tag name.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode" default="undefined">
+  Node for inserting text or other content.
+</ParamField>

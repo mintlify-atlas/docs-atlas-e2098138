@@ -1,0 +1,498 @@
+---
+title: Responsive Design
+description: Build responsive applications with Reshaped's mobile-first approach, responsive props, and viewport utilities
+---
+
+# Responsive Design
+
+Reshaped provides a comprehensive system for building responsive applications. Components support responsive props, and the library includes hooks for working with different screen sizes.
+
+## Breakpoints
+
+Reshaped uses a mobile-first breakpoint system with four viewport sizes:
+
+| Viewport | Min Width | Max Width | Use Case |
+|----------|-----------|-----------|----------|
+| `s` | 0px | 659px | Mobile phones |
+| `m` | 660px | 899px | Tablets (portrait) |
+| `l` | 900px | 1279px | Tablets (landscape), small laptops |
+| `xl` | 1280px+ | - | Desktops, large displays |
+
+### Viewport Tokens
+
+Breakpoints are defined as design tokens:
+
+```json
+{
+  "viewport": {
+    "s": { "maxPx": 659 },
+    "m": { "minPx": 660 },
+    "l": { "minPx": 900 },
+    "xl": { "minPx": 1280 }
+  }
+}
+```
+
+These translate to CSS media queries:
+
+```css
+@media (min-width: 660px) { /* m viewport */ }
+@media (min-width: 900px) { /* l viewport */ }
+@media (min-width: 1280px) { /* xl viewport */ }
+```
+
+## Responsive Props
+
+Many component props accept responsive values using the `Responsive<T>` type:
+
+```tsx
+import type { Responsive } from 'reshaped';
+
+// Single value (applies to all viewports)
+type Example1 = Responsive<number>; // number
+
+// Object with viewport-specific values
+type Example2 = Responsive<number>; // number | { s?: number; m?: number; l?: number; xl?: number }
+```
+
+### Basic Usage
+
+```tsx
+import { View, Text } from 'reshaped';
+
+function ResponsiveLayout() {
+  return (
+    <View
+      direction={{ s: 'column', m: 'row' }}
+      gap={{ s: 4, m: 6, l: 8 }}
+      padding={{ s: 4, m: 6, l: 8, xl: 10 }}
+    >
+      <Text variant={{ s: 'body-3', m: 'body-2', l: 'body-1' }}>
+        Responsive text size
+      </Text>
+    </View>
+  );
+}
+```
+
+### Mobile-First Approach
+
+Reshaped follows a mobile-first approach. Values cascade up to larger viewports:
+
+```tsx
+import { View } from 'reshaped';
+
+// Only specify the value at the smallest viewport where it changes
+<View
+  padding={4}           // Applies to all viewports
+  gap={{ s: 2, m: 4 }}  // 2 on mobile, 4 on tablet and desktop
+  width={{ s: '100%', l: '50%' }}  // 100% on mobile & tablet, 50% on desktop
+/>
+```
+
+The cascade order:
+- `xl` falls back to `l` → `m` → `s`
+- `l` falls back to `m` → `s`
+- `m` falls back to `s`
+- `s` is the base value
+
+## View Component
+
+The `View` component is the foundation for responsive layouts:
+
+### Responsive Direction
+
+Switch between column and row layouts:
+
+```tsx
+import { View, Card } from 'reshaped';
+
+function CardGrid() {
+  return (
+    <View
+      direction={{ s: 'column', m: 'row' }}
+      gap={4}
+      wrap
+    >
+      <Card>Card 1</Card>
+      <Card>Card 2</Card>
+      <Card>Card 3</Card>
+    </View>
+  );
+}
+```
+
+### Responsive Sizing
+
+Control width and height at different viewports:
+
+```tsx
+import { View } from 'reshaped';
+
+function Sidebar() {
+  return (
+    <View
+      width={{ s: '100%', m: 250, l: 300 }}
+      height={{ s: 'auto', m: '100vh' }}
+    >
+      Sidebar content
+    </View>
+  );
+}
+```
+
+Number values are multiplied by the base unit (4px):
+- `width={10}` → `40px`
+- `width={{ s: 10, m: 20 }}` → `40px` on mobile, `80px` on tablet
+
+### Responsive Spacing
+
+Adjust padding and gap for different screen sizes:
+
+```tsx
+import { View } from 'reshaped';
+
+function Container() {
+  return (
+    <View
+      padding={{ s: 4, m: 6, l: 8 }}
+      gap={{ s: 3, m: 4, l: 6 }}
+    >
+      {/* Content */}
+    </View>
+  );
+}
+```
+
+### Responsive Alignment
+
+```tsx
+import { View } from 'reshaped';
+
+function FlexContainer() {
+  return (
+    <View
+      direction={{ s: 'column', m: 'row' }}
+      align={{ s: 'stretch', m: 'center' }}
+      justify={{ s: 'start', m: 'space-between' }}
+    >
+      {/* Content */}
+    </View>
+  );
+}
+```
+
+## Grid Layouts
+
+Create responsive grid layouts using the `Grid` component:
+
+```tsx
+import { Grid } from 'reshaped';
+
+function ProductGrid() {
+  return (
+    <Grid columns={{ s: 1, m: 2, l: 3, xl: 4 }} gap={4}>
+      {products.map(product => (
+        <Grid.Item key={product.id}>
+          <ProductCard product={product} />
+        </Grid.Item>
+      ))}
+    </Grid>
+  );
+}
+```
+
+### Column Spanning
+
+```tsx
+import { Grid } from 'reshaped';
+
+function DashboardLayout() {
+  return (
+    <Grid columns={12} gap={4}>
+      {/* Header spans all columns */}
+      <Grid.Item columns={{ s: 12 }}>
+        <Header />
+      </Grid.Item>
+      
+      {/* Sidebar: full width on mobile, 4 columns on desktop */}
+      <Grid.Item columns={{ s: 12, l: 4 }}>
+        <Sidebar />
+      </Grid.Item>
+      
+      {/* Main content: full width on mobile, 8 columns on desktop */}
+      <Grid.Item columns={{ s: 12, l: 8 }}>
+        <MainContent />
+      </Grid.Item>
+    </Grid>
+  );
+}
+```
+
+## Button Component
+
+Buttons support responsive sizing and width:
+
+```tsx
+import { Button } from 'reshaped';
+
+<Button
+  size={{ s: 'medium', l: 'large' }}
+  fullWidth={{ s: true, m: false }}
+>
+  Responsive Button
+</Button>
+```
+
+## Typography
+
+Text components support responsive variants:
+
+```tsx
+import { Text } from 'reshaped';
+
+<Text variant={{ s: 'body-3', m: 'body-2', l: 'body-1' }}>
+  Text size adapts to viewport
+</Text>
+
+<Text variant={{ s: 'featured-3', m: 'featured-2', l: 'featured-1' }} as="h1">
+  Responsive heading
+</Text>
+```
+
+## Visibility
+
+Show or hide content at specific viewports:
+
+```tsx
+import { Hidden } from 'reshaped';
+
+function Navigation() {
+  return (
+    <>
+      {/* Mobile menu */}
+      <Hidden hide={{ m: true }}>
+        <MobileMenu />
+      </Hidden>
+      
+      {/* Desktop menu */}
+      <Hidden hide={{ s: true }}>
+        <DesktopMenu />
+      </Hidden>
+    </>
+  );
+}
+```
+
+## useViewport Hook
+
+Access the current viewport in your components:
+
+```tsx
+import { useViewport } from 'reshaped';
+import type { Viewport } from 'reshaped';
+
+function AdaptiveComponent() {
+  const viewport: Viewport = useViewport(); // 's' | 'm' | 'l' | 'xl'
+  
+  return (
+    <div>
+      {viewport === 's' && <MobileView />}
+      {viewport === 'm' && <TabletView />}
+      {(viewport === 'l' || viewport === 'xl') && <DesktopView />}
+    </div>
+  );
+}
+```
+
+### Responsive Value Hook
+
+Resolve responsive values to the current viewport:
+
+```tsx
+import { useResponsiveClientValue } from 'reshaped';
+import type { Responsive } from 'reshaped';
+
+function Component() {
+  const columns: Responsive<number> = { s: 1, m: 2, l: 3 };
+  const currentColumns = useResponsiveClientValue(columns);
+  
+  return <div>Current columns: {currentColumns}</div>;
+}
+```
+
+<Note>
+`useResponsiveClientValue` only works on the client side. For SSR, the value will be `undefined` initially.
+</Note>
+
+## Default Viewport
+
+Set a default viewport for server-side rendering:
+
+```tsx
+import { Reshaped } from 'reshaped';
+import type { Viewport } from 'reshaped';
+
+function App() {
+  return (
+    <Reshaped
+      theme="reshaped"
+      defaultViewport="m" // Assume tablet on server
+    >
+      {/* App content */}
+    </Reshaped>
+  );
+}
+```
+
+## Container Component
+
+Center content with responsive max-widths:
+
+```tsx
+import { Container } from 'reshaped';
+
+function Page() {
+  return (
+    <Container>
+      {/* Content is centered with responsive max-width */}
+    </Container>
+  );
+}
+```
+
+The Container component applies responsive padding and max-width automatically.
+
+## CSS Media Queries
+
+For custom styles, use viewport tokens in media queries:
+
+```css
+.component {
+  padding: var(--rs-unit-x4);
+}
+
+@media (min-width: 660px) {
+  .component {
+    padding: var(--rs-unit-x6);
+  }
+}
+
+@media (min-width: 900px) {
+  .component {
+    padding: var(--rs-unit-x8);
+  }
+}
+```
+
+## TypeScript Support
+
+All responsive props are fully typed:
+
+```tsx
+import type { Responsive, Viewport } from 'reshaped';
+import { View } from 'reshaped';
+
+interface CardProps {
+  columns: Responsive<number>;
+  gap: Responsive<number>;
+}
+
+function ResponsiveCard({ columns, gap }: CardProps) {
+  return (
+    <View
+      direction={{ s: 'column', m: 'row' }}
+      gap={gap}
+    >
+      {/* Content */}
+    </View>
+  );
+}
+
+// Usage
+<ResponsiveCard
+  columns={{ s: 1, m: 2, l: 3 }}
+  gap={{ s: 4, m: 6 }}
+/>
+```
+
+## Best Practices
+
+1. **Start mobile-first** - Design for small screens first, then enhance
+2. **Use responsive props** - Prefer component props over custom CSS when possible
+3. **Test all viewports** - Verify layouts work at each breakpoint
+4. **Optimize images** - Use responsive images and lazy loading
+5. **Consider touch targets** - Ensure buttons are at least 44px on mobile
+6. **Minimize viewport switches** - Only change values when necessary
+7. **Use semantic breakpoints** - Think about content, not devices
+8. **Leverage cascade** - Let values flow to larger viewports
+
+## Common Patterns
+
+### Responsive Sidebar
+
+```tsx
+import { View } from 'reshaped';
+
+function Layout() {
+  return (
+    <View direction={{ s: 'column', l: 'row' }} gap={4}>
+      <View width={{ s: '100%', l: 250 }}>
+        <Sidebar />
+      </View>
+      <View grow>
+        <MainContent />
+      </View>
+    </View>
+  );
+}
+```
+
+### Responsive Card Grid
+
+```tsx
+import { Grid, Card } from 'reshaped';
+
+function CardGrid({ items }) {
+  return (
+    <Grid columns={{ s: 1, m: 2, xl: 3 }} gap={{ s: 4, m: 6 }}>
+      {items.map(item => (
+        <Card key={item.id}>{item.content}</Card>
+      ))}
+    </Grid>
+  );
+}
+```
+
+### Responsive Navigation
+
+```tsx
+import { View, Hidden } from 'reshaped';
+
+function Navigation() {
+  return (
+    <View
+      direction="row"
+      align="center"
+      justify="space-between"
+      padding={{ s: 4, m: 6 }}
+    >
+      <Logo />
+      
+      <Hidden hide={{ l: true }}>
+        <MobileMenuButton />
+      </Hidden>
+      
+      <Hidden hide={{ s: true, m: true }}>
+        <DesktopNavigation />
+      </Hidden>
+    </View>
+  );
+}
+```
+
+## Related
+
+- [Styling](/concepts/styling) - Learn about design tokens and CSS
+- [TypeScript](/concepts/typescript) - Type-safe responsive props
+- [Accessibility](/concepts/accessibility) - Build accessible responsive UIs

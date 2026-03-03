@@ -1,0 +1,460 @@
+---
+title: Scrim
+description: Container with backdrop for overlaying content
+---
+
+<RequestExample>
+```jsx
+import { Scrim, View, Text } from 'reshaped';
+
+function Example() {
+  return (
+    <Scrim
+      position="bottom"
+      padding={4}
+      backgroundSlot={
+        <Image src="/hero.jpg" attributes={{ style: { objectFit: 'cover' } }} />
+      }
+    >
+      <View gap={2}>
+        <Text variant="title-4" color="white">Hero Title</Text>
+        <Text color="white">Description text over the scrim</Text>
+      </View>
+    </Scrim>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+Scrim provides a darkened overlay container for displaying content over images or backgrounds. It's commonly used for hero sections, cards with image backgrounds, and media overlays.
+
+## Props
+
+<ParamField path="children" type="React.ReactNode">
+  Content to display over the scrim.
+</ParamField>
+
+<ParamField path="backgroundSlot" type="React.ReactNode">
+  Background content behind the scrim (typically an Image).
+  
+  ```jsx
+  <Scrim
+    backgroundSlot={
+      <Image src="/background.jpg" />
+    }
+  >
+  ```
+</ParamField>
+
+<ParamField path="position" type="string">
+  Position of the content over the scrim.
+  
+  Options: `"full"`, `"top"`, `"bottom"`, `"start"`, `"end"`
+  
+  Default: `"full"`
+  
+  ```jsx
+  <Scrim position="bottom"> {/* Content at bottom */}
+  <Scrim position="full"> {/* Content fills entire area */}
+  ```
+</ParamField>
+
+<ParamField path="padding" type="number | Responsive<number>">
+  Padding for the content. Inherited from View's padding props.
+  
+  ```jsx
+  <Scrim padding={4}>
+  <Scrim padding={{ s: 3, m: 6 }}>
+  ```
+</ParamField>
+
+<ParamField path="paddingInline" type="number | Responsive<number>">
+  Horizontal padding for the content.
+</ParamField>
+
+<ParamField path="paddingBlock" type="number | Responsive<number>">
+  Vertical padding for the content.
+</ParamField>
+
+<ParamField path="borderRadius" type="string">
+  Border radius for the scrim container.
+  
+  Options: `"small"`, `"medium"`, `"large"`, `"full"`
+  
+  ```jsx
+  <Scrim borderRadius="medium">
+  ```
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the root element.
+</ParamField>
+
+<ParamField path="scrimClassName" type="string">
+  Additional CSS class for the scrim overlay element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the root element.
+</ParamField>
+
+## Examples
+
+### Basic Scrim
+
+```jsx
+<Scrim
+  position="bottom"
+  padding={4}
+  backgroundSlot={
+    <Image
+      src="/hero-image.jpg"
+      attributes={{ style: { objectFit: 'cover', height: '400px' } }}
+    />
+  }
+>
+  <View gap={2}>
+    <Text variant="title-3" color="white">Welcome</Text>
+    <Text color="white">Get started with our platform</Text>
+  </View>
+</Scrim>
+```
+
+### Hero Section
+
+```jsx
+function HeroSection() {
+  return (
+    <Scrim
+      position="full"
+      padding={8}
+      backgroundSlot={
+        <Image
+          src="/hero-background.jpg"
+          attributes={{
+            style: {
+              objectFit: 'cover',
+              width: '100%',
+              height: '600px',
+            },
+          }}
+        />
+      }
+    >
+      <View height="100%" align="center" justify="center" gap={4}>
+        <Text variant="display-1" color="white" align="center">
+          Build Better Products
+        </Text>
+        <Text variant="title-5" color="white" align="center">
+          The complete toolkit for modern development
+        </Text>
+        <Button size="large" color="primary">
+          Get Started
+        </Button>
+      </View>
+    </Scrim>
+  );
+}
+```
+
+### Card with Image Background
+
+```jsx
+function ImageCard({ title, description, image }) {
+  return (
+    <Scrim
+      position="bottom"
+      padding={4}
+      borderRadius="medium"
+      backgroundSlot={
+        <Image
+          src={image}
+          aspectRatio={16/9}
+          borderRadius="medium"
+        />
+      }
+    >
+      <View gap={1}>
+        <Text variant="body-2" weight="bold" color="white">
+          {title}
+        </Text>
+        <Text variant="body-3" color="white">
+          {description}
+        </Text>
+      </View>
+    </Scrim>
+  );
+}
+```
+
+### Position Variants
+
+```jsx
+<View gap={4}>
+  {/* Full coverage */}
+  <Scrim
+    position="full"
+    padding={4}
+    backgroundSlot={<Image src="/bg.jpg" />}
+  >
+    <View align="center" justify="center" height="100%">
+      <Text color="white">Centered content</Text>
+    </View>
+  </Scrim>
+  
+  {/* Bottom position */}
+  <Scrim
+    position="bottom"
+    padding={4}
+    backgroundSlot={<Image src="/bg.jpg" />}
+  >
+    <Text color="white">Bottom aligned</Text>
+  </Scrim>
+  
+  {/* Top position */}
+  <Scrim
+    position="top"
+    padding={4}
+    backgroundSlot={<Image src="/bg.jpg" />}
+  >
+    <Text color="white">Top aligned</Text>
+  </Scrim>
+</View>
+```
+
+### Product Showcase
+
+```jsx
+function ProductCard({ product }) {
+  return (
+    <Scrim
+      position="bottom"
+      padding={3}
+      borderRadius="large"
+      backgroundSlot={
+        <Image
+          src={product.image}
+          aspectRatio={1}
+          borderRadius="large"
+        />
+      }
+    >
+      <View gap={2}>
+        <View gap={1}>
+          <Text variant="body-2" weight="bold" color="white">
+            {product.name}
+          </Text>
+          <Text variant="body-3" color="white">
+            {product.category}
+          </Text>
+        </View>
+        <View direction="row" justify="space-between" align="center">
+          <Text variant="title-6" color="white">
+            ${product.price}
+          </Text>
+          <Button size="small" color="white">
+            Add to Cart
+          </Button>
+        </View>
+      </View>
+    </Scrim>
+  );
+}
+```
+
+### Video Player Overlay
+
+```jsx
+function VideoPlayer({ videoUrl, thumbnail }) {
+  const [playing, setPlaying] = React.useState(false);
+
+  return (
+    <Scrim
+      position="full"
+      borderRadius="medium"
+      backgroundSlot={
+        playing ? (
+          <video
+            src={videoUrl}
+            autoPlay
+            controls
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        ) : (
+          <Image src={thumbnail} aspectRatio={16/9} />
+        )
+      }
+    >
+      {!playing && (
+        <View height="100%" align="center" justify="center">
+          <Button
+            icon={IconPlay}
+            variant="solid"
+            color="white"
+            size="large"
+            onClick={() => setPlaying(true)}
+            attributes={{ 'aria-label': 'Play video' }}
+          />
+        </View>
+      )}
+    </Scrim>
+  );
+}
+```
+
+### Blog Post Card
+
+```jsx
+function BlogPostCard({ post }) {
+  return (
+    <Scrim
+      position="bottom"
+      padding={4}
+      borderRadius="medium"
+      backgroundSlot={
+        <Image
+          src={post.coverImage}
+          aspectRatio={16/9}
+          borderRadius="medium"
+        />
+      }
+    >
+      <View gap={2}>
+        <View direction="row" gap={2}>
+          <Badge color="white">{post.category}</Badge>
+          <Text variant="body-3" color="white">
+            {post.readTime} min read
+          </Text>
+        </View>
+        <Text variant="title-5" color="white">
+          {post.title}
+        </Text>
+        <Text variant="body-3" color="white">
+          {post.excerpt}
+        </Text>
+        <View direction="row" gap={2} align="center">
+          <Image
+            src={post.author.avatar}
+            width="32px"
+            height="32px"
+            borderRadius="full"
+          />
+          <View gap={0}>
+            <Text variant="body-3" weight="bold" color="white">
+              {post.author.name}
+            </Text>
+            <Text variant="caption" color="white">
+              {post.publishedDate}
+            </Text>
+          </View>
+        </View>
+      </View>
+    </Scrim>
+  );
+}
+```
+
+### Responsive Padding
+
+```jsx
+<Scrim
+  position="bottom"
+  padding={{ s: 3, m: 6 }}
+  paddingInline={{ s: 4, m: 8 }}
+  backgroundSlot={<Image src="/hero.jpg" />}
+>
+  <Text variant="title-4" color="white">
+    Responsive content padding
+  </Text>
+</Scrim>
+```
+
+### Gallery Item
+
+```jsx
+function GalleryItem({ image, title, likes, comments }) {
+  return (
+    <Scrim
+      position="bottom"
+      padding={3}
+      borderRadius="medium"
+      backgroundSlot={
+        <Image
+          src={image}
+          aspectRatio={1}
+          borderRadius="medium"
+        />
+      }
+    >
+      <View gap={2}>
+        <Text variant="body-2" weight="bold" color="white">
+          {title}
+        </Text>
+        <View direction="row" gap={3}>
+          <View direction="row" gap={1} align="center">
+            <Icon svg={IconHeart} size="small" color="white" />
+            <Text variant="body-3" color="white">{likes}</Text>
+          </View>
+          <View direction="row" gap={1} align="center">
+            <Icon svg={IconMessage} size="small" color="white" />
+            <Text variant="body-3" color="white">{comments}</Text>
+          </View>
+        </View>
+      </View>
+    </Scrim>
+  );
+}
+```
+
+### Call-to-Action Banner
+
+```jsx
+function CTABanner() {
+  return (
+    <Scrim
+      position="full"
+      padding={6}
+      borderRadius="large"
+      backgroundSlot={
+        <Image
+          src="/cta-background.jpg"
+          attributes={{
+            style: {
+              objectFit: 'cover',
+              width: '100%',
+              height: '300px',
+            },
+          }}
+        />
+      }
+    >
+      <View height="100%" align="center" justify="center" gap={3}>
+        <Text variant="title-3" color="white" align="center">
+          Ready to get started?
+        </Text>
+        <Text variant="body-1" color="white" align="center">
+          Join thousands of teams building with our platform
+        </Text>
+        <View direction="row" gap={2}>
+          <Button size="large" color="white">
+            Start Free Trial
+          </Button>
+          <Button size="large" variant="outline" color="white">
+            Learn More
+          </Button>
+        </View>
+      </View>
+    </Scrim>
+  );
+}
+```
+
+## Accessibility
+
+- Ensure adequate contrast between text and scrim overlay
+- Use semantic HTML for content structure
+- Provide alt text for background images via the Image component
+- Test readability with different background images
+- Consider users with reduced transparency preferences

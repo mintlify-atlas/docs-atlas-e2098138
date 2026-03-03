@@ -1,0 +1,309 @@
+---
+title: "NumberField"
+description: "A numeric input with increment and decrement controls"
+icon: "hashtag"
+---
+
+NumberField is a form component that allows users to enter numeric values with optional increment/decrement buttons. It extends TextField with number-specific features.
+
+## Basic usage
+
+```jsx
+import { NumberField } from 'reshaped';
+
+function Example() {
+  return (
+    <NumberField
+      name="quantity"
+      increaseAriaLabel="Increase quantity"
+      decreaseAriaLabel="Decrease quantity"
+    />
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { NumberField } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState(0);
+
+  return (
+    <NumberField
+      name="quantity"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      increaseAriaLabel="Increase"
+      decreaseAriaLabel="Decrease"
+    />
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { NumberField } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <NumberField
+      name="count"
+      defaultValue={10}
+      onChange={({ name, value }) => console.log(name, value)}
+      increaseAriaLabel="Increase count"
+      decreaseAriaLabel="Decrease count"
+    />
+  );
+}
+```
+
+## With min and max
+
+```jsx
+import { NumberField } from 'reshaped';
+
+<NumberField
+  name="age"
+  min={0}
+  max={120}
+  defaultValue={25}
+  increaseAriaLabel="Increase age"
+  decreaseAriaLabel="Decrease age"
+/>
+```
+
+## With step
+
+```jsx
+import { NumberField } from 'reshaped';
+
+<NumberField
+  name="price"
+  step={0.01}
+  min={0}
+  defaultValue={9.99}
+  prefix="$"
+  increaseAriaLabel="Increase price"
+  decreaseAriaLabel="Decrease price"
+/>
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, NumberField } from 'reshaped';
+
+function FormExample() {
+  return (
+    <FormControl>
+      <FormControl.Label>Quantity</FormControl.Label>
+      <NumberField
+        name="quantity"
+        min={1}
+        max={99}
+        defaultValue={1}
+        increaseAriaLabel="Increase quantity"
+        decreaseAriaLabel="Decrease quantity"
+      />
+      <FormControl.Helper>
+        Select a quantity between 1 and 99.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Validation
+
+```jsx
+import { FormControl, NumberField } from 'reshaped';
+import { useState } from 'react';
+
+function ValidationExample() {
+  const [value, setValue] = useState(null);
+  const hasError = value !== null && (value < 1 || value > 10);
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Team size</FormControl.Label>
+      <NumberField
+        name="teamSize"
+        value={value}
+        onChange={({ value }) => setValue(value)}
+        min={1}
+        max={10}
+        increaseAriaLabel="Increase team size"
+        decreaseAriaLabel="Decrease team size"
+      />
+      <FormControl.Error>
+        Team size must be between 1 and 10.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Sizes and variants
+
+```jsx
+import { NumberField } from 'reshaped';
+
+<NumberField
+  size="small"
+  name="small"
+  increaseAriaLabel="Increase"
+  decreaseAriaLabel="Decrease"
+/>
+
+<NumberField
+  variant="faded"
+  name="faded"
+  increaseAriaLabel="Increase"
+  decreaseAriaLabel="Decrease"
+/>
+```
+
+## Currency input
+
+```jsx
+import { NumberField } from 'reshaped';
+import { useState } from 'react';
+
+function CurrencyExample() {
+  const [value, setValue] = useState(0);
+
+  return (
+    <NumberField
+      name="budget"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      min={0}
+      step={0.01}
+      prefix="$"
+      suffix="USD"
+      increaseAriaLabel="Increase budget"
+      decreaseAriaLabel="Decrease budget"
+    />
+  );
+}
+```
+
+## Accessibility
+
+NumberField follows accessibility best practices:
+
+- Uses semantic HTML number input
+- Increment/decrement buttons have required ARIA labels
+- Keyboard accessible (Arrow up/down to adjust)
+- Screen reader announces current value and constraints
+- Works with FormControl for proper label associations
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the number field input element
+</ParamField>
+
+<ParamField path="increaseAriaLabel" type="string" required>
+  aria-label attribute for the increase button
+</ParamField>
+
+<ParamField path="decreaseAriaLabel" type="string" required>
+  aria-label attribute for the decrease button
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the number field
+</ParamField>
+
+<ParamField path="value" type="number | null">
+  Value of the form field, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultValue" type="number">
+  Default value of the form field, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="min" type="number">
+  Minimum value supported in the form field
+</ParamField>
+
+<ParamField path="max" type="number">
+  Maximum value supported in the form field
+</ParamField>
+
+<ParamField path="step" type="number">
+  Step at which the value will increase or decrease when clicking the button controls
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text when there is no value
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large' | 'xlarge'" default="medium">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="variant" type="'outline' | 'faded' | 'ghost' | 'headless'" default="outline">
+  Component render variant
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the number field user interaction
+</ParamField>
+
+<ParamField path="focused" type="boolean">
+  Render in the focused state
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Show an error state. Automatically inherited when used inside FormControl.
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  Icon of the number field at the start position
+</ParamField>
+
+<ParamField path="prefix" type="React.ReactNode">
+  Node for inserting text content before the number field value
+</ParamField>
+
+<ParamField path="suffix" type="React.ReactNode">
+  Node for inserting text content after the number field value
+</ParamField>
+
+<ParamField path="startSlot" type="React.ReactNode">
+  Node for inserting content before the number field value
+</ParamField>
+
+<ParamField path="startSlotPadding" type="number">
+  Padding inline end, base unit token number multiplier
+</ParamField>
+
+<ParamField path="onChange" type="(args: { name: string, value: number }) => void">
+  Callback when the component value is changed
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent<HTMLInputElement>) => void">
+  Callback when the number field is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent<HTMLInputElement>) => void">
+  Callback when the number field is blurred
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input element. Use for ARIA attributes.
+</ParamField>

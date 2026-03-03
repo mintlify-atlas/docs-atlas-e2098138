@@ -1,0 +1,156 @@
+---
+title: "Radio"
+description: "A radio button for selecting a single option from a group"
+icon: "circle-dot"
+---
+
+Radio is a form component that allows users to select a single option from a group of mutually exclusive choices. It must be used within a RadioGroup component.
+
+## Basic usage
+
+```jsx
+import { RadioGroup, Radio, View } from 'reshaped';
+
+function Example() {
+  return (
+    <RadioGroup name="plan">
+      <View gap={3}>
+        <Radio value="free">Free Plan</Radio>
+        <Radio value="pro">Pro Plan</Radio>
+        <Radio value="enterprise">Enterprise Plan</Radio>
+      </View>
+    </RadioGroup>
+  );
+}
+```
+
+## With labels
+
+```jsx
+import { RadioGroup, Radio, View, Text } from 'reshaped';
+
+function LabelExample() {
+  return (
+    <RadioGroup name="plan">
+      <View gap={3}>
+        <Radio value="free">
+          <View gap={1}>
+            <Text weight="medium">Free Plan</Text>
+            <Text variant="body-2" color="neutral-faded">
+              Perfect for individuals
+            </Text>
+          </View>
+        </Radio>
+        <Radio value="pro">
+          <View gap={1}>
+            <Text weight="medium">Pro Plan</Text>
+            <Text variant="body-2" color="neutral-faded">
+              For small teams
+            </Text>
+          </View>
+        </Radio>
+      </View>
+    </RadioGroup>
+  );
+}
+```
+
+## Sizes
+
+```jsx
+import { RadioGroup, Radio, View } from 'reshaped';
+
+<RadioGroup name="size">
+  <View gap={3}>
+    <Radio size="small" value="s">Small radio</Radio>
+    <Radio size="medium" value="m">Medium radio</Radio>
+    <Radio size="large" value="l">Large radio</Radio>
+  </View>
+</RadioGroup>
+```
+
+## Disabled state
+
+```jsx
+import { RadioGroup, Radio, View } from 'reshaped';
+
+<RadioGroup name="disabled">
+  <View gap={3}>
+    <Radio value="option-1">Enabled option</Radio>
+    <Radio value="option-2" disabled>Disabled option</Radio>
+  </View>
+</RadioGroup>
+```
+
+## Accessibility
+
+Radio follows accessibility best practices:
+
+- Uses semantic HTML radio input
+- Must be used within RadioGroup for proper ARIA roles
+- Supports ARIA attributes via `inputAttributes`
+- Label is properly associated with input
+- Keyboard accessible (Arrow keys to navigate, Space to select)
+- Screen reader announces checked/unchecked state
+
+## Props
+
+<ParamField path="value" type="string" required>
+  Value of the input element
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name of the input element. Usually inherited from RadioGroup.
+</ParamField>
+
+<ParamField path="checked" type="boolean">
+  Component checked state, enables controlled mode. Usually managed by RadioGroup.
+</ParamField>
+
+<ParamField path="defaultChecked" type="boolean">
+  Default checked state, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the form field from the form submission
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Indicate that the form field has an error. Automatically inherited from FormControl or RadioGroup.
+</ParamField>
+
+<ParamField path="size" type="'small' | 'medium' | 'large'" default="medium">
+  Component size. Supports responsive values.
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: boolean }) => void">
+  Callback when the input value changes
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent) => void">
+  Callback when the input is focused
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent) => void">
+  Callback when the input is blurred
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root label element
+</ParamField>
+
+<ParamField path="inputAttributes" type="object">
+  Additional attributes for the input element. Use for ARIA attributes.
+</ParamField>
+
+<Note>
+  Radio components should always be used inside a RadioGroup for proper form handling and accessibility.
+</Note>

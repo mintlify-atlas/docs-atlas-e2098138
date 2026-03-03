@@ -1,0 +1,380 @@
+---
+title: 'theming Command'
+description: 'Generate custom themes from Reshaped configuration'
+---
+
+## Overview
+
+The `theming` command compiles theme definitions from your Reshaped configuration file into CSS custom properties, JSON data, and Tailwind CSS configurations.
+
+## Usage
+
+```bash
+reshaped theming --output <path> [--config <path>]
+```
+
+## Options
+
+<ParamField path="--output" type="string" required>
+  Path to output directory where generated themes will be written.
+  
+  **Alias:** `-o`
+  
+  **Example:** `--output ./public/themes`
+</ParamField>
+
+<ParamField path="--config" type="string">
+  Path to the Reshaped configuration file.
+  
+  **Alias:** `-c`
+  
+  **Default:** Automatically searches for `reshaped.config.js`, `reshaped.config.cjs`, or `reshaped.config.ts` in the current directory.
+  
+  **Example:** `--config ./config/themes.config.js`
+</ParamField>
+
+## Configuration File
+
+The command requires a configuration file that exports a `ReshapedConfig` object with `themes` and/or `themeFragments`.
+
+### Config File Formats
+
+Supported formats (auto-detected in this order):
+
+1. **JavaScript ES Module** (`reshaped.config.js`)
+   ```js
+   export default {
+     themes: { /* ... */ },
+     themeFragments: { /* ... */ },
+   };
+   ```
+
+2. **CommonJS** (`reshaped.config.cjs`)
+   ```js
+   module.exports = {
+     themes: { /* ... */ },
+     themeFragments: { /* ... */ },
+   };
+   ```
+
+3. **TypeScript** (`reshaped.config.ts`)
+   ```ts
+   import type { ReshapedConfig } from 'reshaped';
+   
+   const config: ReshapedConfig = {
+     themes: { /* ... */ },
+     themeFragments: { /* ... */ },
+   };
+   
+   export default config;
+   ```
+
+## Output Structure
+
+For each theme or theme fragment, the command generates:
+
+### Themes
+
+```
+output/
+└── {theme-name}/
+    ├── theme.css       # CSS custom properties
+    ├── theme.json      # JSON theme definition
+    ├── tailwind.css    # Tailwind 4 CSS configuration
+    └── media.css       # Media queries (if color modes are defined)
+```
+
+### Theme Fragments
+
+```
+output/
+└── fragments/
+    └── {fragment-name}/
+        ├── theme.css
+        ├── theme.json
+        ├── tailwind.css
+        └── media.css
+```
+
+## Generated Files
+
+### theme.css
+
+CSS custom properties for the theme:
+
+```css
+:root {
+  --rs-color-background-primary: oklch(0.45 0.31 264.05);
+  --rs-color-foreground-primary: oklch(0.21 0.02 264.05);
+  --rs-unit-x1: 0.25rem;
+  --rs-radius-medium: 0.5rem;
+  /* ... */
+}
+```
+
+### theme.json
+
+JSON representation of theme tokens:
+
+```json
+{
+  "color": {
+    "backgroundPrimary": {
+      "oklch": { "l": 0.45, "c": 0.31, "h": 264.05 }
+    }
+  },
+  "unit": {
+    "x1": { "rem": 0.25 }
+  }
+}
+```
+
+### tailwind.css
+
+Tailwind 4 CSS theme configuration:
+
+```css
+@theme inline {
+  --background-color-primary: var(--rs-color-background-primary);
+  --text-color-primary: var(--rs-color-foreground-primary);
+  --spacing-x1: var(--rs-unit-x1);
+  --radius-medium: var(--rs-radius-medium);
+  /* ... */
+}
+```
+
+### media.css
+
+Media queries for color modes (light/dark):
+
+```css
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rs-color-background-primary: oklch(0.25 0.15 264.05);
+    /* ... */
+  }
+}
+```
+
+## Examples
+
+### Basic Theme Generation
+
+```js reshaped.config.js
+export default {
+  themes: {
+    brand: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+        backgroundPrimaryHighlighted: { hex: '#0052cc' },
+      },
+    },
+  },
+};
+```
+
+```bash
+reshaped theming --output ./themes
+```
+
+Generates: `themes/brand/theme.css`, `themes/brand/theme.json`, etc.
+
+### Multiple Themes
+
+```js reshaped.config.js
+export default {
+  themes: {
+    light: {
+      color: {
+        backgroundPrimary: { hex: '#ffffff' },
+        foregroundPrimary: { hex: '#000000' },
+      },
+    },
+    dark: {
+      color: {
+        backgroundPrimary: { hex: '#000000' },
+        foregroundPrimary: { hex: '#ffffff' },
+      },
+    },
+  },
+};
+```
+
+### Theme Fragments
+
+Theme fragments contain partial theme definitions that can be composed:
+
+```js reshaped.config.js
+export default {
+  themes: {
+    base: {
+      color: {
+        backgroundPrimary: { hex: '#ffffff' },
+      },
+    },
+  },
+  themeFragments: {
+    twitter: {
+      color: {
+        backgroundPrimary: { hex: '#1da1f2' },
+        backgroundPrimaryHighlighted: { hex: '#1a90da' },
+        onBackgroundPrimary: { hex: '#ffffff' },
+      },
+    },
+    github: {
+      color: {
+        backgroundPrimary: { hex: '#24292e' },
+        onBackgroundPrimary: { hex: '#ffffff' },
+      },
+    },
+  },
+};
+```
+
+Generates:
+- `output/base/` - Full theme
+- `output/fragments/twitter/` - Partial theme override
+- `output/fragments/github/` - Partial theme override
+
+### With Theme Options
+
+```js reshaped.config.js
+export default {
+  themes: {
+    custom: {
+      color: {
+        backgroundPrimary: { hex: '#0066ff' },
+      },
+    },
+  },
+  themeOptions: {
+    colorOutputFormat: 'oklch', // or 'hex'
+    colorContrastAlgorithm: 'wcag', // or 'apca'
+    generateOnColorsFor: ['backgroundPrimary'],
+  },
+};
+```
+
+### Custom Config Path
+
+```bash
+reshaped theming \
+  --output ./public/themes \
+  --config ./config/custom-themes.config.js
+```
+
+## Theme Processing
+
+The command processes themes in the following steps:
+
+1. **Load config** - Imports the configuration file
+2. **Merge definitions** - Themes are merged with the base Reshaped theme
+3. **Transform tokens** - Converts theme tokens to CSS variables
+4. **Generate files** - Writes CSS, JSON, and Tailwind files
+5. **Log output** - Confirms successful compilation
+
+### Base Theme Merging
+
+Full themes are automatically merged with Reshaped's default theme definition:
+
+```js
+// Your theme
+{
+  color: {
+    backgroundPrimary: { hex: '#0066ff' }
+  }
+}
+
+// Merged with base Reshaped theme
+// Result includes all default tokens + your overrides
+```
+
+Theme fragments are NOT merged with the base theme - they only include the tokens you define.
+
+## Console Output
+
+```bash
+$ reshaped theming --output ./themes
+
+Using Reshaped config at /path/to/reshaped.config.js
+Processing Reshaped themes...
+Compiled brand theme
+Compiled brand-dark theme
+Compiled twitter theme fragment
+```
+
+## Error Messages
+
+### Config not found
+
+```
+Error: Reshaped config not found
+```
+
+Solution: Create a `reshaped.config.js`, `reshaped.config.cjs`, or `reshaped.config.ts` file, or specify `--config` with a valid path.
+
+### Missing output option
+
+```
+error: required option '-o, --output <path>' not specified
+```
+
+Solution: Provide the `--output` flag with a destination path.
+
+## TypeScript Support
+
+For TypeScript configuration files, ensure your build process compiles them before running the CLI, or use a runtime TypeScript loader:
+
+```json package.json
+{
+  "scripts": {
+    "build:themes": "tsx node_modules/.bin/reshaped theming --output ./themes"
+  },
+  "devDependencies": {
+    "tsx": "latest"
+  }
+}
+```
+
+## Integration Examples
+
+### Next.js
+
+```json package.json
+{
+  "scripts": {
+    "dev": "npm run build:themes && next dev",
+    "build": "npm run build:themes && next build",
+    "build:themes": "reshaped theming --output ./public/themes"
+  }
+}
+```
+
+### Vite
+
+```json package.json
+{
+  "scripts": {
+    "dev": "npm run build:themes && vite",
+    "build": "npm run build:themes && vite build",
+    "build:themes": "reshaped theming -o ./src/themes"
+  }
+}
+```
+
+### Watch Mode (Custom Script)
+
+```json package.json
+{
+  "scripts": {
+    "watch:themes": "nodemon --watch reshaped.config.js --exec 'reshaped theming -o ./themes'"
+  }
+}
+```
+
+## Related
+
+- [CLI Overview](/cli/overview)
+- [Reshaped Config](/configuration/reshaped-config)
+- [Theme Customization Guide](/guides/custom-themes)
+- [Color System](/concepts/styling)

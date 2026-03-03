@@ -1,0 +1,288 @@
+---
+title: Changelog
+description: Recent updates, features, and fixes in Reshaped
+---
+
+Reshaped follows [semantic versioning](https://semver.org/) and uses [Changesets](https://github.com/changesets/changesets) to manage releases.
+
+<Info>
+  For the complete changelog, see [CHANGELOG.md](https://github.com/reshaped-ui/reshaped/blob/main/packages/reshaped/CHANGELOG.md) in the repository.
+</Info>
+
+## Recent Releases
+
+### Latest Features
+
+Recent additions and improvements to Reshaped:
+
+<CardGroup cols={2}>
+  <Card title="ToggleButton selectedVariant" icon="toggle-on">
+    **Added:** Customize the visual variant when ToggleButton is selected
+    
+    [PR #593](https://github.com/reshaped-ui/reshaped/pull/593)
+  </Card>
+  
+  <Card title="Overlay Portals" icon="portal-enter">
+    **Added:** Portal support with outside click detection for Overlay component
+    
+    [PR #592](https://github.com/reshaped-ui/reshaped/pull/592)
+  </Card>
+  
+  <Card title="Text Font Weight" icon="font">
+    **Added:** Font weight prop for Text component with more typography control
+    
+    [PR #582](https://github.com/reshaped-ui/reshaped/pull/582)
+  </Card>
+  
+  <Card title="TypeScript Improvements" icon="code">
+    **Fixed:** Projects without skipLibCheck now work correctly
+    
+    [PR #583](https://github.com/reshaped-ui/reshaped/pull/583)
+  </Card>
+</CardGroup>
+
+### Recent Bug Fixes
+
+<AccordionGroup>
+  <Accordion title="useHotkeys re-render fix">
+    **Fixed:** Prevented unnecessary re-renders on every keystroke when using the useHotkeys hook.
+    
+    - Performance improvement for keyboard interactions
+    - Reduced component updates
+    - Better overall app performance
+    
+    [PR #590](https://github.com/reshaped-ui/reshaped/pull/590) • 2 weeks ago
+  </Accordion>
+  
+  <Accordion title="Modal swipe gesture scroll">
+    **Fixed:** Modal scroll locking when used together with swipe gestures.
+    
+    - Improved touch interaction on mobile
+    - Better gesture handling
+    - Fixed scroll blocking issues
+    
+    3 weeks ago
+  </Accordion>
+  
+  <Accordion title="Flyout mouse events">
+    **Fixed:** Additional edge cases for flyout closing behavior.
+    
+    - More reliable close behavior
+    - Better mouse event handling
+    - Improved user experience
+    
+    3 weeks ago
+  </Accordion>
+  
+  <Accordion title="Modal max height">
+    **Fixed:** Incorrect max-height value for bottom position modals.
+    
+    - Corrected layout calculations
+    - Better responsive behavior
+    - Consistent positioning
+    
+    3 weeks ago
+  </Accordion>
+  
+  <Accordion title="ButtonGroup separator color">
+    **Fixed:** Separator color in disabled ButtonGroup.
+    
+    - Correct visual disabled state
+    - Improved accessibility
+    - Consistent theming
+    
+    [PR #584](https://github.com/reshaped-ui/reshaped/pull/584) • 4 weeks ago
+  </Accordion>
+</AccordionGroup>
+
+## Release Schedule
+
+Reshaped follows a predictable release schedule:
+
+<Steps>
+  <Step title="Patch releases">
+    **Weekly to bi-weekly**
+    
+    Bug fixes and minor improvements
+  </Step>
+  
+  <Step title="Minor releases">
+    **Monthly**
+    
+    New features and enhancements
+  </Step>
+  
+  <Step title="Major releases">
+    **Yearly (maximum)**
+    
+    Breaking changes and major updates
+  </Step>
+</Steps>
+
+## Version Support
+
+| Version | Status | Support Until |
+|---------|--------|---------------|
+| 3.x | Active | Current |
+| 2.x | Maintenance | 6 months after 4.0 |
+| 1.x | Deprecated | No longer supported |
+
+<Warning>
+  Major versions receive support for 6 months after the next major version is released.
+</Warning>
+
+## Breaking Changes
+
+Major versions may include breaking changes. We make these as infrequent as possible:
+
+<Accordion title="Upcoming in 4.0 (planned)">
+  No breaking changes currently planned. Check [GitHub Discussions](https://github.com/reshaped-ui/reshaped/discussions) for proposals.
+</Accordion>
+
+## Migration Guides
+
+When upgrading between major versions:
+
+<CardGroup cols={2}>
+  <Card title="2.x to 3.x" icon="arrow-right">
+    Migration guide for upgrading from version 2 to 3
+    
+    [View migration guide](https://reshaped.so/docs/migration/v3)
+  </Card>
+  
+  <Card title="1.x to 2.x" icon="arrow-right">
+    Migration guide for upgrading from version 1 to 2
+    
+    [View migration guide](https://reshaped.so/docs/migration/v2)
+  </Card>
+</CardGroup>
+
+## Contributing to Changelog
+
+All user-facing changes should include a changeset:
+
+```bash
+# Create a changeset for your PR
+pnpm changeset
+
+# Select the version bump type
+# - patch: bug fixes
+# - minor: new features
+# - major: breaking changes
+
+# Write a clear, user-focused description
+```
+
+See the [Contributing Guide](/community/contributing) for detailed instructions.
+
+## Canary Releases
+
+Canary releases are pre-release versions for testing:
+
+```bash
+# Install the latest canary
+pnpm add reshaped@canary
+
+# Or a specific canary version
+pnpm add reshaped@3.10.0-canary.16
+```
+
+<Warning>
+  Canary releases are unstable and should not be used in production. They may include experimental features or untested changes.
+</Warning>
+
+## Recent Commits
+
+Last 20 commits from the repository:
+
+```
+b6b62b3 - feat(ToggleButton): selectedVariant (9 days ago)
+20be540 - fix(types): projects without skipLibCheck (9 days ago)
+7295d3e - feat(Overlay): portals with outside click (9 days ago)
+c6f0409 - fix(useHotkeys): prevent re-renders on every keystroke (2 weeks ago)
+2610908 - chore: canary release (3 weeks ago)
+1811785 - chore: build order (3 weeks ago)
+1cf69ff - chore: canary release (3 weeks ago)
+c5cc8c5 - fix(Modal): swipe gesture scroll (3 weeks ago)
+d059923 - chore: canary release (3 weeks ago)
+ccb87a5 - fix(Flyout): additional mouse events edge cases (3 weeks ago)
+582e40a - chore: canary release (3 weeks ago)
+9b815e6 - chore: add stories to the build (3 weeks ago)
+725ca12 - chore: canary release (3 weeks ago)
+1896c60 - fix(Modal): max height (3 weeks ago)
+6d716e4 - fix(ButtonGroup): separator color (4 weeks ago)
+12e2e83 - fix(Flyout): removed error throw (4 weeks ago)
+28367262 - chore: canary release (4 weeks ago)
+0064c14 - feat(Text): font weight (4 weeks ago)
+872434b - fix(Text): reset inherit (4 weeks ago)
+fb2155d - chore: packages (5 weeks ago)
+```
+
+## Deprecations
+
+Components and features scheduled for removal:
+
+<Info>
+  No deprecations are currently scheduled. When features are deprecated, they will be listed here with migration paths.
+</Info>
+
+## Experimental Features
+
+Features in testing that may change:
+
+<Accordion title="No experimental features">
+  All current features are stable. Experimental features will be clearly marked in documentation when introduced.
+</Accordion>
+
+## Reporting Issues
+
+Found a bug? Report it on GitHub:
+
+<Steps>
+  <Step title="Check existing issues">
+    Search [GitHub issues](https://github.com/reshaped-ui/reshaped/issues) to see if it's already reported.
+  </Step>
+  
+  <Step title="Create a reproduction">
+    Use [CodeSandbox](https://codesandbox.io/) or similar to create a minimal reproduction.
+  </Step>
+  
+  <Step title="Open an issue">
+    Include:
+    - Reshaped version
+    - Browser and OS
+    - Steps to reproduce
+    - Expected vs actual behavior
+    - Link to reproduction
+  </Step>
+</Steps>
+
+## Stay Updated
+
+<CardGroup cols={3}>
+  <Card title="GitHub Releases" icon="github">
+    Watch repository for release notifications
+    
+    [Watch releases](https://github.com/reshaped-ui/reshaped/releases)
+  </Card>
+  
+  <Card title="Twitter" icon="twitter">
+    Follow for updates and announcements
+    
+    [@blvdmitry](https://x.com/blvdmitry)
+  </Card>
+  
+  <Card title="RSS Feed" icon="rss">
+    Subscribe to the changelog RSS feed
+    
+    [Changelog RSS](https://github.com/reshaped-ui/reshaped/releases.atom)
+  </Card>
+</CardGroup>
+
+## Version History
+
+For the complete version history with all changes, see:
+
+- [CHANGELOG.md](https://github.com/reshaped-ui/reshaped/blob/main/packages/reshaped/CHANGELOG.md) - Complete changelog
+- [GitHub Releases](https://github.com/reshaped-ui/reshaped/releases) - Release notes
+- [Git History](https://github.com/reshaped-ui/reshaped/commits/main) - Commit history

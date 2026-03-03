@@ -1,0 +1,139 @@
+---
+title: Loader
+description: Display loading states with animated spinners
+---
+
+<RequestExample>
+```jsx
+import { Loader } from 'reshaped';
+
+function Example() {
+  return <Loader size="medium" color="primary" ariaLabel="Loading content" />;
+}
+```
+</RequestExample>
+
+## Usage
+
+The Loader component displays an animated spinner to indicate loading states. It's responsive and supports different sizes and colors.
+
+## Props
+
+<ParamField path="size" type="string | Responsive<string>">
+  Size of the loader.
+  
+  Options: `"small"`, `"medium"`, `"large"`
+  
+  ```jsx
+  <Loader size="medium" />
+  <Loader size={{ s: 'small', m: 'large' }} />
+  ```
+</ParamField>
+
+<ParamField path="color" type="string">
+  Color based on theme color tokens.
+  
+  Options: `"primary"`, `"critical"`, `"positive"`, `"inherit"`
+</ParamField>
+
+<ParamField path="ariaLabel" type="string">
+  Accessible label for screen readers. Always provide a descriptive label.
+  
+  ```jsx
+  <Loader ariaLabel="Loading your dashboard" />
+  ```
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'span'>">
+  Additional HTML attributes for the root element.
+</ParamField>
+
+## Examples
+
+### Sizes
+
+```jsx
+<View gap={4} align="center" direction="row">
+  <Loader size="small" ariaLabel="Loading" />
+  <Loader size="medium" ariaLabel="Loading" />
+  <Loader size="large" ariaLabel="Loading" />
+</View>
+```
+
+### Colors
+
+```jsx
+<View gap={4} align="center" direction="row">
+  <Loader color="primary" ariaLabel="Loading" />
+  <Loader color="critical" ariaLabel="Loading" />
+  <Loader color="positive" ariaLabel="Loading" />
+  <Loader color="inherit" ariaLabel="Loading" />
+</View>
+```
+
+### Responsive Size
+
+```jsx
+// Small on mobile, large on desktop
+<Loader
+  size={{ s: 'small', m: 'large' }}
+  ariaLabel="Loading content"
+/>
+```
+
+### In Buttons
+
+```jsx
+<Button disabled>
+  <View gap={2} align="center" direction="row">
+    <Loader size="small" color="inherit" ariaLabel="Loading" />
+    <span>Loading...</span>
+  </View>
+</Button>
+```
+
+### Centered Loading State
+
+```jsx
+<View height="400px" align="center" justify="center">
+  <Loader size="large" color="primary" ariaLabel="Loading page content" />
+</View>
+```
+
+### Overlay Loading
+
+```jsx
+function LoadingOverlay({ children, loading }) {
+  return (
+    <View position="relative">
+      {children}
+      {loading && (
+        <View
+          position="absolute"
+          inset={0}
+          align="center"
+          justify="center"
+          backgroundColor="neutral-faded"
+        >
+          <Loader
+            size="large"
+            color="primary"
+            ariaLabel="Processing request"
+          />
+        </View>
+      )}
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+- Always provide an `ariaLabel` that describes what is loading
+- Use semantic HTML for loading states (`role="status"` is applied automatically)
+- Consider using `aria-live="polite"` regions for dynamic loading states
+- Ensure adequate color contrast with the background

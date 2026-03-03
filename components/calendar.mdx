@@ -1,0 +1,317 @@
+---
+title: Calendar
+description: Date selection component with single date and range selection modes
+---
+
+The `Calendar` component provides a date picker interface with support for single date selection, date ranges, month/year navigation, and extensive customization options.
+
+## Basic Usage
+
+```jsx
+import { Calendar } from 'reshaped';
+import { useState } from 'react';
+
+function Example() {
+  const [value, setValue] = useState(new Date());
+  
+  return (
+    <Calendar 
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    />
+  );
+}
+```
+
+## Range Selection
+
+```jsx
+import { Calendar } from 'reshaped';
+import { useState } from 'react';
+
+function RangeExample() {
+  const [value, setValue] = useState({ start: null, end: null });
+  
+  return (
+    <Calendar 
+      range
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    />
+  );
+}
+```
+
+## With Min/Max Dates
+
+```jsx
+import { Calendar } from 'reshaped';
+
+function RestrictedCalendar() {
+  const today = new Date();
+  const nextMonth = new Date();
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+  
+  return (
+    <Calendar 
+      min={today}
+      max={nextMonth}
+      value={today}
+      onChange={({ value }) => console.log(value)}
+    />
+  );
+}
+```
+
+## Multiple Months
+
+```jsx
+import { Calendar } from 'reshaped';
+
+function MultiMonthCalendar() {
+  return (
+    <Calendar 
+      monthsToRender={2}
+      value={new Date()}
+      onChange={({ value }) => console.log(value)}
+    />
+  );
+}
+```
+
+## Props
+
+<ParamField path="value" type="Date | null | { start: Date | null, end: Date | null }">
+  Current selected date value, enables controlled mode. Type depends on `range` prop
+</ParamField>
+
+<ParamField path="defaultValue" type="Date | { start: Date | null, end: Date | null }">
+  Default selected date value, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="range" type="boolean" default="false">
+  Enable range selection mode
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value }) => void">
+  Callback when date selection changes. Value type depends on `range` prop
+</ParamField>
+
+<ParamField path="month" type="Date">
+  Month to display. Used in controlled mode and should be updated using the `onMonthChange` callback
+</ParamField>
+
+<ParamField path="defaultMonth" type="Date" default="Date.now()">
+  Default month to display. Used in uncontrolled mode
+</ParamField>
+
+<ParamField path="onMonthChange" type="(args: { date: Date }) => void">
+  Callback when the month changes
+</ParamField>
+
+<ParamField path="min" type="Date">
+  Minimum date that can be selected
+</ParamField>
+
+<ParamField path="max" type="Date">
+  Maximum date that can be selected
+</ParamField>
+
+<ParamField path="monthsToRender" type="number" default="1">
+  Number of months to render at the same time
+</ParamField>
+
+<ParamField path="firstWeekDay" type="number" default="1">
+  First day of the week (0 = Sunday, 1 = Monday, etc.)
+</ParamField>
+
+<ParamField path="selectedDates" type="Date[]">
+  Additional dates that should appear as selected
+</ParamField>
+
+<ParamField path="disabledDates" type="Date[]">
+  Dates that should be disabled
+</ParamField>
+
+<ParamField path="renderWeekDay" type="(args: { weekDay: number, date: Date }) => string">
+  Render a custom weekday label, can be used for localization
+</ParamField>
+
+<ParamField path="renderMonthLabel" type="(args: { month: number, date: Date }) => string">
+  Render a custom month label, can be used for localization
+</ParamField>
+
+<ParamField path="renderSelectedMonthLabel" type="(args: { date: Date }) => string">
+  Render a custom selected month label, can be used for localization
+</ParamField>
+
+<ParamField path="renderDateSlot" type="(args: { date: Date, selected: boolean }) => ReactNode">
+  Render custom content under each date number
+</ParamField>
+
+<ParamField path="renderDateAriaLabel" type="(args: { date: Date }) => string">
+  Dynamic aria label for each date cell
+</ParamField>
+
+<ParamField path="renderMonthAriaLabel" type="(args: { month: number }) => string">
+  Dynamic aria label for each month element
+</ParamField>
+
+<ParamField path="previousMonthAriaLabel" type="string">
+  Aria label for the previous month button
+</ParamField>
+
+<ParamField path="nextMonthAriaLabel" type="string">
+  Aria label for the next month button
+</ParamField>
+
+<ParamField path="previousYearAriaLabel" type="string">
+  Aria label for the previous year button
+</ParamField>
+
+<ParamField path="nextYearAriaLabel" type="string">
+  Aria label for the next year button
+</ParamField>
+
+<ParamField path="monthSelectionAriaLabel" type="string">
+  Aria label for the month selection button
+</ParamField>
+
+## When to Use
+
+- **Date Pickers**: Allow users to select dates from a visual calendar
+- **Booking Systems**: Select check-in and check-out dates
+- **Event Scheduling**: Choose event dates or date ranges
+- **Filtering**: Filter data by date ranges
+- **Reports**: Select date ranges for reports
+
+## Composition Patterns
+
+### Date Range Picker
+
+```jsx
+import { Calendar, Text, Stack, View } from 'reshaped';
+import { useState } from 'react';
+
+function DateRangePicker() {
+  const [value, setValue] = useState({ start: null, end: null });
+  
+  return (
+    <Stack gap={3}>
+      <Calendar 
+        range
+        value={value}
+        onChange={({ value }) => setValue(value)}
+      />
+      {value.start && value.end && (
+        <View padding={3} backgroundColor="neutral-faded" borderRadius="medium">
+          <Text>
+            Selected: {value.start.toLocaleDateString()} - {value.end.toLocaleDateString()}
+          </Text>
+        </View>
+      )}
+    </Stack>
+  );
+}
+```
+
+### Localized Calendar
+
+```jsx
+import { Calendar } from 'reshaped';
+
+function LocalizedCalendar() {
+  return (
+    <Calendar
+      value={new Date()}
+      onChange={({ value }) => console.log(value)}
+      firstWeekDay={0}
+      renderWeekDay={({ date }) => 
+        date.toLocaleDateString('es-ES', { weekday: 'short' })
+      }
+      renderMonthLabel={({ date }) => 
+        date.toLocaleDateString('es-ES', { month: 'long' })
+      }
+      renderSelectedMonthLabel={({ date }) => 
+        date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+      }
+      previousMonthAriaLabel="Mes anterior"
+      nextMonthAriaLabel="Próximo mes"
+    />
+  );
+}
+```
+
+### Calendar with Event Indicators
+
+```jsx
+import { Calendar, View } from 'reshaped';
+import { useState } from 'react';
+
+function EventCalendar({ events }) {
+  const [value, setValue] = useState(null);
+  const eventDates = events.map(e => new Date(e.date));
+  
+  return (
+    <Calendar
+      value={value}
+      onChange={({ value }) => setValue(value)}
+      selectedDates={eventDates}
+      renderDateSlot={({ date, selected }) => {
+        const hasEvent = eventDates.some(d => 
+          d.toDateString() === date.toDateString()
+        );
+        return hasEvent ? (
+          <View 
+            width={1}
+            height={1}
+            borderRadius="full"
+            backgroundColor="primary"
+          />
+        ) : null;
+      }}
+    />
+  );
+}
+```
+
+### Disabled Dates Calendar
+
+```jsx
+import { Calendar } from 'reshaped';
+
+function BookingCalendar({ bookedDates }) {
+  const disabledDates = bookedDates.map(d => new Date(d));
+  
+  return (
+    <Calendar
+      value={null}
+      onChange={({ value }) => console.log('Selected:', value)}
+      disabledDates={disabledDates}
+      min={new Date()}
+    />
+  );
+}
+```
+
+### Multi-Month View
+
+```jsx
+import { Calendar, Stack } from 'reshaped';
+import { useState } from 'react';
+
+function WideCalendar() {
+  const [value, setValue] = useState({ start: null, end: null });
+  
+  return (
+    <Stack gap={4}>
+      <Calendar
+        range
+        monthsToRender={3}
+        value={value}
+        onChange={({ value }) => setValue(value)}
+      />
+    </Stack>
+  );
+}
+```

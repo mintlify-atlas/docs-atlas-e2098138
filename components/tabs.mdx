@@ -1,0 +1,309 @@
+---
+title: Tabs
+description: Tabbed navigation component for organizing content into separate views
+---
+
+The Tabs component allows you to organize content into multiple views where only one view is visible at a time. It's useful for grouping related information and reducing visual clutter.
+
+## Basic Usage
+
+```jsx
+import { Tabs } from 'reshaped';
+
+function App() {
+  return (
+    <Tabs defaultValue="overview">
+      <Tabs.List>
+        <Tabs.Item value="overview">Overview</Tabs.Item>
+        <Tabs.Item value="details">Details</Tabs.Item>
+        <Tabs.Item value="settings">Settings</Tabs.Item>
+      </Tabs.List>
+      
+      <Tabs.Panel value="overview">
+        Overview content
+      </Tabs.Panel>
+      <Tabs.Panel value="details">
+        Details content
+      </Tabs.Panel>
+      <Tabs.Panel value="settings">
+        Settings content
+      </Tabs.Panel>
+    </Tabs>
+  );
+}
+```
+
+## Controlled Mode
+
+Control the active tab externally:
+
+```jsx
+import { Tabs } from 'reshaped';
+import { useState } from 'react';
+
+function App() {
+  const [activeTab, setActiveTab] = useState('overview');
+  
+  return (
+    <Tabs
+      value={activeTab}
+      onChange={({ value }) => setActiveTab(value)}
+    >
+      <Tabs.List>
+        <Tabs.Item value="overview">Overview</Tabs.Item>
+        <Tabs.Item value="details">Details</Tabs.Item>
+      </Tabs.List>
+      
+      <Tabs.Panel value="overview">
+        Overview content
+      </Tabs.Panel>
+      <Tabs.Panel value="details">
+        Details content
+      </Tabs.Panel>
+    </Tabs>
+  );
+}
+```
+
+## Variants
+
+Tabs supports multiple visual variants:
+
+```jsx
+<Tabs variant="bordered" defaultValue="tab1">
+  {/* Tab content */}
+</Tabs>
+
+<Tabs variant="borderless" defaultValue="tab1">
+  {/* Tab content */}
+</Tabs>
+
+<Tabs variant="pills" defaultValue="tab1">
+  {/* Tab content */}
+</Tabs>
+
+<Tabs variant="pills-elevated" defaultValue="tab1">
+  {/* Tab content */}
+</Tabs>
+```
+
+## Sizes
+
+Tabs supports two size options:
+
+```jsx
+<Tabs size="medium" defaultValue="tab1">
+  {/* Tab content */}
+</Tabs>
+
+<Tabs size="large" defaultValue="tab1">
+  {/* Tab content */}
+</Tabs>
+```
+
+## With Icons
+
+Add icons to tab items:
+
+```jsx
+import { Tabs } from 'reshaped';
+import IconHome from '@/icons/Home';
+import IconSettings from '@/icons/Settings';
+import IconUser from '@/icons/User';
+
+<Tabs defaultValue="home">
+  <Tabs.List>
+    <Tabs.Item value="home" icon={IconHome}>
+      Home
+    </Tabs.Item>
+    <Tabs.Item value="profile" icon={IconUser}>
+      Profile
+    </Tabs.Item>
+    <Tabs.Item value="settings" icon={IconSettings}>
+      Settings
+    </Tabs.Item>
+  </Tabs.List>
+  {/* Panels */}
+</Tabs>
+```
+
+## Direction
+
+Display tabs vertically:
+
+```jsx
+<Tabs direction="column" defaultValue="tab1">
+  <Tabs.List>
+    <Tabs.Item value="tab1">Tab 1</Tabs.Item>
+    <Tabs.Item value="tab2">Tab 2</Tabs.Item>
+  </Tabs.List>
+  {/* Panels */}
+</Tabs>
+```
+
+## Equal Width Items
+
+Make all tab items have equal width:
+
+```jsx
+<Tabs itemWidth="equal" defaultValue="tab1">
+  <Tabs.List>
+    <Tabs.Item value="tab1">Short</Tabs.Item>
+    <Tabs.Item value="tab2">Medium Length</Tabs.Item>
+    <Tabs.Item value="tab3">Very Long Label</Tabs.Item>
+  </Tabs.List>
+  {/* Panels */}
+</Tabs>
+```
+
+## As Form Control
+
+Use tabs as a radio button group in forms:
+
+```jsx
+<form>
+  <Tabs name="plan" defaultValue="basic">
+    <Tabs.List>
+      <Tabs.Item value="basic">Basic</Tabs.Item>
+      <Tabs.Item value="pro">Pro</Tabs.Item>
+      <Tabs.Item value="enterprise">Enterprise</Tabs.Item>
+    </Tabs.List>
+  </Tabs>
+</form>
+```
+
+## Navigation Tabs
+
+Use tabs for page navigation with links:
+
+```jsx
+<Tabs defaultValue="dashboard">
+  <Tabs.List>
+    <Tabs.Item value="dashboard" href="/dashboard">
+      Dashboard
+    </Tabs.Item>
+    <Tabs.Item value="analytics" href="/analytics">
+      Analytics
+    </Tabs.Item>
+    <Tabs.Item value="reports" href="/reports">
+      Reports
+    </Tabs.Item>
+  </Tabs.List>
+</Tabs>
+```
+
+## Disabled Tabs
+
+```jsx
+<Tabs defaultValue="tab1">
+  <Tabs.List>
+    <Tabs.Item value="tab1">Active Tab</Tabs.Item>
+    <Tabs.Item value="tab2" disabled>
+      Disabled Tab
+    </Tabs.Item>
+  </Tabs.List>
+  {/* Panels */}
+</Tabs>
+```
+
+## Props
+
+### Tabs
+
+<ParamField path="value" type="string">
+  Value of the active tab (controlled mode)
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default value of the active tab (uncontrolled mode)
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: string; name?: string }) => void">
+  Callback when the active tab value changes
+</ParamField>
+
+<ParamField path="variant" type="'bordered' | 'borderless' | 'pills' | 'pills-elevated'">
+  Render variant for component
+</ParamField>
+
+<ParamField path="size" type="'medium' | 'large'" default="medium">
+  Component size
+</ParamField>
+
+<ParamField path="direction" type="'row' | 'column'" default="row">
+  Direction of the tab buttons
+</ParamField>
+
+<ParamField path="itemWidth" type="'equal'">
+  Equal width for all tab buttons
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name of the tab buttons group when used as a form control
+</ParamField>
+
+<ParamField path="disableSelectionAnimation" type="boolean" default="false">
+  Disable the animation of the tab button selection
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Tab list and panel components
+</ParamField>
+
+### Tabs.List
+
+<ParamField path="children" type="React.ReactNode">
+  Tab items
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>
+
+### Tabs.Item
+
+<ParamField path="value" type="string" required>
+  Value of the item used for the active item selection
+</ParamField>
+
+<ParamField path="icon" type="React.ComponentType">
+  SVG component for the icon at the start position
+</ParamField>
+
+<ParamField path="href" type="string">
+  Link URL, renders as an anchor element
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disable the item user interaction
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Item content
+</ParamField>
+
+### Tabs.Panel
+
+<ParamField path="value" type="string" required>
+  Value of the panel used for the active panel selection (must match a Tabs.Item value)
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Panel content
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class name
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional HTML attributes
+</ParamField>

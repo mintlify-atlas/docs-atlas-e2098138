@@ -1,0 +1,494 @@
+---
+title: Bundle Optimization
+description: Optimize your bundle size when using Reshaped components and themes
+---
+
+Reshaped is designed with bundle optimization in mind, using modern JavaScript patterns and build tools to minimize the size of your production bundles.
+
+## Overview
+
+Reshaped provides several optimization strategies:
+
+- Tree-shakable ESM exports
+- Automatic CSS code splitting
+- On-demand icon loading
+- Selective theme imports
+- Side-effect-free components
+
+<Info>
+  Reshaped is distributed as ES modules with proper `sideEffects` configuration for optimal tree-shaking.
+</Info>
+
+## Import Optimization
+
+### Named Imports
+
+Always use named imports for best tree-shaking:
+
+<CodeGroup>
+```tsx Good
+import { Button, View, Text } from "reshaped";
+
+export default function App() {
+  return (
+    <View padding={4}>
+      <Button>Click me</Button>
+      <Text>Hello world</Text>
+    </View>
+  );
+}
+```
+
+```tsx Avoid
+import Reshaped from "reshaped";
+
+export default function App() {
+  return (
+    <Reshaped.View padding={4}>
+      <Reshaped.Button>Click me</Reshaped.Button>
+      <Reshaped.Text>Hello world</Reshaped.Text>
+    </Reshaped.View>
+  );
+}
+```
+</CodeGroup>
+
+### Component-Level Imports
+
+For maximum optimization, import from specific paths (if available):
+
+```tsx
+import Button from "reshaped/Button";
+import View from "reshaped/View";
+import Text from "reshaped/Text";
+
+export default function App() {
+  return (
+    <View padding={4}>
+      <Button>Click me</Button>
+      <Text>Hello world</Text>
+    </View>
+  );
+}
+```
+
+<Warning>
+  Check Reshaped documentation for supported deep import paths. Not all bundlers support this pattern.
+</Warning>
+
+## Theme Optimization
+
+### Selective Theme Imports
+
+Only import the themes you actually use:
+
+<CodeGroup>
+```tsx Single Theme
+// Import only the theme you need
+import "reshaped/themes/reshaped/theme.css";
+
+import { Reshaped } from "reshaped";
+
+export default function App() {
+  return (
+    <Reshaped theme="reshaped">
+      {/* Your app */}
+    </Reshaped>
+  );
+}
+```
+
+```tsx Multiple Themes
+// Import base theme + fragment
+import "reshaped/themes/reshaped/theme.css";
+import "./themes/fragments/brand/theme.css";
+
+import { Reshaped } from "reshaped";
+
+export default function App() {
+  return (
+    <Reshaped theme={["reshaped", "brand"]}>
+      {/* Your app */}
+    </Reshaped>
+  );
+}
+```
+</CodeGroup>
+
+### Dynamic Theme Loading
+
+Load themes on-demand for white-label applications:
+
+```tsx
+import { Reshaped } from "reshaped";
+import { lazy, Suspense } from "react";
+
+// Lazy load theme CSS
+function loadTheme(themeName: string) {
+  return import(`./themes/${themeName}/theme.css`);
+}
+
+export default function App({ selectedTheme }: { selectedTheme: string }) {
+  // Load theme dynamically
+  React.useEffect(() => {
+    loadTheme(selectedTheme);
+  }, [selectedTheme]);
+  
+  return (
+    <Reshaped theme={selectedTheme}>
+      {/* Your app */}
+    </Reshaped>
+  );
+}
+```
+
+### CSS Purging
+
+Use PurgeCSS or similar tools to remove unused theme CSS:
+
+```javascript
+// postcss.config.js
+module.exports = {
+  plugins: [
+    // ... other plugins
+    process.env.NODE_ENV === 'production' && require('@fullhuman/postcss-purgecss')({
+      content: [
+        './src/**/*.{js,jsx,ts,tsx}',
+        './node_modules/reshaped/dist/**/*.js',
+      ],
+      safelist: [
+        // Preserve Reshaped CSS variables
+        /^rs-/,
+        /^--rs-/,
+      ],
+    }),
+  ].filter(Boolean),
+};
+```
+
+## Icon Optimization
+
+### On-Demand Icon Loading
+
+Import only the icons you use:
+
+<CodeGroup>
+```tsx Named Imports
+import { IconCheck, IconX, IconChevronDown } from "reshaped/icons";
+
+export default function StatusIcon({ status }: { status: string }) {
+  return status === "success" ? <IconCheck /> : <IconX />;
+}
+```
+
+```tsx Direct Imports
+import IconCheck from "reshaped/icons/Check";
+import IconX from "reshaped/icons/X";
+
+export default function StatusIcon({ status }: { status: string }) {
+  return status === "success" ? <IconCheck /> : <IconX />;
+}
+```
+</CodeGroup>
+
+### Icon Tree-Shaking
+
+Reshaped icons are tree-shakable by default. Unused icons are automatically removed from your bundle.
+
+```tsx
+// Only IconCheck is included in the bundle
+import { IconCheck } from "reshaped/icons";
+
+export default function SuccessMessage() {
+  return (
+    <View direction="row" gap={2} align="center">
+      <IconCheck />
+      <Text>Success!</Text>
+    </View>
+  );
+}
+```
+
+## Build Configuration
+
+### Webpack Configuration
+
+Optimize Webpack for Reshaped:
+
+```javascript
+// webpack.config.js
+module.exports = {
+  optimization: {
+    // Enable tree-shaking
+    usedExports: true,
+    // Enable module concatenation
+    concatenateModules: true,
+    // Split chunks
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        reshaped: {
+          test: /[\\/]node_modules[\\/]reshaped[\\/]/,
+          name: 'reshaped',
+          priority: 10,
+        },
+      },
+    },
+  },
+  // Handle ESM properly
+  resolve: {
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    mainFields: ['module', 'main'],
+  },
+};
+```
+
+### Vite Configuration
+
+Vite works with Reshaped out of the box, but you can optimize further:
+
+```typescript
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    // Enable CSS code splitting
+    cssCodeSplit: true,
+    // Chunk size warnings
+    chunkSizeWarningLimit: 500,
+    rollupOptions: {
+      output: {
+        // Manual chunk splitting
+        manualChunks: {
+          'reshaped-core': ['reshaped'],
+        },
+      },
+    },
+  },
+});
+```
+
+### Next.js Configuration
+
+Optimize Next.js for Reshaped:
+
+```javascript
+// next.config.js
+module.exports = {
+  // Transpile Reshaped if needed
+  transpilePackages: ['reshaped'],
+  
+  // Optimize CSS
+  experimental: {
+    optimizeCss: true,
+  },
+  
+  // Webpack customization
+  webpack: (config, { dev, isServer }) => {
+    // Enable module concatenation
+    if (!dev && !isServer) {
+      config.optimization.concatenateModules = true;
+    }
+    return config;
+  },
+};
+```
+
+## Package Configuration
+
+Reshaped's package.json includes optimization hints:
+
+```json
+{
+  "sideEffects": [
+    "*.css"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  }
+}
+```
+
+Source: Check package.json configuration for details.
+
+<Info>
+  The `sideEffects` field tells bundlers that only CSS imports have side effects, enabling aggressive tree-shaking of unused components.
+</Info>
+
+## Bundle Analysis
+
+### Analyze Your Bundle
+
+<Tabs>
+  <Tab title="Webpack">
+    ```bash
+    npm install --save-dev webpack-bundle-analyzer
+    ```
+    
+    ```javascript
+    // webpack.config.js
+    const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+    
+    module.exports = {
+      plugins: [
+        new BundleAnalyzerPlugin({
+          analyzerMode: 'static',
+          openAnalyzer: false,
+        }),
+      ],
+    };
+    ```
+  </Tab>
+  
+  <Tab title="Vite">
+    ```bash
+    npm install --save-dev rollup-plugin-visualizer
+    ```
+    
+    ```typescript
+    // vite.config.ts
+    import { visualizer } from 'rollup-plugin-visualizer';
+    
+    export default defineConfig({
+      plugins: [
+        visualizer({
+          open: true,
+          gzipSize: true,
+          brotliSize: true,
+        }),
+      ],
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Next.js">
+    ```bash
+    npm install --save-dev @next/bundle-analyzer
+    ```
+    
+    ```javascript
+    // next.config.js
+    const withBundleAnalyzer = require('@next/bundle-analyzer')({
+      enabled: process.env.ANALYZE === 'true',
+    });
+    
+    module.exports = withBundleAnalyzer({
+      // ... your config
+    });
+    ```
+    
+    ```bash
+    ANALYZE=true npm run build
+    ```
+  </Tab>
+</Tabs>
+
+## Performance Benchmarks
+
+Typical bundle sizes with Reshaped (production, gzipped):
+
+<CardGroup cols={2}>
+  <Card title="Minimal App" icon="minimize">
+    **8-12 KB**
+    
+    Reshaped core + 2-3 components + base theme
+  </Card>
+  
+  <Card title="Small App" icon="file">
+    **20-30 KB**
+    
+    10-15 components + theme + icons
+  </Card>
+  
+  <Card title="Medium App" icon="files">
+    **40-60 KB**
+    
+    Most components + multiple themes + icon set
+  </Card>
+  
+  <Card title="Full Import" icon="database">
+    **80-100 KB**
+    
+    All components + all themes (avoid this)
+  </Card>
+</CardGroup>
+
+<Info>
+  These are approximate sizes. Actual sizes depend on your specific usage and bundler configuration.
+</Info>
+
+## Optimization Checklist
+
+<Steps>
+  <Step title="Use named imports">
+    ```tsx
+    import { Button, View } from "reshaped";
+    ```
+  </Step>
+  
+  <Step title="Import only needed themes">
+    ```tsx
+    import "reshaped/themes/reshaped/theme.css";
+    ```
+  </Step>
+  
+  <Step title="Load icons selectively">
+    ```tsx
+    import { IconCheck, IconX } from "reshaped/icons";
+    ```
+  </Step>
+  
+  <Step title="Enable tree-shaking">
+    Ensure your bundler is configured for tree-shaking (most are by default).
+  </Step>
+  
+  <Step title="Use code splitting">
+    Split routes and lazy-load components where appropriate.
+  </Step>
+  
+  <Step title="Analyze your bundle">
+    Use bundle analyzer to identify optimization opportunities.
+  </Step>
+  
+  <Step title="Measure impact">
+    Test your app's load time before and after optimizations.
+  </Step>
+</Steps>
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Profile before optimizing">
+    Use bundle analyzer to identify actual bottlenecks before making changes.
+  </Accordion>
+  
+  <Accordion title="Avoid premature optimization">
+    Start with standard imports and optimize only if bundle size becomes an issue.
+  </Accordion>
+  
+  <Accordion title="Monitor bundle size">
+    Set up CI/CD checks to alert on significant bundle size increases.
+  </Accordion>
+  
+  <Accordion title="Test production builds">
+    Always test optimizations in production mode, not development.
+  </Accordion>
+  
+  <Accordion title="Consider lazy loading">
+    Lazy load entire sections of your app for better initial load times.
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+- [Tree-shaking](https://webpack.js.org/guides/tree-shaking/) - Webpack documentation
+- [Code Splitting](https://react.dev/reference/react/lazy) - React documentation
+- [Vite Build Optimizations](https://vitejs.dev/guide/build.html) - Vite documentation

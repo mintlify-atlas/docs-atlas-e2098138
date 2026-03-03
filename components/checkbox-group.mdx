@@ -1,0 +1,201 @@
+---
+title: "CheckboxGroup"
+description: "A container for managing multiple related checkboxes"
+icon: "list-check"
+---
+
+CheckboxGroup is a form component that manages a collection of related checkboxes. It simplifies handling multiple checkbox selections and provides coordinated state management.
+
+## Basic usage
+
+```jsx
+import { CheckboxGroup, Checkbox, View } from 'reshaped';
+
+function Example() {
+  return (
+    <CheckboxGroup name="interests">
+      <View gap={3}>
+        <Checkbox value="tech">Technology</Checkbox>
+        <Checkbox value="art">Art</Checkbox>
+        <Checkbox value="music">Music</Checkbox>
+      </View>
+    </CheckboxGroup>
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { CheckboxGroup, Checkbox, View } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState(['tech']);
+
+  return (
+    <CheckboxGroup
+      name="interests"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    >
+      <View gap={3}>
+        <Checkbox value="tech">Technology</Checkbox>
+        <Checkbox value="art">Art</Checkbox>
+        <Checkbox value="music">Music</Checkbox>
+        <Checkbox value="sports">Sports</Checkbox>
+      </View>
+    </CheckboxGroup>
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { CheckboxGroup, Checkbox, View } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <CheckboxGroup
+      name="features"
+      defaultValue={['feature-a']}
+      onChange={({ name, value }) => console.log(name, value)}
+    >
+      <View gap={3}>
+        <Checkbox value="feature-a">Feature A</Checkbox>
+        <Checkbox value="feature-b">Feature B</Checkbox>
+        <Checkbox value="feature-c">Feature C</Checkbox>
+      </View>
+    </CheckboxGroup>
+  );
+}
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, CheckboxGroup, Checkbox, View } from 'reshaped';
+
+function FormExample() {
+  return (
+    <FormControl>
+      <FormControl.Label>Select your interests</FormControl.Label>
+      <CheckboxGroup name="interests">
+        <View gap={3}>
+          <Checkbox value="tech">Technology</Checkbox>
+          <Checkbox value="art">Art</Checkbox>
+          <Checkbox value="music">Music</Checkbox>
+        </View>
+      </CheckboxGroup>
+      <FormControl.Helper>
+        Choose all that apply.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Validation
+
+```jsx
+import { FormControl, CheckboxGroup, Checkbox, View } from 'reshaped';
+import { useState } from 'react';
+
+function ValidationExample() {
+  const [value, setValue] = useState([]);
+  const hasError = value.length === 0;
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Select at least one option</FormControl.Label>
+      <CheckboxGroup
+        name="options"
+        value={value}
+        onChange={({ value }) => setValue(value)}
+      >
+        <View gap={3}>
+          <Checkbox value="option-1">Option 1</Checkbox>
+          <Checkbox value="option-2">Option 2</Checkbox>
+          <Checkbox value="option-3">Option 3</Checkbox>
+        </View>
+      </CheckboxGroup>
+      <FormControl.Error>
+        Please select at least one option.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Disabled state
+
+```jsx
+import { CheckboxGroup, Checkbox, View } from 'reshaped';
+
+<CheckboxGroup name="disabled" disabled>
+  <View gap={3}>
+    <Checkbox value="a">Option A</Checkbox>
+    <Checkbox value="b">Option B</Checkbox>
+  </View>
+</CheckboxGroup>
+```
+
+## Custom layout
+
+```jsx
+import { CheckboxGroup, Checkbox, View } from 'reshaped';
+
+<CheckboxGroup name="grid">
+  <View direction="row" gap={4} wrap>
+    <Checkbox value="1">Option 1</Checkbox>
+    <Checkbox value="2">Option 2</Checkbox>
+    <Checkbox value="3">Option 3</Checkbox>
+    <Checkbox value="4">Option 4</Checkbox>
+  </View>
+</CheckboxGroup>
+```
+
+## Accessibility
+
+CheckboxGroup follows accessibility best practices:
+
+- Uses ARIA group role for semantic grouping
+- Coordinates state across all child checkboxes
+- Works with FormControl for proper label associations
+- Keyboard accessible through child checkboxes
+- Screen reader announces group context
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Component name attribute
+</ParamField>
+
+<ParamField path="id" type="string">
+  Component id attribute
+</ParamField>
+
+<ParamField path="value" type="string[]">
+  Component value, enables controlled mode. Array of selected checkbox values.
+</ParamField>
+
+<ParamField path="defaultValue" type="string[]">
+  Default value, enables uncontrolled mode. Array of initially selected checkbox values.
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the component from form submission
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Show an error state. Automatically inherited when used inside FormControl.
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: string[] }) => void">
+  Callback when the component selection changes. Receives array of selected values.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting checkboxes or custom layout components
+</ParamField>

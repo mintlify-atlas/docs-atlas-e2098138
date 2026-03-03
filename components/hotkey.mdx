@@ -1,0 +1,272 @@
+---
+title: Hotkey
+description: Visual representation of keyboard shortcuts and key combinations
+---
+
+The `Hotkey` component displays keyboard shortcuts in a styled format, commonly used in menus, tooltips, or documentation to show available keyboard shortcuts.
+
+## Basic Usage
+
+```jsx
+import { Hotkey } from 'reshaped';
+
+function Example() {
+  return <Hotkey>⌘K</Hotkey>;
+}
+```
+
+## Active State
+
+```jsx
+import { Hotkey } from 'reshaped';
+import { useState } from 'react';
+
+function ActiveHotkey() {
+  const [pressed, setPressed] = useState(false);
+  
+  return (
+    <Hotkey active={pressed}>
+      Enter
+    </Hotkey>
+  );
+}
+```
+
+## In Menu Items
+
+```jsx
+import { Hotkey, Stack, Text } from 'reshaped';
+
+function MenuItem({ label, shortcut }) {
+  return (
+    <Stack direction="row" gap={4} align="center" justify="space-between">
+      <Text>{label}</Text>
+      <Hotkey>{shortcut}</Hotkey>
+    </Stack>
+  );
+}
+```
+
+## Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  Node for inserting children - typically the key or key combination text
+</ParamField>
+
+<ParamField path="active" type="boolean">
+  Highlight the component, can be used to show when hotkey is pressed
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="HTMLAttributes<HTMLElement>">
+  Additional attributes for the root element
+</ParamField>
+
+## When to Use
+
+- **Menu Items**: Show keyboard shortcuts next to menu actions
+- **Tooltips**: Display shortcuts in hover tooltips
+- **Documentation**: Document available keyboard commands
+- **Onboarding**: Teach users about keyboard shortcuts
+- **Command Palettes**: Show shortcuts in command/search interfaces
+
+## Composition Patterns
+
+### Menu with Shortcuts
+
+```jsx
+import { Hotkey, Stack, Text, Actionable, View } from 'reshaped';
+
+function Menu({ items }) {
+  return (
+    <Stack gap={1}>
+      {items.map((item) => (
+        <Actionable key={item.id} onClick={item.action}>
+          <View padding={2} paddingInline={3}>
+            <Stack direction="row" gap={4} align="center" justify="space-between">
+              <Text>{item.label}</Text>
+              {item.shortcut && (
+                <Hotkey>{item.shortcut}</Hotkey>
+              )}
+            </Stack>
+          </View>
+        </Actionable>
+      ))}
+    </Stack>
+  );
+}
+
+// Usage
+<Menu items={[
+  { id: 1, label: 'New File', shortcut: '⌘N', action: () => {} },
+  { id: 2, label: 'Open', shortcut: '⌘O', action: () => {} },
+  { id: 3, label: 'Save', shortcut: '⌘S', action: () => {} },
+]} />
+```
+
+### Key Combination
+
+```jsx
+import { Hotkey, Stack } from 'reshaped';
+
+function KeyCombo({ keys }) {
+  return (
+    <Stack direction="row" gap={1} align="center">
+      {keys.map((key, index) => (
+        <>
+          <Hotkey key={index}>{key}</Hotkey>
+          {index < keys.length - 1 && <span>+</span>}
+        </>
+      ))}
+    </Stack>
+  );
+}
+
+// Usage
+<KeyCombo keys={['⌘', 'Shift', 'P']} />
+```
+
+### Interactive Hotkey
+
+```jsx
+import { Hotkey } from 'reshaped';
+import { useState, useEffect } from 'react';
+
+function InteractiveHotkey({ targetKey }) {
+  const [active, setActive] = useState(false);
+  
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === targetKey) {
+        setActive(true);
+      }
+    };
+    
+    const handleKeyUp = (e) => {
+      if (e.key === targetKey) {
+        setActive(false);
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [targetKey]);
+  
+  return <Hotkey active={active}>{targetKey}</Hotkey>;
+}
+```
+
+### Tooltip with Shortcut
+
+```jsx
+import { Hotkey, Tooltip, Button, Stack, Text } from 'reshaped';
+
+function ButtonWithShortcut({ label, shortcut, onClick }) {
+  return (
+    <Tooltip
+      text={
+        <Stack gap={2}>
+          <Text variant="caption-1">{label}</Text>
+          <Hotkey>{shortcut}</Hotkey>
+        </Stack>
+      }
+    >
+      <Button onClick={onClick}>{label}</Button>
+    </Tooltip>
+  );
+}
+```
+
+### Keyboard Reference Guide
+
+```jsx
+import { Hotkey, Stack, Text, View } from 'reshaped';
+
+function KeyboardGuide({ shortcuts }) {
+  return (
+    <Stack gap={3}>
+      <Text variant="title-6" weight="medium">Keyboard Shortcuts</Text>
+      <Stack gap={2}>
+        {shortcuts.map((shortcut) => (
+          <View 
+            key={shortcut.id}
+            padding={2}
+            borderRadius="small"
+            backgroundColor="neutral-faded"
+          >
+            <Stack direction="row" gap={3} align="center" justify="space-between">
+              <Text>{shortcut.description}</Text>
+              <Hotkey>{shortcut.keys}</Hotkey>
+            </Stack>
+          </View>
+        ))}
+      </Stack>
+    </Stack>
+  );
+}
+
+// Usage
+<KeyboardGuide shortcuts={[
+  { id: 1, description: 'Open command palette', keys: '⌘K' },
+  { id: 2, description: 'Search files', keys: '⌘P' },
+  { id: 3, description: 'Toggle sidebar', keys: '⌘B' },
+]} />
+```
+
+### Command Palette Item
+
+```jsx
+import { Hotkey, Stack, Text, Icon, Actionable } from 'reshaped';
+
+function CommandItem({ icon, title, description, shortcut, onClick }) {
+  return (
+    <Actionable onClick={onClick}>
+      <Stack direction="row" gap={3} align="center" padding={2}>
+        <Icon svg={icon} />
+        <Stack gap={0.5} grow>
+          <Text weight="medium">{title}</Text>
+          <Text variant="caption-1" color="neutral">{description}</Text>
+        </Stack>
+        {shortcut && <Hotkey>{shortcut}</Hotkey>}
+      </Stack>
+    </Actionable>
+  );
+}
+```
+
+### Platform-Specific Shortcuts
+
+```jsx
+import { Hotkey, Stack, Text } from 'reshaped';
+
+function PlatformShortcut({ action, macKeys, windowsKeys }) {
+  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  const keys = isMac ? macKeys : windowsKeys;
+  
+  return (
+    <Stack direction="row" gap={3} align="center" justify="space-between">
+      <Text>{action}</Text>
+      <Stack direction="row" gap={1}>
+        {keys.map((key, index) => (
+          <Hotkey key={index}>{key}</Hotkey>
+        ))}
+      </Stack>
+    </Stack>
+  );
+}
+
+// Usage
+<PlatformShortcut 
+  action="Save"
+  macKeys={['⌘', 'S']}
+  windowsKeys={['Ctrl', 'S']}
+/>
+```

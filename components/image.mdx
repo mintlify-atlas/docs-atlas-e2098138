@@ -1,0 +1,450 @@
+---
+title: Image
+description: Display images with responsive sizing and fallback support
+---
+
+The Image component provides a flexible way to display images with support for sizing, aspect ratios, fallbacks, and integration with third-party image libraries.
+
+## Basic Usage
+
+```jsx
+import { Image } from 'reshaped';
+
+function App() {
+  return (
+    <Image
+      src="/photo.jpg"
+      alt="Description of the image"
+    />
+  );
+}
+```
+
+## Sizing
+
+Control image dimensions:
+
+```jsx
+<Image
+  src="/photo.jpg"
+  alt="Fixed width"
+  width={200}
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Fixed height"
+  height={300}
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Width and height"
+  width={400}
+  height={300}
+/>
+```
+
+## Responsive Sizing
+
+Size can be responsive across breakpoints:
+
+```jsx
+<Image
+  src="/photo.jpg"
+  alt="Responsive"
+  width={{ s: 200, m: 300, l: 400 }}
+/>
+```
+
+## Aspect Ratio
+
+Maintain aspect ratios:
+
+```jsx
+<Image
+  src="/photo.jpg"
+  alt="16:9 aspect ratio"
+  aspectRatio={16 / 9}
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Square"
+  aspectRatio={1}
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Portrait"
+  aspectRatio={3 / 4}
+/>
+```
+
+## Max Width
+
+Set maximum width constraints:
+
+```jsx
+<Image
+  src="/photo.jpg"
+  alt="Constrained width"
+  maxWidth={600}
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Responsive max width"
+  maxWidth={{ s: 300, m: 500, l: 800 }}
+/>
+```
+
+## Display Modes
+
+Control how images fit within their boundaries:
+
+```jsx
+<Image
+  src="/photo.jpg"
+  alt="Cover mode"
+  displayMode="cover"
+  aspectRatio={16 / 9}
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Contain mode"
+  displayMode="contain"
+  aspectRatio={16 / 9}
+/>
+```
+
+## Border Radius
+
+Apply rounded corners:
+
+```jsx
+<Image
+  src="/photo.jpg"
+  alt="Small radius"
+  borderRadius="small"
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Medium radius"
+  borderRadius="medium"
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Large radius"
+  borderRadius="large"
+/>
+
+<Image
+  src="/photo.jpg"
+  alt="Circular"
+  aspectRatio={1}
+  borderRadius="circular"
+/>
+```
+
+## Outline
+
+Add a semi-transparent border for better contrast:
+
+```jsx
+<Image
+  src="/photo.jpg"
+  alt="Image with outline"
+  outline
+/>
+```
+
+## Fallback Content
+
+Provide fallback for failed or missing images:
+
+```jsx
+import { Image, View, Icon } from 'reshaped';
+import IconImage from './icons/Image';
+
+<Image
+  src="/missing.jpg"
+  alt="Fallback image"
+  fallback="/placeholder.jpg"
+/>
+
+<Image
+  src="/missing.jpg"
+  alt="Fallback component"
+  fallback={
+    <View
+      backgroundColor="neutral-faded"
+      padding={8}
+      align="center"
+      justify="center"
+      height="100%"
+    >
+      <Icon svg={IconImage} size={8} color="neutral-faded" />
+    </View>
+  }
+  aspectRatio={16 / 9}
+/>
+```
+
+## Loading States
+
+Handle image loading events:
+
+```jsx
+function ImageWithLoader() {
+  const [loading, setLoading] = React.useState(true);
+
+  return (
+    <View>
+      {loading && <Loader />}
+      <Image
+        src="/large-image.jpg"
+        alt="Image"
+        onLoad={() => setLoading(false)}
+        onError={() => {
+          setLoading(false);
+          console.error('Image failed to load');
+        }}
+      />
+    </View>
+  );
+}
+```
+
+## Next.js Integration
+
+Integrate with Next.js Image component:
+
+```jsx
+import { Image as ReshapedImage } from 'reshaped';
+import NextImage from 'next/image';
+
+function App() {
+  return (
+    <ReshapedImage
+      src="/photo.jpg"
+      alt="Next.js Image"
+      width={400}
+      aspectRatio={16 / 9}
+      renderImage={(props) => (
+        <NextImage
+          {...props}
+          width={400}
+          height={225}
+        />
+      )}
+    />
+  );
+}
+```
+
+## Complete Examples
+
+### Image Grid
+
+```jsx
+import { Image, View } from 'reshaped';
+
+function ImageGrid({ images }) {
+  return (
+    <View gap={4}>
+      {images.map((image, index) => (
+        <Image
+          key={index}
+          src={image.src}
+          alt={image.alt}
+          aspectRatio={16 / 9}
+          borderRadius="medium"
+          outline
+        />
+      ))}
+    </View>
+  );
+}
+```
+
+### Hero Image
+
+```jsx
+import { Image, View, Text, Button } from 'reshaped';
+
+function Hero() {
+  return (
+    <View attributes={{ style: { position: 'relative' } }}>
+      <Image
+        src="/hero.jpg"
+        alt="Hero image"
+        aspectRatio={{ s: 4 / 3, m: 16 / 9, l: 21 / 9 }}
+        displayMode="cover"
+      />
+      <View
+        attributes={{
+          style: {
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }
+        }}
+      >
+        <View gap={4} align="center" padding={6}>
+          <Text variant="featured-1" weight="bold" color="white" align="center">
+            Welcome to Our Platform
+          </Text>
+          <Button size="large">Get Started</Button>
+        </View>
+      </View>
+    </View>
+  );
+}
+```
+
+### Product Image Gallery
+
+```jsx
+import { Image, View, Card } from 'reshaped';
+
+function ProductGallery({ images }) {
+  const [selected, setSelected] = React.useState(0);
+
+  return (
+    <View gap={3}>
+      <Image
+        src={images[selected]}
+        alt="Product image"
+        aspectRatio={1}
+        borderRadius="large"
+        outline
+      />
+      
+      <View direction="row" gap={2}>
+        {images.map((image, index) => (
+          <Card
+            key={index}
+            padding={0}
+            selected={selected === index}
+            onClick={() => setSelected(index)}
+          >
+            <Image
+              src={image}
+              alt={`Thumbnail ${index + 1}`}
+              width={80}
+              aspectRatio={1}
+              borderRadius="medium"
+            />
+          </Card>
+        ))}
+      </View>
+    </View>
+  );
+}
+```
+
+### Avatar with Image
+
+```jsx
+import { Image, View, Text } from 'reshaped';
+
+function UserCard({ user }) {
+  return (
+    <View direction="row" gap={3} align="center">
+      <Image
+        src={user.avatar}
+        alt={user.name}
+        width={48}
+        aspectRatio={1}
+        borderRadius="circular"
+        outline
+        fallback={user.initials}
+      />
+      <View>
+        <Text variant="body-2" weight="semibold">
+          {user.name}
+        </Text>
+        <Text variant="caption-1" color="neutral-faded">
+          {user.role}
+        </Text>
+      </View>
+    </View>
+  );
+}
+```
+
+## Props
+
+<ParamField path="src" type="string" default="undefined">
+  Image URL.
+</ParamField>
+
+<ParamField path="alt" type="string" default="undefined">
+  Image alt text for accessibility.
+</ParamField>
+
+<ParamField path="width" type="number | string | responsive" default="undefined">
+  Image width. Can be a number (base unit multiplier), string (CSS value), or responsive.
+</ParamField>
+
+<ParamField path="height" type="number | string | responsive" default="undefined">
+  Image height. Can be a number (base unit multiplier), string (CSS value), or responsive.
+</ParamField>
+
+<ParamField path="maxWidth" type="number | string | responsive" default="undefined">
+  Image max width. Can be a number (base unit multiplier), string (CSS value), or responsive.
+</ParamField>
+
+<ParamField path="aspectRatio" type="number | responsive" default="undefined">
+  Image aspect ratio (width / height). Can be responsive.
+</ParamField>
+
+<ParamField path="borderRadius" type="string" default="undefined">
+  Image border radius based on radius tokens.
+  
+  Options: `small`, `medium`, `large`, `circular`
+</ParamField>
+
+<ParamField path="displayMode" type="string" default="cover">
+  Image display mode for controlling how it fits into the provided boundaries.
+  
+  Options: `cover`, `contain`
+</ParamField>
+
+<ParamField path="outline" type="boolean" default="false">
+  Add a semi-transparent border on top of the image for better background contrast.
+</ParamField>
+
+<ParamField path="fallback" type="string | ReactNode | boolean" default="undefined">
+  Image fallback content if the image fails to load or was not provided. Can be a URL string or custom component.
+</ParamField>
+
+<ParamField path="onLoad" type="function" default="undefined">
+  Image on load event handler.
+</ParamField>
+
+<ParamField path="onError" type="function" default="undefined">
+  Image on error event handler.
+</ParamField>
+
+<ParamField path="renderImage" type="function" default="undefined">
+  Image render function. Can be used for integrating with Image component in 3rd party frameworks like Next.js.
+</ParamField>
+
+<ParamField path="imageAttributes" type="object" default="undefined">
+  Additional attributes for the image element.
+</ParamField>
+
+<ParamField path="className" type="string" default="undefined">
+  Additional classname for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="object" default="undefined">
+  Additional attributes for the root element.
+</ParamField>

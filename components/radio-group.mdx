@@ -1,0 +1,243 @@
+---
+title: "RadioGroup"
+description: "A container for managing mutually exclusive radio button selections"
+icon: "list-radio"
+---
+
+RadioGroup is a form component that manages a collection of radio buttons. It ensures only one radio can be selected at a time and provides coordinated state management.
+
+## Basic usage
+
+```jsx
+import { RadioGroup, Radio, View } from 'reshaped';
+
+function Example() {
+  return (
+    <RadioGroup name="plan">
+      <View gap={3}>
+        <Radio value="free">Free</Radio>
+        <Radio value="pro">Pro</Radio>
+        <Radio value="enterprise">Enterprise</Radio>
+      </View>
+    </RadioGroup>
+  );
+}
+```
+
+## Controlled component
+
+```jsx
+import { useState } from 'react';
+import { RadioGroup, Radio, View } from 'reshaped';
+
+function ControlledExample() {
+  const [value, setValue] = useState('pro');
+
+  return (
+    <RadioGroup
+      name="plan"
+      value={value}
+      onChange={({ value }) => setValue(value)}
+    >
+      <View gap={3}>
+        <Radio value="free">Free Plan</Radio>
+        <Radio value="pro">Pro Plan</Radio>
+        <Radio value="enterprise">Enterprise Plan</Radio>
+      </View>
+    </RadioGroup>
+  );
+}
+```
+
+## Uncontrolled component
+
+```jsx
+import { RadioGroup, Radio, View } from 'reshaped';
+
+function UncontrolledExample() {
+  return (
+    <RadioGroup
+      name="subscription"
+      defaultValue="monthly"
+      onChange={({ name, value }) => console.log(name, value)}
+    >
+      <View gap={3}>
+        <Radio value="monthly">Monthly</Radio>
+        <Radio value="yearly">Yearly</Radio>
+      </View>
+    </RadioGroup>
+  );
+}
+```
+
+## With FormControl
+
+```jsx
+import { FormControl, RadioGroup, Radio, View } from 'reshaped';
+
+function FormExample() {
+  return (
+    <FormControl>
+      <FormControl.Label>Choose a plan</FormControl.Label>
+      <RadioGroup name="plan">
+        <View gap={3}>
+          <Radio value="free">Free Plan</Radio>
+          <Radio value="pro">Pro Plan</Radio>
+          <Radio value="enterprise">Enterprise Plan</Radio>
+        </View>
+      </RadioGroup>
+      <FormControl.Helper>
+        You can upgrade or downgrade at any time.
+      </FormControl.Helper>
+    </FormControl>
+  );
+}
+```
+
+## Validation
+
+```jsx
+import { FormControl, RadioGroup, Radio, View } from 'reshaped';
+import { useState } from 'react';
+
+function ValidationExample() {
+  const [value, setValue] = useState(null);
+  const hasError = value === null;
+
+  return (
+    <FormControl hasError={hasError}>
+      <FormControl.Label>Select a payment method</FormControl.Label>
+      <RadioGroup
+        name="payment"
+        value={value}
+        onChange={({ value }) => setValue(value)}
+      >
+        <View gap={3}>
+          <Radio value="card">Credit Card</Radio>
+          <Radio value="paypal">PayPal</Radio>
+          <Radio value="bank">Bank Transfer</Radio>
+        </View>
+      </RadioGroup>
+      <FormControl.Error>
+        Please select a payment method.
+      </FormControl.Error>
+    </FormControl>
+  );
+}
+```
+
+## Disabled state
+
+```jsx
+import { RadioGroup, Radio, View } from 'reshaped';
+
+<RadioGroup name="disabled" disabled>
+  <View gap={3}>
+    <Radio value="option-1">Option 1</Radio>
+    <Radio value="option-2">Option 2</Radio>
+  </View>
+</RadioGroup>
+```
+
+## Custom layout
+
+```jsx
+import { RadioGroup, Radio, View } from 'reshaped';
+
+<RadioGroup name="layout">
+  <View direction="row" gap={4}>
+    <Radio value="left">Left</Radio>
+    <Radio value="center">Center</Radio>
+    <Radio value="right">Right</Radio>
+  </View>
+</RadioGroup>
+```
+
+## Rich content
+
+```jsx
+import { RadioGroup, Radio, View, Text, Card } from 'reshaped';
+
+function RichExample() {
+  return (
+    <RadioGroup name="plan">
+      <View gap={3}>
+        <Card>
+          <Radio value="free">
+            <View gap={2}>
+              <Text weight="bold" variant="body-1">Free Plan</Text>
+              <Text variant="body-2" color="neutral-faded">
+                Perfect for individuals and hobbyists
+              </Text>
+              <Text weight="medium" variant="featured-3">$0/month</Text>
+            </View>
+          </Radio>
+        </Card>
+        <Card>
+          <Radio value="pro">
+            <View gap={2}>
+              <Text weight="bold" variant="body-1">Pro Plan</Text>
+              <Text variant="body-2" color="neutral-faded">
+                For professionals and small teams
+              </Text>
+              <Text weight="medium" variant="featured-3">$29/month</Text>
+            </View>
+          </Radio>
+        </Card>
+      </View>
+    </RadioGroup>
+  );
+}
+```
+
+## Accessibility
+
+RadioGroup follows accessibility best practices:
+
+- Uses ARIA radiogroup role for semantic grouping
+- Ensures only one radio can be selected at a time
+- Works with FormControl for proper label associations
+- Keyboard accessible (Arrow keys navigate, Space selects)
+- Screen reader announces group context and selection state
+
+## Props
+
+<ParamField path="name" type="string" required>
+  Name of the input element
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the radio group
+</ParamField>
+
+<ParamField path="value" type="string | null">
+  Value of the input element, enables controlled mode
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default value of the input element, enables uncontrolled mode
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the form field from the form submission
+</ParamField>
+
+<ParamField path="hasError" type="boolean">
+  Indicate that the form field has an error. Automatically inherited when used inside FormControl.
+</ParamField>
+
+<ParamField path="onChange" type="(args: { value: string }) => void">
+  Callback when the input value changes
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Node for inserting children (Radio components)
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional classname for the root element
+</ParamField>
+
+<ParamField path="attributes" type="object">
+  Additional attributes for the root element
+</ParamField>

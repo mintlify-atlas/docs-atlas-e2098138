@@ -1,0 +1,552 @@
+---
+title: DropdownMenu
+description: Display action menus attached to trigger buttons
+---
+
+<RequestExample>
+```jsx
+import { DropdownMenu, Button } from 'reshaped';
+import IconCheckmark from 'reshaped/icons/Checkmark';
+
+function Example() {
+  return (
+    <DropdownMenu>
+      <DropdownMenu.Trigger>
+        {(attributes) => <Button attributes={attributes}>Actions</Button>}
+      </DropdownMenu.Trigger>
+      
+      <DropdownMenu.Content>
+        <DropdownMenu.Item icon={IconCheckmark} onClick={handleEdit}>
+          Edit
+        </DropdownMenu.Item>
+        <DropdownMenu.Item onClick={handleDuplicate}>
+          Duplicate
+        </DropdownMenu.Item>
+        <DropdownMenu.Item color="critical" onClick={handleDelete}>
+          Delete
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu>
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+DropdownMenu displays a list of actions or options attached to a trigger element. It automatically closes when an item is selected and supports keyboard navigation.
+
+## Props
+
+<ParamField path="position" type="string">
+  Position relative to the trigger element.
+  
+  Options: `"bottom"`, `"bottom-start"`, `"bottom-end"`, `"top"`, `"top-start"`, `"top-end"`, `"start"`, `"start-top"`, `"start-bottom"`, `"end"`, `"end-top"`, `"end-bottom"`
+  
+  Default: `"bottom-start"`
+</ParamField>
+
+<ParamField path="active" type="boolean">
+  Controlled state for menu visibility.
+  
+  ```jsx
+  <DropdownMenu active={isOpen} onClose={() => setIsOpen(false)}>
+  ```
+</ParamField>
+
+<ParamField path="defaultActive" type="boolean">
+  Initial active state for uncontrolled mode.
+</ParamField>
+
+<ParamField path="triggerType" type="string">
+  Event that triggers the menu.
+  
+  Options: `"click"`, `"hover"`, `"focus"`
+  
+  Default: `"click"`
+</ParamField>
+
+<ParamField path="width" type="string">
+  Width of the menu. Accepts CSS values or `"trigger"` to match trigger width.
+  
+  ```jsx
+  <DropdownMenu width="250px" />
+  <DropdownMenu width="trigger" />
+  ```
+</ParamField>
+
+<ParamField path="contentGap" type="number">
+  Gap between trigger and menu in pixels.
+</ParamField>
+
+<ParamField path="contentShift" type="number">
+  Shift the menu on the secondary axis.
+</ParamField>
+
+<ParamField path="contentMaxHeight" type="string">
+  Maximum height for scrollable menus.
+  
+  ```jsx
+  <DropdownMenu contentMaxHeight="400px">
+  ```
+</ParamField>
+
+<ParamField path="fallbackPositions" type="Position[] | false">
+  Fallback positions when menu doesn't fit.
+</ParamField>
+
+<ParamField path="fallbackAdjustLayout" type="boolean">
+  Adjust size and position when fallbacks don't work.
+</ParamField>
+
+<ParamField path="disableCloseOnOutsideClick" type="boolean">
+  Prevent closing when clicking outside.
+</ParamField>
+
+<ParamField path="onOpen" type="() => void">
+  Callback when the menu opens.
+</ParamField>
+
+<ParamField path="onClose" type="(args: { reason?: string }) => void">
+  Callback when the menu closes.
+</ParamField>
+
+<ParamField path="borderRadius" type="string">
+  Border radius for the menu.
+  
+  Options: `"small"`, `"medium"`
+</ParamField>
+
+<ParamField path="elevation" type="string">
+  Shadow elevation level.
+  
+  Options: `"raised"`, `"overlay"`
+</ParamField>
+
+<ParamField path="containerRef" type="React.RefObject<HTMLElement>">
+  Container element for positioning.
+</ParamField>
+
+<ParamField path="instanceRef" type="React.Ref<DropdownMenuInstance>">
+  Ref to access menu methods (open, close, updatePosition).
+</ParamField>
+
+## Subcomponents
+
+### DropdownMenu.Trigger
+
+Render function that provides attributes for the trigger element.
+
+```jsx
+<DropdownMenu.Trigger>
+  {(attributes) => <Button attributes={attributes}>Menu</Button>}
+</DropdownMenu.Trigger>
+```
+
+### DropdownMenu.Content
+
+Container for menu items.
+
+```jsx
+<DropdownMenu.Content>
+  <DropdownMenu.Item>Item 1</DropdownMenu.Item>
+  <DropdownMenu.Item>Item 2</DropdownMenu.Item>
+</DropdownMenu.Content>
+```
+
+<ParamField path="className" type="string">
+  Additional CSS class for the content element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the content element.
+</ParamField>
+
+### DropdownMenu.Item
+
+Individual menu item.
+
+<ParamField path="children" type="React.ReactNode" required>
+  Text content of the menu item.
+</ParamField>
+
+<ParamField path="icon" type="IconProps['svg']">
+  Icon displayed at the start of the item.
+  
+  ```jsx
+  <DropdownMenu.Item icon={IconCheckmark}>Selected</DropdownMenu.Item>
+  ```
+</ParamField>
+
+<ParamField path="startSlot" type="React.ReactNode">
+  Custom content at the start position.
+</ParamField>
+
+<ParamField path="endSlot" type="React.ReactNode">
+  Custom content at the end position.
+  
+  ```jsx
+  <DropdownMenu.Item endSlot={<Badge>New</Badge>}>
+    Feature
+  </DropdownMenu.Item>
+  ```
+</ParamField>
+
+<ParamField path="color" type="string">
+  Color scheme for the item.
+  
+  Options: `"primary"`, `"critical"`
+  
+  ```jsx
+  <DropdownMenu.Item color="critical">Delete</DropdownMenu.Item>
+  ```
+</ParamField>
+
+<ParamField path="selected" type="boolean">
+  Highlight the item as selected.
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable the item.
+</ParamField>
+
+<ParamField path="onClick" type="(e: React.MouseEvent) => void">
+  Click handler for the item.
+</ParamField>
+
+### DropdownMenu.Section
+
+Group related menu items with a divider.
+
+```jsx
+<DropdownMenu.Content>
+  <DropdownMenu.Section>
+    <DropdownMenu.Item>Item 1</DropdownMenu.Item>
+    <DropdownMenu.Item>Item 2</DropdownMenu.Item>
+  </DropdownMenu.Section>
+  
+  <DropdownMenu.Section>
+    <DropdownMenu.Item>Item 3</DropdownMenu.Item>
+  </DropdownMenu.Section>
+</DropdownMenu.Content>
+```
+
+### DropdownMenu.SubMenu
+
+Nested submenu.
+
+```jsx
+<DropdownMenu.SubMenu>
+  <DropdownMenu.SubTrigger>More Actions</DropdownMenu.SubTrigger>
+  <DropdownMenu.Content>
+    <DropdownMenu.Item>Sub Item 1</DropdownMenu.Item>
+    <DropdownMenu.Item>Sub Item 2</DropdownMenu.Item>
+  </DropdownMenu.Content>
+</DropdownMenu.SubMenu>
+```
+
+### DropdownMenu.SubTrigger
+
+Trigger for a submenu. Same props as DropdownMenu.Item except `endSlot`.
+
+## Examples
+
+### Basic Menu
+
+```jsx
+<DropdownMenu>
+  <DropdownMenu.Trigger>
+    {(attributes) => <Button attributes={attributes}>Actions</Button>}
+  </DropdownMenu.Trigger>
+  
+  <DropdownMenu.Content>
+    <DropdownMenu.Item onClick={() => console.log('Edit')}>
+      Edit
+    </DropdownMenu.Item>
+    <DropdownMenu.Item onClick={() => console.log('Duplicate')}>
+      Duplicate
+    </DropdownMenu.Item>
+    <DropdownMenu.Item onClick={() => console.log('Share')}>
+      Share
+    </DropdownMenu.Item>
+  </DropdownMenu.Content>
+</DropdownMenu>
+```
+
+### With Icons
+
+```jsx
+import IconEdit from 'reshaped/icons/Edit';
+import IconCopy from 'reshaped/icons/Copy';
+import IconShare from 'reshaped/icons/Share';
+import IconTrash from 'reshaped/icons/Trash';
+
+<DropdownMenu>
+  <DropdownMenu.Trigger>
+    {(attributes) => <Button attributes={attributes}>Options</Button>}
+  </DropdownMenu.Trigger>
+  
+  <DropdownMenu.Content>
+    <DropdownMenu.Item icon={IconEdit} onClick={handleEdit}>
+      Edit
+    </DropdownMenu.Item>
+    <DropdownMenu.Item icon={IconCopy} onClick={handleDuplicate}>
+      Duplicate
+    </DropdownMenu.Item>
+    <DropdownMenu.Item icon={IconShare} onClick={handleShare}>
+      Share
+    </DropdownMenu.Item>
+    <DropdownMenu.Item icon={IconTrash} color="critical" onClick={handleDelete}>
+      Delete
+    </DropdownMenu.Item>
+  </DropdownMenu.Content>
+</DropdownMenu>
+```
+
+### Grouped Sections
+
+```jsx
+<DropdownMenu>
+  <DropdownMenu.Trigger>
+    {(attributes) => <Button attributes={attributes}>File</Button>}
+  </DropdownMenu.Trigger>
+  
+  <DropdownMenu.Content>
+    <DropdownMenu.Section>
+      <DropdownMenu.Item icon={IconFile}>New File</DropdownMenu.Item>
+      <DropdownMenu.Item icon={IconFolder}>New Folder</DropdownMenu.Item>
+    </DropdownMenu.Section>
+    
+    <DropdownMenu.Section>
+      <DropdownMenu.Item icon={IconSave}>Save</DropdownMenu.Item>
+      <DropdownMenu.Item icon={IconSave}>Save As...</DropdownMenu.Item>
+    </DropdownMenu.Section>
+    
+    <DropdownMenu.Section>
+      <DropdownMenu.Item icon={IconExport}>Export</DropdownMenu.Item>
+      <DropdownMenu.Item icon={IconPrint}>Print</DropdownMenu.Item>
+    </DropdownMenu.Section>
+  </DropdownMenu.Content>
+</DropdownMenu>
+```
+
+### With Submenus
+
+```jsx
+<DropdownMenu>
+  <DropdownMenu.Trigger>
+    {(attributes) => <Button attributes={attributes}>Edit</Button>}
+  </DropdownMenu.Trigger>
+  
+  <DropdownMenu.Content>
+    <DropdownMenu.Item icon={IconCut}>Cut</DropdownMenu.Item>
+    <DropdownMenu.Item icon={IconCopy}>Copy</DropdownMenu.Item>
+    <DropdownMenu.Item icon={IconPaste}>Paste</DropdownMenu.Item>
+    
+    <DropdownMenu.SubMenu>
+      <DropdownMenu.SubTrigger icon={IconAlign}>
+        Align
+      </DropdownMenu.SubTrigger>
+      <DropdownMenu.Content>
+        <DropdownMenu.Item>Align Left</DropdownMenu.Item>
+        <DropdownMenu.Item>Align Center</DropdownMenu.Item>
+        <DropdownMenu.Item>Align Right</DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.SubMenu>
+    
+    <DropdownMenu.SubMenu>
+      <DropdownMenu.SubTrigger icon={IconTransform}>
+        Transform
+      </DropdownMenu.SubTrigger>
+      <DropdownMenu.Content>
+        <DropdownMenu.Item>Flip Horizontal</DropdownMenu.Item>
+        <DropdownMenu.Item>Flip Vertical</DropdownMenu.Item>
+        <DropdownMenu.Item>Rotate 90°</DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.SubMenu>
+  </DropdownMenu.Content>
+</DropdownMenu>
+```
+
+### Selection Menu
+
+```jsx
+function SortMenu({ sortBy, onChange }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenu.Trigger>
+        {(attributes) => (
+          <Button attributes={attributes} icon={IconSort}>
+            Sort: {sortBy}
+          </Button>
+        )}
+      </DropdownMenu.Trigger>
+      
+      <DropdownMenu.Content>
+        <DropdownMenu.Item
+          icon={sortBy === 'name' ? IconCheckmark : undefined}
+          selected={sortBy === 'name'}
+          onClick={() => onChange('name')}
+        >
+          Name
+        </DropdownMenu.Item>
+        <DropdownMenu.Item
+          icon={sortBy === 'date' ? IconCheckmark : undefined}
+          selected={sortBy === 'date'}
+          onClick={() => onChange('date')}
+        >
+          Date Modified
+        </DropdownMenu.Item>
+        <DropdownMenu.Item
+          icon={sortBy === 'size' ? IconCheckmark : undefined}
+          selected={sortBy === 'size'}
+          onClick={() => onChange('size')}
+        >
+          File Size
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu>
+  );
+}
+```
+
+### With End Slots
+
+```jsx
+<DropdownMenu>
+  <DropdownMenu.Trigger>
+    {(attributes) => <Button attributes={attributes}>View</Button>}
+  </DropdownMenu.Trigger>
+  
+  <DropdownMenu.Content>
+    <DropdownMenu.Item
+      endSlot={<Text variant="body-3" color="neutral-faded">⌘1</Text>}
+    >
+      Show Sidebar
+    </DropdownMenu.Item>
+    <DropdownMenu.Item
+      endSlot={<Text variant="body-3" color="neutral-faded">⌘2</Text>}
+    >
+      Show Properties
+    </DropdownMenu.Item>
+    <DropdownMenu.Item
+      endSlot={<Badge>Beta</Badge>}
+    >
+      AI Assistant
+    </DropdownMenu.Item>
+  </DropdownMenu.Content>
+</DropdownMenu>
+```
+
+### Disabled Items
+
+```jsx
+<DropdownMenu>
+  <DropdownMenu.Trigger>
+    {(attributes) => <Button attributes={attributes}>Actions</Button>}
+  </DropdownMenu.Trigger>
+  
+  <DropdownMenu.Content>
+    <DropdownMenu.Item onClick={handleEdit}>
+      Edit
+    </DropdownMenu.Item>
+    <DropdownMenu.Item disabled>
+      Share (Coming Soon)
+    </DropdownMenu.Item>
+    <DropdownMenu.Item onClick={handleDelete}>
+      Delete
+    </DropdownMenu.Item>
+  </DropdownMenu.Content>
+</DropdownMenu>
+```
+
+### Context Menu Trigger
+
+```jsx
+function TableRow({ item }) {
+  return (
+    <View direction="row" gap={2} justify="space-between" align="center">
+      <Text>{item.name}</Text>
+      
+      <DropdownMenu>
+        <DropdownMenu.Trigger>
+          {(attributes) => (
+            <Button
+              variant="ghost"
+              icon={IconMoreVertical}
+              attributes={attributes}
+              attributes={{ 'aria-label': 'Row actions' }}
+            />
+          )}
+        </DropdownMenu.Trigger>
+        
+        <DropdownMenu.Content>
+          <DropdownMenu.Item icon={IconEdit} onClick={() => handleEdit(item)}>
+            Edit
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconCopy} onClick={() => handleDuplicate(item)}>
+            Duplicate
+          </DropdownMenu.Item>
+          <DropdownMenu.Item icon={IconTrash} color="critical" onClick={() => handleDelete(item)}>
+            Delete
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu>
+    </View>
+  );
+}
+```
+
+### Controlled State
+
+```jsx
+function ControlledMenu() {
+  const [active, setActive] = React.useState(false);
+
+  return (
+    <DropdownMenu
+      active={active}
+      onClose={() => setActive(false)}
+    >
+      <DropdownMenu.Trigger>
+        {(attributes) => (
+          <Button
+            attributes={attributes}
+            onClick={() => setActive(!active)}
+          >
+            Menu
+          </Button>
+        )}
+      </DropdownMenu.Trigger>
+      
+      <DropdownMenu.Content>
+        <DropdownMenu.Item onClick={() => {
+          handleAction();
+          setActive(false);
+        }}>
+          Action
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu>
+  );
+}
+```
+
+## Keyboard Navigation
+
+- **Arrow Up/Down**: Navigate between items
+- **Enter/Space**: Activate focused item
+- **Escape**: Close menu
+- **Arrow Right**: Open submenu
+- **Arrow Left**: Close submenu and return to parent
+- **Home/End**: Jump to first/last item
+- **Type ahead**: Focus item by typing its label
+
+## Accessibility
+
+- Uses `role="menu"` and `role="menuitem"` for proper semantics
+- Keyboard navigation follows ARIA menu pattern
+- Trigger has `aria-expanded` and `aria-haspopup` attributes
+- Focus management when opening and closing
+- Screen reader announces selected items
+- Disabled items are properly marked with `aria-disabled`

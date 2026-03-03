@@ -1,0 +1,277 @@
+---
+title: ProgressIndicator
+description: Display step progress with dots for multi-step flows
+---
+
+<RequestExample>
+```jsx
+import { ProgressIndicator } from 'reshaped';
+
+function Example() {
+  const [activeStep, setActiveStep] = React.useState(0);
+
+  return (
+    <ProgressIndicator
+      total={5}
+      activeIndex={activeStep}
+      color="primary"
+      ariaLabel="Onboarding progress"
+    />
+  );
+}
+```
+</RequestExample>
+
+## Usage
+
+ProgressIndicator displays step-based progress using dots, commonly used in carousels, onboarding flows, and multi-step forms.
+
+## Props
+
+<ParamField path="total" type="number" required>
+  Total number of dots to display.
+  
+  ```jsx
+  <ProgressIndicator total={5} activeIndex={2} />
+  ```
+</ParamField>
+
+<ParamField path="activeIndex" type="number">
+  Zero-based index of the active dot. Omit to show all dots as inactive.
+  
+  ```jsx
+  <ProgressIndicator total={4} activeIndex={1} /> {/* Second dot active */}
+  <ProgressIndicator total={4} /> {/* No active dot */}
+  ```
+</ParamField>
+
+<ParamField path="size" type="string">
+  Size of the indicator dots.
+  
+  Options: `"small"`, `"medium"`
+</ParamField>
+
+<ParamField path="color" type="string">
+  Color scheme for the active dot.
+  
+  Options: `"primary"`, `"media"`
+</ParamField>
+
+<ParamField path="ariaLabel" type="string">
+  Accessible label for screen readers.
+  
+  ```jsx
+  <ProgressIndicator
+    total={5}
+    activeIndex={2}
+    ariaLabel="Step 3 of 5"
+  />
+  ```
+</ParamField>
+
+<ParamField path="className" type="string">
+  Additional CSS class for the root element.
+</ParamField>
+
+<ParamField path="attributes" type="Attributes<'div'>">
+  Additional HTML attributes for the root element.
+</ParamField>
+
+## Examples
+
+### Basic Usage
+
+```jsx
+<ProgressIndicator
+  total={4}
+  activeIndex={1}
+  ariaLabel="Step 2 of 4"
+/>
+```
+
+### Sizes
+
+```jsx
+<View gap={4} align="center">
+  <ProgressIndicator
+    total={5}
+    activeIndex={2}
+    size="small"
+    ariaLabel="Small indicators"
+  />
+  <ProgressIndicator
+    total={5}
+    activeIndex={2}
+    size="medium"
+    ariaLabel="Medium indicators"
+  />
+</View>
+```
+
+### Colors
+
+```jsx
+<View gap={4} align="center">
+  <ProgressIndicator
+    total={5}
+    activeIndex={2}
+    color="primary"
+    ariaLabel="Primary color"
+  />
+  <ProgressIndicator
+    total={5}
+    activeIndex={2}
+    color="media"
+    ariaLabel="Media color"
+  />
+</View>
+```
+
+### Carousel Progress
+
+```jsx
+function Carousel({ items }) {
+  const [activeSlide, setActiveSlide] = React.useState(0);
+
+  return (
+    <View gap={3}>
+      <View height="300px" backgroundColor="neutral-faded">
+        {items[activeSlide]}
+      </View>
+      
+      <View align="center">
+        <ProgressIndicator
+          total={items.length}
+          activeIndex={activeSlide}
+          color="primary"
+          ariaLabel={`Slide ${activeSlide + 1} of ${items.length}`}
+        />
+      </View>
+      
+      <View direction="row" gap={2} justify="space-between">
+        <Button
+          onClick={() => setActiveSlide(Math.max(0, activeSlide - 1))}
+          disabled={activeSlide === 0}
+        >
+          Previous
+        </Button>
+        <Button
+          onClick={() => setActiveSlide(Math.min(items.length - 1, activeSlide + 1))}
+          disabled={activeSlide === items.length - 1}
+        >
+          Next
+        </Button>
+      </View>
+    </View>
+  );
+}
+```
+
+### Onboarding Flow
+
+```jsx
+function OnboardingFlow({ steps }) {
+  const [currentStep, setCurrentStep] = React.useState(0);
+
+  return (
+    <View gap={4}>
+      <View align="center" gap={2}>
+        <Text variant="featured-3" weight="bold">
+          Step {currentStep + 1} of {steps.length}
+        </Text>
+        <ProgressIndicator
+          total={steps.length}
+          activeIndex={currentStep}
+          color="primary"
+          size="medium"
+          ariaLabel={`Step ${currentStep + 1} of ${steps.length}`}
+        />
+      </View>
+
+      <View padding={4}>
+        {steps[currentStep].content}
+      </View>
+
+      <View direction="row" gap={2} justify="space-between">
+        <Button
+          variant="outline"
+          onClick={() => setCurrentStep(currentStep - 1)}
+          disabled={currentStep === 0}
+        >
+          Back
+        </Button>
+        <Button
+          onClick={() => setCurrentStep(currentStep + 1)}
+          disabled={currentStep === steps.length - 1}
+        >
+          {currentStep === steps.length - 1 ? 'Finish' : 'Next'}
+        </Button>
+      </View>
+    </View>
+  );
+}
+```
+
+### Clickable Dots
+
+```jsx
+function InteractiveIndicator({ total, activeIndex, onChange }) {
+  return (
+    <View direction="row" gap={2} align="center">
+      {Array.from({ length: total }, (_, index) => (
+        <Button
+          key={index}
+          variant="ghost"
+          size="small"
+          onClick={() => onChange(index)}
+          attributes={{
+            'aria-label': `Go to step ${index + 1}`,
+            'aria-current': index === activeIndex ? 'step' : undefined,
+          }}
+        >
+          <View
+            width="8px"
+            height="8px"
+            borderRadius="full"
+            backgroundColor={index === activeIndex ? 'primary' : 'neutral-faded'}
+          />
+        </Button>
+      ))}
+    </View>
+  );
+}
+```
+
+### Image Gallery
+
+```jsx
+function ImageGallery({ images }) {
+  const [current, setCurrent] = React.useState(0);
+
+  return (
+    <View gap={3}>
+      <Image
+        src={images[current]}
+        aspectRatio={16 / 9}
+        borderRadius="medium"
+      />
+      
+      <View align="center">
+        <ProgressIndicator
+          total={images.length}
+          activeIndex={current}
+          color="media"
+          ariaLabel={`Image ${current + 1} of ${images.length}`}
+        />
+      </View>
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+- Use descriptive `ariaLabel` that includes current step and total
+- Ensure adequate color contrast between active and inactive dots
+- Consider providing keyboard navigation for interactive dots
+- Announce step changes to screen readers when `activeIndex` updates
