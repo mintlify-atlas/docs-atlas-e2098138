@@ -1,0 +1,289 @@
+{
+  "projectType": "frontend",
+  "projectName": "Reshaped",
+  "projectDescription": "Professionally crafted React & Figma components for building beautiful products or starting your own design system",
+  "theme": "willow",
+  "primaryColor": "#5a58f2",
+  "lightColor": null,
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/theming",
+              "concepts/styling",
+              "concepts/accessibility",
+              "concepts/responsive-design",
+              "concepts/typescript"
+            ]
+          },
+          {
+            "group": "Layout Components",
+            "pages": [
+              "components/view",
+              "components/container",
+              "components/grid",
+              "components/divider",
+              "components/hidden",
+              "components/scroll-area",
+              "components/resizable"
+            ]
+          },
+          {
+            "group": "Form Components",
+            "pages": [
+              "components/text-field",
+              "components/text-area",
+              "components/select",
+              "components/checkbox",
+              "components/checkbox-group",
+              "components/radio",
+              "components/radio-group",
+              "components/switch",
+              "components/slider",
+              "components/number-field",
+              "components/pin-field",
+              "components/autocomplete",
+              "components/file-upload",
+              "components/form-control"
+            ]
+          },
+          {
+            "group": "Navigation Components",
+            "pages": [
+              "components/button",
+              "components/link",
+              "components/breadcrumbs",
+              "components/tabs",
+              "components/pagination",
+              "components/menu-item",
+              "components/stepper"
+            ]
+          },
+          {
+            "group": "Data Display Components",
+            "pages": [
+              "components/text",
+              "components/badge",
+              "components/avatar",
+              "components/card",
+              "components/table",
+              "components/timeline",
+              "components/carousel",
+              "components/image",
+              "components/icon"
+            ]
+          },
+          {
+            "group": "Feedback Components",
+            "pages": [
+              "components/alert",
+              "components/toast",
+              "components/loader",
+              "components/progress",
+              "components/progress-indicator",
+              "components/skeleton"
+            ]
+          },
+          {
+            "group": "Overlay Components",
+            "pages": [
+              "components/modal",
+              "components/popover",
+              "components/dropdown-menu",
+              "components/context-menu",
+              "components/tooltip",
+              "components/flyout",
+              "components/overlay",
+              "components/scrim"
+            ]
+          },
+          {
+            "group": "Utility Components",
+            "pages": [
+              "components/reshaped",
+              "components/theme",
+              "components/accordion",
+              "components/actionable",
+              "components/action-bar",
+              "components/calendar",
+              "components/dismissible",
+              "components/hotkey",
+              "components/toggle-button",
+              "components/toggle-button-group",
+              "components/hidden-input",
+              "components/hidden-visually"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Hooks",
+            "pages": [
+              "hooks/use-theme",
+              "hooks/use-toast",
+              "hooks/use-form-control",
+              "hooks/use-responsive-client-value",
+              "hooks/use-hotkeys",
+              "hooks/use-rtl",
+              "hooks/use-keyboard-mode",
+              "hooks/use-toggle"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "utilities/class-names",
+              "utilities/trap-focus",
+              "utilities/responsive-prop-dependency"
+            ]
+          },
+          {
+            "group": "CLI",
+            "pages": [
+              "cli/overview",
+              "cli/theming-command"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/postcss",
+              "configuration/tailwind",
+              "configuration/reshaped-config"
+            ]
+          },
+          {
+            "group": "Types",
+            "pages": [
+              "types/responsive",
+              "types/color-mode",
+              "types/reshaped-config"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Resources",
+        "groups": [
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/figma-integration",
+              "guides/custom-themes",
+              "guides/theme-fragments",
+              "guides/bundle-optimization"
+            ]
+          },
+          {
+            "group": "Community",
+            "pages": [
+              "community/contributing",
+              "community/changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "64+ professionally designed React components",
+    "Built-in theming system with light/dark modes",
+    "Full TypeScript support with comprehensive type definitions",
+    "Accessibility-first design with ARIA support",
+    "Figma library integration for design-to-code workflow",
+    "Responsive design utilities",
+    "Custom theme generation CLI",
+    "PostCSS and Tailwind configuration helpers"
+  ],
+  "publicApiSurface": [
+    "ActionBar",
+    "Alert",
+    "Autocomplete",
+    "Avatar",
+    "Badge",
+    "Button",
+    "Breadcrumbs",
+    "Calendar",
+    "Card",
+    "Carousel",
+    "Checkbox",
+    "CheckboxGroup",
+    "ContextMenu",
+    "Divider",
+    "DropdownMenu",
+    "FileUpload",
+    "Hotkey",
+    "Link",
+    "Loader",
+    "MenuItem",
+    "Modal",
+    "NumberField",
+    "Pagination",
+    "PinField",
+    "Popover",
+    "Progress",
+    "ProgressIndicator",
+    "Radio",
+    "RadioGroup",
+    "Scrim",
+    "Select",
+    "Skeleton",
+    "Slider",
+    "Stepper",
+    "Switch",
+    "Table",
+    "Tabs",
+    "TextArea",
+    "TextField",
+    "Timeline",
+    "Toast",
+    "ToggleButton",
+    "ToggleButtonGroup",
+    "Tooltip",
+    "Reshaped",
+    "Accordion",
+    "Actionable",
+    "Container",
+    "Dismissible",
+    "Flyout",
+    "FormControl",
+    "Grid",
+    "Hidden",
+    "HiddenInput",
+    "HiddenVisually",
+    "Icon",
+    "Image",
+    "Overlay",
+    "Resizable",
+    "ScrollArea",
+    "Text",
+    "View",
+    "Theme",
+    "useTheme",
+    "useToast",
+    "useFormControl",
+    "useResponsiveClientValue",
+    "useHotkeys",
+    "useRTL",
+    "useKeyboardMode",
+    "useToggle",
+    "classNames",
+    "TrapFocus"
+  ]
+}
