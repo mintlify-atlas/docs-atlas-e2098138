@@ -1,0 +1,66 @@
+---
+title: useIsomorphicLayoutEffect
+description: SSR-safe version of useLayoutEffect that works on both client and server
+---
+
+A drop-in replacement for React's `useLayoutEffect` that safely handles server-side rendering by using `useEffect` on the server and `useLayoutEffect` on the client.
+
+## Import
+
+```jsx
+import { useIsomorphicLayoutEffect } from 'reshaped';
+```
+
+## Usage
+
+Use this hook exactly like `useLayoutEffect`, but without SSR hydration warnings:
+
+```jsx
+import { useIsomorphicLayoutEffect } from 'reshaped';
+import { useState, useRef } from 'react';
+
+function Component() {
+  const [height, setHeight] = useState(0);
+  const ref = useRef(null);
+
+  useIsomorphicLayoutEffect(() => {
+    if (ref.current) {
+      setHeight(ref.current.offsetHeight);
+    }
+  }, []);
+
+  return <div ref={ref}>Height: {height}px</div>;
+}
+```
+
+## When to Use
+
+Use `useIsomorphicLayoutEffect` when you need to:
+
+- Measure DOM elements before paint
+- Make synchronous DOM updates
+- Avoid SSR hydration mismatches
+- Work with layout-dependent code in an SSR application
+
+<Note>
+This hook uses `useLayoutEffect` on the client and `useEffect` on the server to prevent hydration warnings while maintaining the same behavior.
+</Note>
+
+## Signature
+
+```typescript
+useIsomorphicLayoutEffect(effect: () => void | (() => void), deps?: DependencyList): void
+```
+
+<ParamField path="effect" type="function" required>
+  Effect function that runs synchronously after DOM mutations on the client
+</ParamField>
+
+<ParamField path="deps" type="array">
+  Optional dependency array that triggers the effect when values change
+</ParamField>
+
+## Related
+
+- [useHandlerRef](/hooks/use-handler-ref) - Stable ref for event handlers
+- [React useLayoutEffect](https://react.dev/reference/react/useLayoutEffect) - React's useLayoutEffect documentation

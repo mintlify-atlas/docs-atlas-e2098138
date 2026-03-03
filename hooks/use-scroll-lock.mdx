@@ -1,0 +1,168 @@
+---
+title: useScrollLock
+description: Lock and unlock page scrolling programmatically
+---
+
+A utility hook for controlling document scroll behavior, typically used with modals, drawers, and full-screen overlays to prevent background scrolling.
+
+## Import
+
+```jsx
+import { useScrollLock } from 'reshaped';
+```
+
+## Usage
+
+Lock scrolling when a modal is open:
+
+```jsx
+import { useScrollLock } from 'reshaped';
+import { useEffect, useState } from 'react';
+
+function Modal({ isOpen, onClose }) {
+  const { lockScroll, unlockScroll, scrollLocked } = useScrollLock();
+
+  useEffect(() => {
+    if (isOpen) {
+      lockScroll();
+    } else {
+      unlockScroll();
+    }
+
+    return () => unlockScroll();
+  }, [isOpen, lockScroll, unlockScroll]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <h2>Modal Title</h2>
+        <p>Background scroll is {scrollLocked ? 'locked' : 'unlocked'}</p>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+}
+```
+
+## Signature
+
+```typescript
+useScrollLock(options?: {
+  containerRef?: RefObject<HTMLElement>;
+  originRef?: RefObject<HTMLElement>;
+}): {
+  scrollLocked: boolean;
+  lockScroll: () => void;
+  unlockScroll: () => void;
+}
+```
+
+<ParamField path="options.containerRef" type="RefObject">
+  Optional ref to the container element whose scroll should be locked
+</ParamField>
+
+<ParamField path="options.originRef" type="RefObject">
+  Optional ref to the element that triggered the scroll lock (for scroll position restoration)
+</ParamField>
+
+<ResponseField name="scrollLocked" type="boolean">
+  Current lock state - true when scroll is locked, false otherwise
+</ResponseField>
+
+<ResponseField name="lockScroll" type="function">
+  Function to lock scrolling
+</ResponseField>
+
+<ResponseField name="unlockScroll" type="function">
+  Function to unlock scrolling
+</ResponseField>
+
+## Custom Container
+
+Lock scrolling within a specific container instead of the document:
+
+```jsx
+import { useScrollLock } from 'reshaped';
+import { useRef, useEffect } from 'react';
+
+function SidePanel({ isOpen }) {
+  const containerRef = useRef(null);
+  const { lockScroll, unlockScroll } = useScrollLock({ containerRef });
+
+  useEffect(() => {
+    if (isOpen) {
+      lockScroll();
+    }
+    return () => unlockScroll();
+  }, [isOpen, lockScroll, unlockScroll]);
+
+  return (
+    <div ref={containerRef} className="scrollable-container">
+      {/* Container content */}
+    </div>
+  );
+}
+```
+
+## Scroll Position Restoration
+
+Use `originRef` to restore scroll position to a specific element:
+
+```jsx
+import { useScrollLock } from 'reshaped';
+import { useRef, useState } from 'reshaped';
+
+function FullScreenGallery() {
+  const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef(null);
+  const { lockScroll, unlockScroll } = useScrollLock({ 
+    originRef: triggerRef 
+  });
+
+  const handleOpen = () => {
+    setIsOpen(true);
+    lockScroll();
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    unlockScroll(); // Scrolls back to trigger element
+  };
+
+  return (
+    <>
+      <button ref={triggerRef} onClick={handleOpen}>
+        Open Gallery
+      </button>
+      {isOpen && (
+        <div className="fullscreen-gallery">
+          <button onClick={handleClose}>Close</button>
+        </div>
+      )}
+    </>
+  );
+}
+```
+
+<Note>
+The scroll lock automatically handles touch devices and prevents scroll chaining on iOS Safari.
+</Note>
+
+<Tip>
+This hook is used internally by Reshaped's Modal component to prevent background scrolling when modals are open.
+</Tip>
+
+## Best Practices
+
+- Always clean up by calling `unlockScroll` in effect cleanup or unmount
+- Use `scrollLocked` state to show visual feedback if needed
+- Multiple components can lock scroll - the last unlock wins
+- Works automatically with fixed positioning and viewport units
+
+## Related
+
+- [Modal](/components/modal) - Uses this hook for scroll management
+- [Overlay](/components/overlay) - Full-screen overlay component
+- [Dismissible](/components/dismissible) - Dismissible content container

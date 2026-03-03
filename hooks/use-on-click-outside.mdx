@@ -1,0 +1,153 @@
+---
+title: useOnClickOutside
+description: Detect and handle clicks outside of specified elements
+---
+
+A utility hook that triggers a callback when users click, tap, or activate elements outside of specified refs. Useful for closing dropdowns, modals, popovers, and other overlay components.
+
+## Import
+
+```jsx
+import { useOnClickOutside } from 'reshaped';
+```
+
+## Usage
+
+Detect clicks outside a dropdown menu:
+
+```jsx
+import { useOnClickOutside } from 'reshaped';
+import { useRef, useState } from 'react';
+
+function Dropdown() {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  useOnClickOutside(
+    [dropdownRef, buttonRef],
+    () => setIsOpen(false),
+    { disabled: !isOpen }
+  );
+
+  return (
+    <>
+      <button ref={buttonRef} onClick={() => setIsOpen(!isOpen)}>
+        Toggle Menu
+      </button>
+      {isOpen && (
+        <div ref={dropdownRef}>
+          <div>Menu Item 1</div>
+          <div>Menu Item 2</div>
+        </div>
+      )}
+    </>
+  );
+}
+```
+
+## Signature
+
+```typescript
+useOnClickOutside(
+  refs: RefObject<HTMLElement>[],
+  handler: (event: Event) => void,
+  options?: { disabled?: boolean }
+): void
+```
+
+<ParamField path="refs" type="array" required>
+  Array of refs to elements that should be considered "inside"
+</ParamField>
+
+<ParamField path="handler" type="function" required>
+  Callback function invoked when a click occurs outside the specified refs
+</ParamField>
+
+<ParamField path="options.disabled" type="boolean">
+  Disable the outside click detection when true
+</ParamField>
+
+## Multiple Refs
+
+Include multiple refs when you need to exclude multiple elements from triggering the handler:
+
+```jsx
+import { useOnClickOutside } from 'reshaped';
+import { useRef, useState } from 'react';
+
+function Modal() {
+  const [isOpen, setIsOpen] = useState(true);
+  const modalRef = useRef(null);
+  const overlayRef = useRef(null);
+  const triggerRef = useRef(null);
+
+  // Won't close when clicking modal, overlay, or trigger
+  useOnClickOutside(
+    [modalRef, overlayRef, triggerRef],
+    () => setIsOpen(false)
+  );
+
+  return (
+    <>
+      <button ref={triggerRef}>Open Modal</button>
+      <div ref={overlayRef}>
+        <div ref={modalRef}>Modal Content</div>
+      </div>
+    </>
+  );
+}
+```
+
+## Conditional Detection
+
+Disable detection when the component is not visible:
+
+```jsx
+import { useOnClickOutside } from 'reshaped';
+import { useRef, useState } from 'react';
+
+function Popover() {
+  const [isVisible, setIsVisible] = useState(false);
+  const popoverRef = useRef(null);
+
+  useOnClickOutside(
+    [popoverRef],
+    () => setIsVisible(false),
+    { disabled: !isVisible } // Only detect when visible
+  );
+
+  return (
+    <>
+      <button onClick={() => setIsVisible(true)}>Show</button>
+      {isVisible && (
+        <div ref={popoverRef}>Popover content</div>
+      )}
+    </>
+  );
+}
+```
+
+<Note>
+This hook also handles touch events and keyboard activation (Enter/Space keys) to ensure accessibility across all input methods.
+</Note>
+
+## How It Works
+
+The hook listens for three types of events:
+
+1. **Mouse clicks** - Desktop interaction
+2. **Touch events** - Mobile interaction  
+3. **Keyboard activation** - Enter/Space keys for accessibility
+
+It tracks `mousedown` position to handle cases where elements might be removed from the DOM during the click sequence.
+
+<Tip>
+This hook is used internally by Reshaped's Modal, Popover, and DropdownMenu components to handle dismissal behavior.
+</Tip>
+
+## Related
+
+- [Modal](/components/modal) - Uses this hook for dismissal
+- [Popover](/components/popover) - Uses this hook for closing
+- [DropdownMenu](/components/dropdown-menu) - Uses this hook for menu behavior

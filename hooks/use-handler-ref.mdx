@@ -1,0 +1,92 @@
+---
+title: useHandlerRef
+description: Wrap event handlers in a stable ref to prevent unnecessary effect re-runs
+---
+
+A utility hook that wraps callback functions in a ref, maintaining a stable reference while keeping the implementation up-to-date. This is particularly useful for passing handlers to effects without triggering re-runs.
+
+## Import
+
+```jsx
+import { useHandlerRef } from 'reshaped';
+```
+
+## Usage
+
+Wrap event handlers that are passed to effect dependencies:
+
+```jsx
+import { useHandlerRef } from 'reshaped';
+import { useEffect } from 'react';
+
+function Component({ onUpdate }) {
+  const onUpdateRef = useHandlerRef(onUpdate);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Always calls the latest version of onUpdate
+      onUpdateRef.current?.();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [onUpdateRef]); // Stable dependency - won't cause re-runs
+
+  return <div>Component</div>;
+}
+```
+
+## When to Use
+
+Use `useHandlerRef` when you need to:
+
+- Pass callbacks to effect dependencies without causing re-runs
+- Maintain stable references to frequently-changing handlers
+- Avoid effect cleanup/setup cycles caused by callback changes
+- Keep handler implementations up-to-date without recreating effects
+
+## Signature
+
+```typescript
+useHandlerRef<T>(callback: T): RefObject<T>
+```
+
+<ParamField path="callback" type="function" required>
+  The callback function to wrap in a stable ref
+</ParamField>
+
+<ResponseField name="return" type="RefObject">
+  A stable ref object containing the latest callback implementation
+</ResponseField>
+
+## Example: Avoiding Effect Re-runs
+
+```jsx
+import { useHandlerRef } from 'reshaped';
+import { useEffect, useState } from 'react';
+
+function DataFetcher({ onData }) {
+  const [data, setData] = useState(null);
+  const onDataRef = useHandlerRef(onData);
+
+  useEffect(() => {
+    // Effect only runs once, even if onData prop changes
+    fetch('/api/data')
+      .then(res => res.json())
+      .then(data => {
+        setData(data);
+        onDataRef.current?.(data); // Always calls latest onData
+      });
+  }, [onDataRef]); // Stable dependency
+
+  return <div>{data && JSON.stringify(data)}</div>;
+}
+```
+
+<Tip>
+This hook is used internally by Reshaped components to optimize performance when working with callback props.
+</Tip>
+
+## Related
+
+- [useIsomorphicLayoutEffect](/hooks/use-isomorphic-layout-effect) - SSR-safe layout effect
+- [useOnClickOutside](/hooks/use-on-click-outside) - Detect clicks outside elements

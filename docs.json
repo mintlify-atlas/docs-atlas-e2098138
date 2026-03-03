@@ -154,7 +154,12 @@
               "hooks/use-hotkeys",
               "hooks/use-rtl",
               "hooks/use-keyboard-mode",
-              "hooks/use-toggle"
+              "hooks/use-toggle",
+              "hooks/use-isomorphic-layout-effect",
+              "hooks/use-handler-ref",
+              "hooks/use-on-click-outside",
+              "hooks/use-scroll-lock",
+              "hooks/use-keyboard-arrow-navigation"
             ]
           },
           {

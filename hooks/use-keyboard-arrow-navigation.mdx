@@ -1,0 +1,211 @@
+---
+title: useKeyboardArrowNavigation
+description: Enable arrow key navigation within a container of focusable elements
+---
+
+A utility hook that enables keyboard arrow navigation between focusable elements in a container. Commonly used for menus, lists, toolbars, and composite widgets.
+
+## Import
+
+```jsx
+import { useKeyboardArrowNavigation } from 'reshaped';
+```
+
+## Usage
+
+Enable vertical arrow navigation in a menu:
+
+```jsx
+import { useKeyboardArrowNavigation } from 'reshaped';
+import { useRef } from 'react';
+
+function Menu() {
+  const menuRef = useRef(null);
+
+  useKeyboardArrowNavigation({
+    ref: menuRef,
+    orientation: 'vertical'
+  });
+
+  return (
+    <div ref={menuRef} role="menu">
+      <button role="menuitem">Option 1</button>
+      <button role="menuitem">Option 2</button>
+      <button role="menuitem">Option 3</button>
+    </div>
+  );
+}
+```
+
+## Signature
+
+```typescript
+useKeyboardArrowNavigation(props: {
+  ref: RefObject<HTMLElement>;
+  disabled?: boolean;
+  orientation?: 'vertical' | 'horizontal';
+  circular?: boolean;
+}): void
+```
+
+<ParamField path="ref" type="RefObject" required>
+  Ref to the container element containing focusable items
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disable arrow key navigation when true
+</ParamField>
+
+<ParamField path="orientation" type="'vertical' | 'horizontal'">
+  Navigation direction - vertical uses Up/Down, horizontal uses Left/Right. Omit for both.
+</ParamField>
+
+<ParamField path="circular" type="boolean">
+  Enable circular navigation (wrap from last to first item)
+</ParamField>
+
+## Orientations
+
+### Vertical Navigation
+
+Use Up/Down arrow keys:
+
+```jsx
+import { useKeyboardArrowNavigation } from 'reshaped';
+import { useRef } from 'react';
+
+function VerticalList() {
+  const listRef = useRef(null);
+
+  useKeyboardArrowNavigation({
+    ref: listRef,
+    orientation: 'vertical'
+  });
+
+  return (
+    <div ref={listRef}>
+      <button>Item 1</button>
+      <button>Item 2</button>
+      <button>Item 3</button>
+    </div>
+  );
+}
+```
+
+### Horizontal Navigation
+
+Use Left/Right arrow keys:
+
+```jsx
+import { useKeyboardArrowNavigation } from 'reshaped';
+import { useRef } from 'react';
+
+function Toolbar() {
+  const toolbarRef = useRef(null);
+
+  useKeyboardArrowNavigation({
+    ref: toolbarRef,
+    orientation: 'horizontal'
+  });
+
+  return (
+    <div ref={toolbarRef} role="toolbar">
+      <button>Cut</button>
+      <button>Copy</button>
+      <button>Paste</button>
+    </div>
+  );
+}
+```
+
+### Bidirectional Navigation
+
+Support both horizontal and vertical navigation:
+
+```jsx
+import { useKeyboardArrowNavigation } from 'reshaped';
+import { useRef } from 'react';
+
+function Grid() {
+  const gridRef = useRef(null);
+
+  // No orientation = both directions
+  useKeyboardArrowNavigation({
+    ref: gridRef
+  });
+
+  return (
+    <div ref={gridRef} role="grid">
+      <button>1</button> <button>2</button> <button>3</button>
+      <button>4</button> <button>5</button> <button>6</button>
+    </div>
+  );
+}
+```
+
+## Circular Navigation
+
+Wrap from the last item back to the first:
+
+```jsx
+import { useKeyboardArrowNavigation } from 'reshaped';
+import { useRef } from 'react';
+
+function CircularMenu() {
+  const menuRef = useRef(null);
+
+  useKeyboardArrowNavigation({
+    ref: menuRef,
+    orientation: 'vertical',
+    circular: true // Wrap around
+  });
+
+  return (
+    <div ref={menuRef}>
+      <button>First Item</button>
+      <button>Second Item</button>
+      <button>Last Item</button>
+      {/* Down arrow on Last Item goes to First Item */}
+    </div>
+  );
+}
+```
+
+## Keyboard Support
+
+The hook provides these keyboard shortcuts:
+
+- **Arrow Keys** - Navigate based on orientation
+- **Home** - Jump to first focusable element
+- **End** - Jump to last focusable element
+
+## Tab Index Management
+
+The hook automatically manages `tabindex` attributes:
+
+- Sets `tabindex="0"` on the active element
+- Sets `tabindex="-1"` on all other elements
+- Maintains proper tab order for keyboard users
+
+<Note>
+This hook automatically handles focus management and prevents default arrow key behavior to avoid page scrolling during navigation.
+</Note>
+
+<Tip>
+This hook is used internally by Reshaped's DropdownMenu, ContextMenu, and other navigable components.
+</Tip>
+
+## Best Practices
+
+- Use with proper ARIA roles (`role="menu"`, `role="listbox"`, etc.)
+- Ensure all items are focusable elements
+- Use `circular` for small, contained lists
+- Disable when the component is not interactive
+- Combine with `useHotkeys` for additional shortcuts
+
+## Related
+
+- [useHotkeys](/hooks/use-hotkeys) - Custom keyboard shortcuts
+- [DropdownMenu](/components/dropdown-menu) - Uses this hook
+- [MenuItem](/components/menu-item) - Menu item component
+- [Tabs](/components/tabs) - Tab navigation component
